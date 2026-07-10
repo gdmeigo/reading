@@ -20,6 +20,17 @@ def line(draw, *pts, width=LW):
     draw.line(pts, fill=BLACK, width=width)
 
 
+def wline(draw, pts, width=LW):
+    # Slightly uneven line, closer to the reference hand-drawn panels.
+    if len(pts) < 2:
+        return
+    out = []
+    for i, (x, y) in enumerate(pts):
+        wiggle = ((i % 2) * 2 - 1) if i not in (0, len(pts) - 1) else 0
+        out.append((x + wiggle, y - wiggle))
+    draw.line(out, fill=BLACK, width=width, joint="curve")
+
+
 def arc(draw, box, start, end, width=LW):
     draw.arc(box, start, end, fill=BLACK, width=width)
 
@@ -52,10 +63,8 @@ def head(draw, x, y, r=16, look="right"):
 
 def aki(draw, x, y, pose="stand", look="right"):
     head(draw, x, y, look=look)
-    # Short hair, light and hand-drawn like the reference images.
-    line(draw, x - 8, y - 15, x - 16, y - 29)
-    line(draw, x + 1, y - 16, x + 2, y - 31)
-    line(draw, x + 10, y - 13, x + 20, y - 25)
+    for sx, ex in [(-14, -22), (-7, -10), (0, 0), (7, 10), (14, 22)]:
+        line(draw, x + sx, y - 14, x + ex, y - 29, width=2)
     neck = y + 16
     hip = y + 88
     line(draw, x, neck, x, hip)
@@ -110,9 +119,7 @@ def meg(draw, x, y, pose="stand", look="left"):
 
 def man_upper(draw, x, y, pose="book"):
     head(draw, x, y, r=18, look="front")
-    # Hat and moustache distinguish the man without labels.
-    draw.rectangle((x - 22, y - 34, x + 22, y - 26), outline=BLACK, width=LW)
-    line(draw, x - 34, y - 26, x + 34, y - 26)
+    hat(draw, x, y - 27)
     arc(draw, (x - 14, y + 3, x, y + 15), 0, 180)
     arc(draw, (x, y + 3, x + 14, y + 15), 0, 180)
     neck = y + 18
@@ -130,24 +137,51 @@ def man_upper(draw, x, y, pose="book"):
 
 
 def box(draw, x, y, w=150, h=80):
-    draw.polygon([(x, y), (x + w, y), (x + w - 25, y + h), (x - 25, y + h)], outline=BLACK, fill=WHITE)
-    line(draw, x, y, x - 25, y + h)
-    line(draw, x + w, y, x + w - 25, y + h)
-    line(draw, x + 18, y + h // 2, x + w - 40, y + h // 2, width=2)
+    back = [(x + 22, y + 18), (x + w - 20, y + 15), (x + w, y + 36), (x + 2, y + 40)]
+    front = [(x, y + 38), (x + w, y + 36), (x + w - 25, y + h), (x - 25, y + h)]
+    draw.polygon(front, outline=BLACK, fill=WHITE)
+    wline(draw, back + [back[0]], width=2)
+    wline(draw, [(x, y + 38), (x - 25, y + h), (x + w - 25, y + h), (x + w, y + 36)], width=LW)
+    line(draw, x + 18, y + h // 2 + 16, x + w - 40, y + h // 2 + 14, width=2)
 
 
-def book(draw, x, y, w=70, h=38):
-    draw.rectangle((x, y, x + w, y + h), outline=BLACK, width=LW)
-    line(draw, x + 7, y + h // 2, x + w - 7, y + h // 2, width=2)
+def rounded_rect(draw, xy, radius=5, width=LW):
+    x1, y1, x2, y2 = xy
+    draw.rounded_rectangle((x1, y1, x2, y2), radius=radius, outline=BLACK, width=width, fill=WHITE)
 
 
-def pen(draw, x, y, length=64, angle=0):
+def book(draw, x, y, w=92, h=50):
+    rounded_rect(draw, (x, y, x + w, y + h), radius=5, width=LW)
+    # Spine and page lines make this read as a book, not a box.
+    line(draw, x + 14, y + 4, x + 14, y + h - 4, width=4)
+    for off in (14, 24, 34):
+        line(draw, x + 24, y + off, x + w - 9, y + off - 2, width=1)
+
+
+def pen(draw, x, y, length=88, angle=1):
     if angle:
-        line(draw, x, y, x + length, y + 22)
-        draw.polygon([(x + length, y + 22), (x + length + 13, y + 22), (x + length + 5, y + 32)], outline=BLACK, fill=WHITE)
+        p1 = (x, y)
+        p2 = (x + length, y + 32)
+        p3 = (x + length - 4, y + 42)
+        p4 = (x - 4, y + 10)
+        draw.polygon([p1, p2, p3, p4], outline=BLACK, fill=WHITE)
+        draw.polygon([(x + length, y + 32), (x + length + 17, y + 34), (x + length + 4, y + 45)], outline=BLACK, fill=BLACK)
+        line(draw, x + 8, y + 3, x + 3, y + 13, width=2)
     else:
-        line(draw, x, y, x + length, y)
-        draw.polygon([(x + length, y), (x + length + 13, y - 5), (x + length + 13, y + 5)], outline=BLACK, fill=WHITE)
+        p1 = (x, y)
+        p2 = (x + length, y + 10)
+        p3 = (x + length - 2, y + 22)
+        p4 = (x - 2, y + 12)
+        draw.polygon([p1, p2, p3, p4], outline=BLACK, fill=WHITE)
+        draw.polygon([(x + length, y + 10), (x + length + 17, y + 17), (x + length - 1, y + 22)], outline=BLACK, fill=BLACK)
+        line(draw, x + 8, y + 1, x + 6, y + 13, width=2)
+
+
+def hat(draw, x, y):
+    # Clear brim plus crown, with a tiny gap above the head.
+    draw.ellipse((x - 34, y - 4, x + 34, y + 10), outline=BLACK, width=LW)
+    draw.arc((x - 23, y - 27, x + 23, y + 13), 190, 350, fill=BLACK, width=LW)
+    line(draw, x - 22, y - 3, x + 22, y - 3, width=LW)
 
 
 def motion(draw, box_):
@@ -162,11 +196,11 @@ def panel1():
     img = canvas()
     d = ImageDraw.Draw(img)
     aki(d, 95, 72, pose="put", look="right")
-    box(d, 252, 170, w=160, h=85)
-    book(d, 286, 151, w=82, h=42)
+    box(d, 244, 160, w=178, h=105)
+    book(d, 292, 144, w=98, h=52)
     motion(d, (188, 112, 290, 176))
     meg(d, 545, 72, pose="put", look="left")
-    pen(d, 430, 155, length=66, angle=1)
+    pen(d, 424, 148, length=88, angle=1)
     dashed(d, (112, 70), (290, 178))
     dashed(d, (525, 70), (355, 178))
     save(img, "panel-1.png")
@@ -175,8 +209,8 @@ def panel1():
 def panel2():
     img = canvas()
     d = ImageDraw.Draw(img)
-    box(d, 250, 146, w=170, h=100)
-    pen(d, 298, 112, length=70, angle=1)
+    box(d, 240, 136, w=188, h=118)
+    pen(d, 292, 96, length=92, angle=1)
     aki(d, 100, 76, pose="look_box", look="right")
     meg(d, 540, 76, pose="point", look="left")
     dashed(d, (125, 82), (320, 195))
@@ -188,29 +222,29 @@ def panel2():
 def panel3():
     img = canvas()
     d = ImageDraw.Draw(img)
-    box(d, 245, 188, w=170, h=82)
+    box(d, 240, 180, w=188, h=96)
     man_upper(d, 330, 97, pose="book")
-    line(d, 248, 188, 415, 188, width=5)
-    book(d, 410, 85, w=86, h=44)
+    line(d, 244, 218, 424, 216, width=5)
+    book(d, 405, 78, w=112, h=58)
     motion(d, (275, 54, 350, 177))
     motion(d, (342, 54, 420, 177))
     aki(d, 95, 98, pose="surprise", look="right")
     meg(d, 548, 98, pose="surprise", look="left")
-    dashed(d, (120, 96), (422, 106))
-    dashed(d, (525, 96), (422, 106))
+    dashed(d, (120, 96), (414, 108), dash=8, gap=8)
+    dashed(d, (525, 96), (430, 108), dash=8, gap=8)
     save(img, "panel-3.png")
 
 
 def panel4():
     img = canvas()
     d = ImageDraw.Draw(img)
-    box(d, 245, 188, w=170, h=82)
+    box(d, 240, 180, w=188, h=96)
     man_upper(d, 330, 130, pose="down")
-    line(d, 248, 188, 415, 188, width=5)
+    line(d, 244, 218, 424, 216, width=5)
     aki(d, 95, 80, pose="receive", look="right")
     meg(d, 548, 80, pose="receive", look="left")
-    book(d, 175, 137, w=82, h=42)
-    pen(d, 430, 142, length=66, angle=0)
+    book(d, 168, 130, w=102, h=54)
+    pen(d, 420, 132, length=90, angle=1)
     dashed(d, (120, 82), (212, 158))
     dashed(d, (525, 82), (465, 142))
     motion(d, (298, 100, 365, 194))
