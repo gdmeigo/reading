@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Book in the Box</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 12mm;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: #000;
+      background: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 12.5pt;
+      line-height: 1.34;
+    }
+
+    main {
+      width: 100%;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: end;
+      border-bottom: 2px solid #000;
+      padding-bottom: 6px;
+      margin-bottom: 9px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22pt;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .meta {
+      font-size: 10pt;
+      line-height: 1.25;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .lesson {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .panel {
+      border: 1.5px solid #000;
+      break-inside: avoid;
+      page-break-inside: avoid;
+      min-height: 116mm;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-number {
+      border-bottom: 1.5px solid #000;
+      font-size: 10pt;
+      font-weight: 700;
+      padding: 3px 6px;
+      line-height: 1;
+    }
+
+    .art {
+      height: 45mm;
+      border-bottom: 1.5px solid #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .text {
+      padding: 7px 9px 8px;
+      flex: 1;
+    }
+
+    p {
+      margin: 0 0 4px;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    .name-line {
+      margin-top: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      font-size: 10.5pt;
+    }
+
+    .line {
+      border-bottom: 1px solid #000;
+      min-height: 18px;
+    }
+
+    .thin {
+      stroke: #000;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .object {
+      stroke: #000;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: #fff;
+    }
+
+    .eye {
+      fill: #000;
+    }
+
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>The Book in the Box</h1>
+    <div class="meta">
+      EP Book1 to 41-10<br>
+      GDM Reading Sample 01
+    </div>
+  </header>
+
+  <section class="lesson" aria-label="Four-panel reading lesson">
+    <article class="panel">
+      <div class="panel-number">1</div>
+      <div class="art" aria-hidden="true">
+        <svg viewBox="0 0 520 260" role="img">
+          <circle class="thin" cx="78" cy="54" r="20"/>
+          <path class="thin" d="M78 74 L78 135 M48 95 L108 95 M78 135 L50 185 M78 135 L106 185"/>
+          <rect class="object" x="112" y="92" width="42" height="28"/>
+          <path class="thin" d="M113 93 L153 120"/>
+
+          <circle class="thin" cx="420" cy="54" r="20"/>
+          <path class="thin" d="M420 74 L420 135 M390 96 L450 96 M420 135 L394 185 M420 135 L446 185"/>
+          <path class="object" d="M386 91 L398 91 L398 132 L386 132 Z"/>
+
+          <path class="object" d="M210 140 L345 140 L318 210 L184 210 Z"/>
+          <path class="thin" d="M210 140 L184 210 M345 140 L318 210"/>
+          <rect class="object" x="238" y="118" width="62" height="32"/>
+          <path class="object" d="M274 95 L286 95 L286 137 L274 137 Z"/>
+        </svg>
+      </div>
+      <div class="text">
+        <p>Aki has a book.</p>
+        <p>Meg has a pen.</p>
+        <p>Aki says, "This is my book."</p>
+        <p>Meg says, "Yes. That is your book."</p>
+        <p>Aki puts the book in the box.</p>
+        <p>Meg puts the pen on the box.</p>
+      </div>
+    </article>
+
+    <article class="panel">
+      <div class="panel-number">2</div>
+      <div class="art" aria-hidden="true">
+        <svg viewBox="0 0 520 260" role="img">
+          <circle class="thin" cx="116" cy="62" r="20"/>
+          <circle class="eye" cx="123" cy="58" r="3"/>
+          <path class="thin" d="M116 82 L148 132 M126 104 L168 116 M148 132 L112 184 M148 132 L172 184"/>
+          <path class="thin" d="M120 62 Q175 92 215 128"/>
+
+          <circle class="thin" cx="410" cy="64" r="20"/>
+          <path class="thin" d="M410 84 L410 146 M382 108 L362 135 M410 108 L342 146 M410 146 L386 196 M410 146 L436 196"/>
+
+          <path class="object" d="M210 126 L350 126 L322 214 L184 214 Z"/>
+          <path class="thin" d="M210 126 L184 214 M350 126 L322 214"/>
+          <path class="object" d="M274 96 L286 96 L286 126 L274 126 Z"/>
+        </svg>
+      </div>
+      <div class="text">
+        <p>Aki does not see the book.</p>
+        <p>He sees the pen.</p>
+        <p>Aki says, "Where is my book?"</p>
+        <p>Meg sees the box.</p>
+        <p>She says, "It is in the box."</p>
+        <p>Aki says, "No. I do not see it."</p>
+      </div>
+    </article>
+
+    <article class="panel">
+      <div class="panel-number">3</div>
+      <div class="art" aria-hidden="true">
+        <svg viewBox="0 0 520 260" role="img">
+          <circle class="thin" cx="88" cy="75" r="20"/>
+          <path class="thin" d="M88 95 L88 155 M58 118 L76 132 M118 118 L146 138 M88 155 L62 205 M88 155 L116 205"/>
+          <path class="thin" d="M70 48 L58 32 M90 43 L90 24 M108 48 L122 32"/>
+
+          <circle class="thin" cx="432" cy="75" r="20"/>
+          <path class="thin" d="M432 95 L432 155 M402 118 L374 138 M462 118 L444 132 M432 155 L406 205 M432 155 L460 205"/>
+          <path class="thin" d="M414 48 L402 32 M434 43 L434 24 M452 48 L466 32"/>
+
+          <path class="object" d="M198 134 L338 134 L312 222 L172 222 Z"/>
+          <path class="thin" d="M198 134 L172 222 M338 134 L312 222"/>
+          <circle class="thin" cx="256" cy="74" r="20"/>
+          <path class="thin" d="M256 94 L256 145 M230 114 L206 102 M282 114 L328 98"/>
+          <rect class="object" x="323" y="78" width="48" height="30"/>
+          <path class="thin" d="M324 79 L370 108"/>
+        </svg>
+      </div>
+      <div class="text">
+        <p>Then the box goes.</p>
+        <p>Aki sees the box.</p>
+        <p>Meg sees the box.</p>
+        <p>They say, "What?"</p>
+        <p>A man is in the box.</p>
+        <p>The man has Aki's book.</p>
+        <p>Aki says, "That is my book!"</p>
+      </div>
+    </article>
+
+    <article class="panel">
+      <div class="panel-number">4</div>
+      <div class="art" aria-hidden="true">
+        <svg viewBox="0 0 520 260" role="img">
+          <circle class="thin" cx="98" cy="70" r="20"/>
+          <path class="thin" d="M98 90 L98 155 M70 112 L46 134 M126 112 L178 110 M98 155 L70 205 M98 155 L126 205"/>
+          <rect class="object" x="176" y="92" width="54" height="32"/>
+          <path class="thin" d="M177 93 L229 124"/>
+
+          <circle class="thin" cx="270" cy="70" r="20"/>
+          <path class="thin" d="M270 90 L270 155 M240 112 L202 108 M300 112 L326 126 M270 155 L244 205 M270 155 L298 205"/>
+          <path class="object" d="M286 112 L298 112 L298 154 L286 154 Z"/>
+          <path class="thin" d="M254 42 L242 28 M273 38 L273 20 M291 42 L304 28"/>
+
+          <circle class="thin" cx="430" cy="70" r="20"/>
+          <path class="thin" d="M430 90 L430 155 M402 112 L344 136 M458 112 L472 132 M430 155 L404 205 M430 155 L456 205"/>
+        </svg>
+      </div>
+      <div class="text">
+        <p>The man gives Aki the book.</p>
+        <p>Aki gives Meg the pen.</p>
+        <p>Meg says, "This is not my pen."</p>
+        <p>Aki says, "What?"</p>
+        <p>Meg says, "It is your pen."</p>
+        <p>Aki sees the pen.</p>
+        <p>Aki says, "I see."</p>
+        <p>Meg and Aki go together.</p>
+      </div>
+    </article>
+  </section>
+
+  <div class="name-line" aria-hidden="true">
+    <div>Name: <span class="line"></span></div>
+    <div>Date: <span class="line"></span></div>
+  </div>
+</main>
+</body>
+</html>
