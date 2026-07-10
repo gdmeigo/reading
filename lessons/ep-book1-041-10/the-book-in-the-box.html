@@ -65,7 +65,7 @@
     }
 
     .art {
-      height: 45mm;
+      height: 50mm;
       border-bottom: 1.5px solid #000;
       display: flex;
       align-items: center;
@@ -73,9 +73,10 @@
       padding: 4px;
     }
 
-    svg {
+    .art img {
       width: 100%;
       height: 100%;
+      object-fit: contain;
     }
 
     .text {
@@ -89,34 +90,6 @@
 
     p:last-child {
       margin-bottom: 0;
-    }
-
-    .thin {
-      stroke: #000;
-      stroke-width: 3;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      fill: none;
-    }
-
-    .object {
-      stroke: #000;
-      stroke-width: 3;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      fill: #fff;
-    }
-
-    .eye {
-      fill: #000;
-    }
-
-    .sight {
-      stroke: #000;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-dasharray: 5 7;
-      fill: none;
     }
 
     @media print {
@@ -137,24 +110,7 @@
     <article class="panel">
       <div class="panel-number">1</div>
       <div class="art" aria-hidden="true">
-        <svg viewBox="0 0 520 260" role="img">
-          <circle class="thin" cx="88" cy="55" r="20"/>
-          <circle class="eye" cx="96" cy="52" r="3"/>
-          <path class="thin" d="M88 75 L88 145 M58 100 L158 132 M118 100 L186 132 M88 145 L60 205 M88 145 L116 205"/>
-          <path class="sight" d="M100 58 L230 135"/>
-
-          <path class="object" d="M210 132 L350 132 L324 220 L184 220 Z"/>
-          <path class="thin" d="M210 132 L184 220 M350 132 L324 220"/>
-          <rect class="object" x="230" y="124" width="82" height="38"/>
-          <path class="thin" d="M232 143 L310 143"/>
-          <path class="thin" d="M176 124 Q196 120 218 130"/>
-
-          <circle class="thin" cx="430" cy="55" r="20"/>
-          <circle class="eye" cx="420" cy="52" r="3"/>
-          <path class="thin" d="M430 75 L430 145 M400 103 L356 132 M430 103 L386 104 M430 145 L404 205 M430 145 L456 205"/>
-          <path class="sight" d="M418 58 L300 135"/>
-          <path class="object" d="M372 91 L396 100 L384 140 L360 132 Z"/>
-        </svg>
+        <img src="images/panel-1.png" alt="">
       </div>
       <div class="text">
         <p>This is Aki's book.</p>
@@ -167,22 +123,7 @@
     <article class="panel">
       <div class="panel-number">2</div>
       <div class="art" aria-hidden="true">
-        <svg viewBox="0 0 520 260" role="img">
-          <path class="object" d="M210 122 L350 122 L324 222 L184 222 Z"/>
-          <path class="thin" d="M210 122 L184 222 M350 122 L324 222 M215 170 L318 170"/>
-          <path class="object" d="M274 86 L290 92 L276 132 L260 126 Z"/>
-
-          <circle class="thin" cx="100" cy="62" r="20"/>
-          <circle class="eye" cx="111" cy="66" r="3"/>
-          <path class="thin" d="M108 82 L162 142 M130 116 L198 136 M162 142 L126 200 M162 142 L182 205"/>
-          <path class="thin" d="M198 136 L216 124"/>
-          <path class="sight" d="M115 66 L250 166"/>
-
-          <circle class="thin" cx="430" cy="62" r="20"/>
-          <circle class="eye" cx="420" cy="64" r="3"/>
-          <path class="thin" d="M430 82 L430 150 M400 105 L360 128 M430 105 L400 126 M430 150 L404 205 M430 150 L456 205"/>
-          <path class="sight" d="M418 66 L285 166"/>
-        </svg>
+        <img src="images/panel-2.png" alt="">
       </div>
       <div class="text">
         <p>Aki does not see the book.</p>
@@ -195,29 +136,7 @@
     <article class="panel">
       <div class="panel-number">3</div>
       <div class="art" aria-hidden="true">
-        <svg viewBox="0 0 520 260" role="img">
-          <path class="object" d="M200 134 L340 134 L314 224 L174 224 Z"/>
-          <path class="thin" d="M200 134 L174 224 M340 134 L314 224"/>
-          <path class="thin" d="M230 124 Q256 94 282 124"/>
-          <path class="thin" d="M238 112 L238 82 M278 112 L278 82"/>
-          <circle class="thin" cx="258" cy="62" r="20"/>
-          <circle class="eye" cx="248" cy="58" r="3"/>
-          <circle class="eye" cx="268" cy="58" r="3"/>
-          <path class="thin" d="M258 82 L258 140 M232 104 L205 88 M284 104 L354 86"/>
-          <rect class="object" x="350" y="68" width="70" height="38"/>
-          <path class="thin" d="M352 87 L418 87"/>
-          <path class="thin" d="M250 38 L250 20 M270 38 L280 22"/>
-
-          <circle class="thin" cx="92" cy="84" r="20"/>
-          <circle class="eye" cx="104" cy="80" r="3"/>
-          <path class="thin" d="M92 104 L74 162 M75 126 L50 146 M86 130 L130 150 M74 162 L42 205 M74 162 L100 212"/>
-          <path class="sight" d="M108 82 L350 88"/>
-
-          <circle class="thin" cx="434" cy="84" r="20"/>
-          <circle class="eye" cx="424" cy="80" r="3"/>
-          <path class="thin" d="M434 104 L452 162 M420 126 L392 148 M452 126 L480 146 M452 162 L426 212 M452 162 L486 205"/>
-          <path class="sight" d="M422 82 L350 88"/>
-        </svg>
+        <img src="images/panel-3.png" alt="">
       </div>
       <div class="text">
         <p>A man is in the box.</p>
@@ -231,29 +150,7 @@
     <article class="panel">
       <div class="panel-number">4</div>
       <div class="art" aria-hidden="true">
-        <svg viewBox="0 0 520 260" role="img">
-          <path class="object" d="M205 138 L345 138 L318 228 L178 228 Z"/>
-          <path class="thin" d="M205 138 L178 228 M345 138 L318 228"/>
-
-          <circle class="thin" cx="260" cy="74" r="20"/>
-          <circle class="eye" cx="250" cy="70" r="3"/>
-          <circle class="eye" cx="270" cy="70" r="3"/>
-          <path class="thin" d="M260 94 L260 146 M232 116 L214 132 M288 116 L306 132"/>
-          <path class="thin" d="M238 45 Q260 25 282 45"/>
-
-          <circle class="thin" cx="86" cy="78" r="20"/>
-          <circle class="eye" cx="96" cy="75" r="3"/>
-          <path class="thin" d="M86 98 L86 160 M58 120 L38 140 M116 120 L150 120 M86 160 L58 216 M86 160 L114 216"/>
-          <rect class="object" x="142" y="102" width="70" height="38"/>
-          <path class="thin" d="M144 121 L210 121"/>
-          <path class="sight" d="M98 78 L180 120"/>
-
-          <circle class="thin" cx="430" cy="78" r="20"/>
-          <circle class="eye" cx="420" cy="75" r="3"/>
-          <path class="thin" d="M430 98 L430 160 M400 120 L370 120 M460 120 L482 140 M430 160 L404 216 M430 160 L456 216"/>
-          <path class="object" d="M354 102 L378 110 L366 150 L342 142 Z"/>
-          <path class="sight" d="M418 78 L360 126"/>
-        </svg>
+        <img src="images/panel-4.png" alt="">
       </div>
       <div class="text">
         <p>The man gave Aki the book.</p>
