@@ -150,7 +150,7 @@ def rounded_rect(draw, xy, radius=5, width=LW):
     draw.rounded_rectangle((x1, y1, x2, y2), radius=radius, outline=BLACK, width=width, fill=WHITE)
 
 
-def book(draw, x, y, w=92, h=50):
+def book(draw, x, y, w=68, h=38):
     rounded_rect(draw, (x, y, x + w, y + h), radius=5, width=LW)
     # Spine and page lines make this read as a book, not a box.
     line(draw, x + 14, y + 4, x + 14, y + h - 4, width=4)
@@ -158,7 +158,7 @@ def book(draw, x, y, w=92, h=50):
         line(draw, x + 24, y + off, x + w - 9, y + off - 2, width=1)
 
 
-def pen(draw, x, y, length=88, angle=1):
+def pen(draw, x, y, length=56, angle=1):
     if angle:
         p1 = (x, y)
         p2 = (x + length, y + 32)
@@ -197,10 +197,10 @@ def panel1():
     d = ImageDraw.Draw(img)
     aki(d, 95, 72, pose="put", look="right")
     box(d, 244, 160, w=178, h=105)
-    book(d, 292, 144, w=98, h=52)
+    book(d, 302, 154, w=72, h=40)
     motion(d, (188, 112, 290, 176))
     meg(d, 545, 72, pose="put", look="left")
-    pen(d, 424, 148, length=88, angle=1)
+    pen(d, 438, 154, length=58, angle=1)
     dashed(d, (112, 70), (290, 178))
     dashed(d, (525, 70), (355, 178))
     save(img, "panel-1.png")
@@ -210,7 +210,7 @@ def panel2():
     img = canvas()
     d = ImageDraw.Draw(img)
     box(d, 240, 136, w=188, h=118)
-    pen(d, 292, 96, length=92, angle=1)
+    pen(d, 306, 102, length=62, angle=1)
     aki(d, 100, 76, pose="look_box", look="right")
     meg(d, 540, 76, pose="point", look="left")
     dashed(d, (125, 82), (320, 195))
@@ -225,13 +225,13 @@ def panel3():
     box(d, 240, 180, w=188, h=96)
     man_upper(d, 330, 97, pose="book")
     line(d, 244, 218, 424, 216, width=5)
-    book(d, 405, 78, w=112, h=58)
+    book(d, 408, 88, w=78, h=44)
     motion(d, (275, 54, 350, 177))
     motion(d, (342, 54, 420, 177))
     aki(d, 95, 98, pose="surprise", look="right")
     meg(d, 548, 98, pose="surprise", look="left")
-    dashed(d, (120, 96), (414, 108), dash=8, gap=8)
-    dashed(d, (525, 96), (430, 108), dash=8, gap=8)
+    dashed(d, (120, 96), (410, 112), dash=8, gap=8)
+    dashed(d, (525, 96), (430, 112), dash=8, gap=8)
     save(img, "panel-3.png")
 
 
@@ -243,8 +243,8 @@ def panel4():
     line(d, 244, 218, 424, 216, width=5)
     aki(d, 95, 80, pose="receive", look="right")
     meg(d, 548, 80, pose="receive", look="left")
-    book(d, 168, 130, w=102, h=54)
-    pen(d, 420, 132, length=90, angle=1)
+    book(d, 188, 142, w=74, h=42)
+    pen(d, 438, 144, length=58, angle=1)
     dashed(d, (120, 82), (212, 158))
     dashed(d, (525, 82), (465, 142))
     motion(d, (298, 100, 365, 194))
