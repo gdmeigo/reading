@@ -53,6 +53,12 @@ function levelInfo(level) {
   return LEVELS.find((item) => item.level === Number(level));
 }
 
+function levelInfoFromHash() {
+  const match = window.location.hash.match(/^#level-(\d+)$/);
+  if (!match) return null;
+  return levelInfo(match[1]) || null;
+}
+
 function levelStageText(info) {
   return `${info.stage} Current ID: ${info.gdmCurrentId} / NH1 ${info.nh1CurrentId}.`;
 }
@@ -119,14 +125,15 @@ async function renderStoryPage(root) {
   const slug = root.dataset.story;
   const story = storyBySlug(slug);
   const basePath = root.dataset.basePath || ".";
+  const requestedLevel = levelInfoFromHash();
 
-  document.title = story.title;
-  root.querySelector("h1").textContent = story.title;
+  document.title = requestedLevel ? `${story.title} - Level ${requestedLevel.level}` : story.title;
+  root.querySelector("h1").textContent = requestedLevel ? `${story.title}: Level ${requestedLevel.level}` : story.title;
 
   const container = root.querySelector("[data-content]");
   container.textContent = "";
 
-  for (const info of LEVELS) {
+  for (const info of requestedLevel ? [requestedLevel] : LEVELS) {
     const section = document.createElement("section");
     const heading = document.createElement("h2");
     heading.textContent = `Level ${info.level}`;
