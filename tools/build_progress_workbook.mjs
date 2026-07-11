@@ -317,9 +317,9 @@ const existingContentRows = [
   [
     3,
     "GDM-60-1",
-    "0",
-    "Level 2 plus basic past forms, said/saw/came/opened/took, did not, simple dialogue.",
-    "come まで。過去形・did not・移動を含む現行本文に合わせる。",
+    "NH1-1-5-2",
+    "Level 2 plus basic past forms, said/saw/came/opened/took, did not, simple dialogue. Required target items include come, Don't be, Let's, something/nothing, and How.",
+    "GDM-60-1 の come と、NH1-1-5-2 の Don't be / Let's / something / nothing / How を必ず入れる。",
   ],
   [
     4,

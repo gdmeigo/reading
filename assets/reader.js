@@ -7,6 +7,7 @@ const STORIES = [
   { slug: "star-bus", title: "The Star Bus", genre: "SF", levels: [1, 2, 3, 4, 5, 6, 7] },
   { slug: "moon-cup", title: "The Moon Cup", genre: "Fantasy", levels: [1, 2, 3, 4, 5, 6, 7] },
   { slug: "wrong-robot", title: "The Wrong Robot", genre: "Comedy", levels: [1, 2, 3, 4, 5, 6, 7] },
+  { slug: "banana-principal", title: "The Banana Principal", genre: "Comedy", levels: [3] },
 ];
 
 const DEFAULT_STORY_LEVELS = [1, 2, 3, 4, 5, 6];
@@ -27,8 +28,8 @@ const LEVELS = [
   {
     level: 3,
     gdmCurrentId: "GDM-60-1",
-    nh1CurrentId: "0",
-    stage: "Assumed grading: Level 2 plus basic past forms, said/saw/came/opened/took, did not, simple dialogue.",
+    nh1CurrentId: "NH1-1-5-2",
+    stage: "Assumed grading: Level 2 plus basic past forms, said/saw/came/opened/took, did not, simple dialogue. Required target items include come, Don't be, Let's, something/nothing, and How.",
   },
   {
     level: 4,
@@ -76,6 +77,7 @@ const NH1_CURRENT_OPTIONS = [
   ["NH1-1-4-2-SOME", "some / any / many"],
   ["NH1-1-5-V", "jog / need / eat / enjoy"],
   ["NH1-1-5-WRONG", "What's wrong"],
+  ["NH1-1-5-2", "Don't be / Let's / something / nothing / How"],
   ["NH1-1-5-2-DONTBE", "Don't be"],
   ["NH1-1-5-2-LETS", "Let's"],
   ["NH1-1-5-2-SOMETHING", "something / nothing"],
