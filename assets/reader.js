@@ -310,11 +310,6 @@ function renderIndexResults(root) {
 function bootIndexPage(root) {
   const gdmInput = root.querySelector("[data-gdm-current]");
   const genreInput = root.querySelector("[data-genre]");
-  const form = root.querySelector("[data-id-form]");
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    renderIndexResults(root);
-  });
   gdmInput.addEventListener("change", () => renderIndexResults(root));
   genreInput.addEventListener("change", () => renderIndexResults(root));
   renderIndexResults(root);

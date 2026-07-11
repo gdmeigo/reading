@@ -64,7 +64,7 @@
 
     .id-form {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
       align-items: end;
       margin-bottom: 18px;
@@ -77,19 +77,13 @@
     }
 
     input,
-    select,
-    button {
+    select {
       min-height: 42px;
       border: 2px solid #111;
       background: #fff;
       color: #111;
       font: inherit;
       padding: 8px 10px;
-    }
-
-    button {
-      cursor: pointer;
-      font-weight: 700;
     }
 
     .choice-grid {
@@ -128,7 +122,7 @@
   <section class="id-picker">
     <h2 class="group">Choose By Current ID</h2>
     <p>Choose the current GDM progress ID and genre.</p>
-    <form class="id-form" data-id-form>
+    <div class="id-form">
       <label>
         GDM Current ID
         <select data-gdm-current>
@@ -152,8 +146,7 @@
           <option value="comedy">Comedy</option>
         </select>
       </label>
-      <button type="submit">Show Stories</button>
-    </form>
+    </div>
     <div data-id-results></div>
   </section>
 
@@ -273,6 +266,6 @@
     </p>
   </section>
 </main>
-<script src="assets/reader.js?v=20260711h"></script>
+<script src="assets/reader.js?v=20260711i"></script>
 </body>
 </html>
