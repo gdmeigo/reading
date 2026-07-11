@@ -4,6 +4,7 @@ import { SpreadsheetFile, Workbook } from "@oai/artifact-tool";
 
 const outDir = "outputs/progress-map";
 const outXlsx = path.join(outDir, "gdm_nh1_progress_story_generation_map.xlsx");
+const previewPng = path.join(outDir, "gdm_nh1_progress_story_generation_map_preview.png");
 
 const gdmRows = [
   ["GDM-1", "1", "You / He / She / It", "代名詞", "人物の正体や視点を作る。短い会話の芯にする。", "画像転記"],
@@ -264,10 +265,8 @@ const nh1Rows = [
 const requestRows = [
   ["Story ID", "ST-001", "教材やHTMLと対応する管理ID"],
   ["Title", "未定", "生成後に調整してよい"],
-  ["GDM Start ID", "GDM-1", "必須。GDMの開始進捗ID"],
-  ["GDM End ID", "GDM-41-10", "必須。ここまでのGDM導入項目を使用可"],
-  ["NH1 Start ID", "", "GDM-41-10以降で併用する場合に指定"],
-  ["NH1 End ID", "", "NH1を使う場合の終了ID"],
+  ["GDM Current ID", "GDM-41-10", "必須。GDMは最初のIDからここまでを使用可"],
+  ["NH1 Current ID", "0", "NH1未開始なら0。開始後は到達済みのNH1進捗IDを指定"],
   ["Target Words", 250, "本文のおおよその語数"],
   ["Target Reader", "中学生英語塾", "読者層"],
   ["Main Characters", "Ken, Yui", "日本人に性別が分かりやすい名前を優先"],
@@ -280,10 +279,11 @@ const requestRows = [
 ];
 
 const howToRows = [
-  ["目的", "GDMとNH1を「レベル」ではなく進捗IDで指定し、物語本文を生成するための台帳です。"],
-  ["基本", "物語生成指定シートで GDM Start/End ID と NH1 Start/End ID を指定します。"],
+  ["目的", "GDMとNH1を「レベル」ではなく現在到達している進捗IDで指定し、物語本文を生成するための台帳です。"],
+  ["基本", "物語生成指定シートで GDM Current ID と NH1 Current ID を指定します。"],
+  ["Startの考え方", "GDMは常に最初のIDから開始します。NH1は未開始なら0を指定します。"],
   ["GDM", "GDM-41-10 を一区切りとし、そのあたりから NH1 を併用開始する想定です。"],
-  ["NH1", "NH1 Start/End ID を空欄にするとGDMのみで生成する想定です。"],
+  ["NH1", "NH1 Current ID が0ならGDMのみ、NH1-...ならNH1の最初からそのIDまでを併用する想定です。"],
   ["名詞", "ユーザー方針により、名詞は導入リスト外でも自然な物語に必要なら使用可です。"],
   ["品質方針", "4コマ漫画のように起承転結を持たせ、次の展開が気になり、最後は明るく終える本文を優先します。"],
   ["確認状態", "docx内の文字は画像化されていたため、台帳の多くは画像から転記しています。原本更新時は確認状態列を見て補正してください。"],
@@ -291,11 +291,11 @@ const howToRows = [
 
 const promptRows = [
   ["項目", "テンプレート"],
-  ["生成指示", "GDM進捗ID {GDM Start ID} から {GDM End ID} まで、必要ならNH1進捗ID {NH1 Start ID} から {NH1 End ID} までを使用して、中学生向け英語リーディング本文を作る。"],
-  ["語彙制約", "動詞・文法・機能語は指定範囲を優先する。名詞は自然な物語に必要なら未導入でも使用可。"],
+  ["生成指示", "GDMは最初のIDから {GDM Current ID} までを使用する。NH1 Current ID が0ならNH1は使わず、NH1-...ならNH1の最初から {NH1 Current ID} までを併用して、中学生向け英語リーディング本文を作る。"],
+  ["語彙制約", "動詞・文法・機能語は指定された到達IDまでを優先する。名詞は自然な物語に必要なら未導入でも使用可。"],
   ["物語制約", "4コマ漫画的に起承転結を作り、謎や違和感で次を読ませ、最後はハッピーにする。"],
   ["人物制約", "日本人に性別が分かりやすい名前を使い、話ごとに年齢・職業・関係性のバリエーションを出す。"],
-  ["出力", "タイトル、想定進捗ID範囲、本文、語数、使用した主な導入項目メモを出す。"],
+  ["出力", "タイトル、GDM Current ID、NH1 Current ID、本文、語数、使用した主な導入項目メモを出す。"],
 ];
 
 const combinedRows = [
@@ -352,14 +352,14 @@ function setWidths(sheet, widths) {
 const workbook = Workbook.create();
 
 const howTo = workbook.worksheets.add("How_To_Use");
-addTitle(howTo, "GDM / NH1 進捗ID指定 物語生成表", "レベル名ではなく、GDMとNH1それぞれの進捗ID範囲で本文生成を指定するためのExcelです。", 2);
+addTitle(howTo, "GDM / NH1 進捗ID指定 物語生成表", "レベル名ではなく、GDMとNH1それぞれの現在到達IDで本文生成を指定するためのExcelです。", 2);
 writeMatrix(howTo, { row: 3, col: 0 }, [["項目", "内容"], ...howToRows]);
 styleHeader(howTo.getRange("A4:B4"));
 styleSheet(howTo, `A4:B${4 + howToRows.length}`, 4);
 setWidths(howTo, [22, 100]);
 
 const request = workbook.worksheets.add("Story_Request");
-addTitle(request, "物語生成指定", "B列を書き換えて、GDM/NH1の進捗ID範囲と物語条件を指定します。", 3);
+addTitle(request, "物語生成指定", "B列を書き換えて、GDM/NH1の現在到達IDと物語条件を指定します。", 3);
 writeMatrix(request, { row: 3, col: 0 }, [["項目", "入力/指定", "説明"], ...requestRows]);
 styleHeader(request.getRange("A4:C4"));
 styleSheet(request, `A4:C${4 + requestRows.length}`, 4);
@@ -367,7 +367,7 @@ request.getRange(`B5:B${4 + requestRows.length}`).format.fill.color = "#FFF7D6";
 setWidths(request, [24, 36, 76]);
 
 const progress = workbook.worksheets.add("Progress_Map");
-addTitle(progress, "進捗ID台帳", "GDMとNH1を同じ形式で並べたマスター表です。指定範囲に含まれるIDの導入項目を本文生成に使います。", 10);
+addTitle(progress, "進捗ID台帳", "GDMとNH1を同じ形式で並べたマスター表です。現在到達IDまでの導入項目を本文生成に使います。", 10);
 const progressHeader = ["系列", "順番", "進捗ID", "原ID", "導入項目", "分類", "物語での使い方", "確認状態", "併用メモ", "ソース"];
 const progressData = combinedRows.map(([series, order, id, sourceId, item, category, hint, status, bridge]) => [
   series,
@@ -414,5 +414,11 @@ for (const sheet of [howTo, request, progress, gdm, nh1, prompt]) {
 await fs.mkdir(outDir, { recursive: true });
 const xlsx = await SpreadsheetFile.exportXlsx(workbook);
 await xlsx.save(outXlsx);
+
+if (process.env.RENDER_PREVIEW === "1") {
+  const preview = await workbook.render({ sheetName: "Story_Request", autoCrop: "all", scale: 1, format: "png" });
+  await fs.writeFile(previewPng, new Uint8Array(await preview.arrayBuffer()));
+  console.log(previewPng);
+}
 
 console.log(outXlsx);
