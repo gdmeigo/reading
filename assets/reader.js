@@ -101,19 +101,6 @@ function progressValue(id, series) {
   return parts[0] * 10000 + parts[1] * 100 + parts[2];
 }
 
-function canReadLevel(info, gdmCurrentId, nh1CurrentId) {
-  const gdmCurrent = progressValue(gdmCurrentId, "GDM");
-  const nh1Current = progressValue(nh1CurrentId, "NH1");
-  const gdmRequired = progressValue(info.gdmCurrentId, "GDM");
-  const nh1Required = progressValue(info.nh1CurrentId, "NH1");
-  if (gdmCurrent < gdmRequired) return false;
-  return nh1Required === 0 || nh1Current >= nh1Required;
-}
-
-function eligibleLevels(gdmCurrentId, nh1CurrentId) {
-  return LEVELS.filter((info) => canReadLevel(info, gdmCurrentId, nh1CurrentId));
-}
-
 function eligibleLevelsByGdm(gdmCurrentId) {
   const gdmCurrent = progressValue(gdmCurrentId, "GDM");
   return LEVELS.filter((info) => gdmCurrent >= progressValue(info.gdmCurrentId, "GDM"));
@@ -281,7 +268,7 @@ function renderIndexResults(root) {
   const currentLevel = levels[levels.length - 1];
   const summary = document.createElement("p");
   summary.className = "note";
-  summary.textContent = `Current GDM ID: ${gdmCurrentId}. Recommended reading set: Level ${currentLevel.level} (target IDs: ${currentLevel.gdmCurrentId} / NH1 ${currentLevel.nh1CurrentId}).`;
+  summary.textContent = `Current GDM ID: ${gdmCurrentId}. Recommended reading set: Level ${currentLevel.level}.`;
   container.appendChild(summary);
 
   const allLink = document.createElement("p");
