@@ -45,6 +45,54 @@ const LEVELS = [
   },
 ];
 
+const NH1_CURRENT_OPTIONS = [
+  ["0", "NH1 not started"],
+  ["NH1-1-MAY-I", "May I"],
+  ["NH1-1-1-V", "drink / play / watch / speak / study / read"],
+  ["NH1-1-1-BEV-Q", "be動詞 Question"],
+  ["NH1-1-1-CALL-IT", "Call it"],
+  ["NH1-1-3-CAN-Q", "can(Q)"],
+  ["NH1-1-2-V", "walk / have(eat)"],
+  ["NH1-1-2-FOR", "for"],
+  ["NH1-1-3-V", "practice / bring"],
+  ["NH1-1-3-1-BEFORE", "before (concert)"],
+  ["NH1-1-3-2-WANT", "want to do / be"],
+  ["NH1-1-3-2-HOW-MANY", "How many"],
+  ["NH1-1-4-1-ENJOY", "enjoy yourself"],
+  ["NH1-1-4-1-DONT", "命令 / Don't"],
+  ["NH1-1-4-1-GLASS", "a glass of water"],
+  ["NH1-1-4-2-DURING", "during"],
+  ["NH1-1-4-2-SOME", "some / any / many"],
+  ["NH1-1-5-V", "jog / need / eat / enjoy"],
+  ["NH1-1-5-WRONG", "What's wrong"],
+  ["NH1-1-5-2-DONTBE", "Don't be"],
+  ["NH1-1-5-2-LETS", "Let's"],
+  ["NH1-1-5-2-SOMETHING", "something / nothing"],
+  ["NH1-1-5-2-HOW", "How"],
+  ["NH1-1-6-V", "write"],
+  ["NH1-1-6-2-ABOUT", "about"],
+  ["NH1-1-6-2-ONE", "one"],
+  ["NH1-1-6-3-ANYONE", "anyone"],
+  ["NH1-1-7-V", "know / make / buy"],
+  ["NH1-1-7-3-WHOSE", "Whose"],
+  ["NH1-1-8-V", "talk / think about / decorate / prepare"],
+  ["NH1-1-8-3-WHY", "Why"],
+  ["NH1-1-8-3-EXCLAMATION", "What a cute bag"],
+  ["NH1-1-8-3-QUICKLY", "quickly"],
+  ["NH1-1-9-V", "wait / get / build / understand / collect"],
+  ["NH1-1-9-1-AS", "as (a doctor)"],
+  ["NH1-1-9-1-AM-NOT-SURE", "I am not sure about"],
+  ["NH1-1-9-3-LOOK-HAPPY", "They look happy"],
+  ["NH1-1-10-V", "travel / visit / listen / spend / stand / feel / get up"],
+  ["NH1-1-10-1-FULL-OF", "full of"],
+  ["NH1-1-10-3-GET-UP", "get up (early)"],
+  ["NH1-1-10-3-HOW-NICE", "How nice!"],
+  ["NH1-1-11-V", "join / hope / set up / pick up / look for / bring back / beat"],
+  ["NH1-1-11-DID-Q", "Did Q"],
+  ["NH1-1-11-1-AGAINST", "against"],
+  ["NH1-1-11-1-MAYBE", "maybe"],
+];
+
 function storyBySlug(slug) {
   return STORIES.find((story) => story.slug === slug);
 }
@@ -195,7 +243,7 @@ function renderIndexResults(root) {
   const currentLevel = levels[levels.length - 1];
   const summary = document.createElement("p");
   summary.className = "note";
-  summary.textContent = `Recommended reading set: Level ${currentLevel.level} (${currentLevel.gdmCurrentId} / NH1 ${currentLevel.nh1CurrentId})`;
+  summary.textContent = `Current IDs: ${gdmCurrentId} / NH1 ${nh1CurrentId}. Recommended reading set: Level ${currentLevel.level} (minimum: ${currentLevel.gdmCurrentId} / NH1 ${currentLevel.nh1CurrentId}).`;
   container.appendChild(summary);
 
   const allLink = document.createElement("p");
@@ -226,6 +274,14 @@ function bootIndexPage(root) {
   const gdmInput = root.querySelector("[data-gdm-current]");
   const nh1Input = root.querySelector("[data-nh1-current]");
   const form = root.querySelector("[data-id-form]");
+  if (nh1Input.options.length <= 1) {
+    NH1_CURRENT_OPTIONS.slice(1).forEach(([id, label]) => {
+      const option = document.createElement("option");
+      option.value = id;
+      option.textContent = `${id} / ${label}`;
+      nh1Input.appendChild(option);
+    });
+  }
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     renderIndexResults(root);
