@@ -53,10 +53,12 @@ function levelInfo(level) {
   return LEVELS.find((item) => item.level === Number(level));
 }
 
-function levelInfoFromHash() {
-  const match = window.location.hash.match(/^#level-(\d+)$/);
-  if (!match) return null;
-  return levelInfo(match[1]) || null;
+function levelInfoFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const queryLevel = params.get("level");
+  const hashMatch = window.location.hash.match(/^#level-(\d+)$/);
+  const level = queryLevel || (hashMatch ? hashMatch[1] : null);
+  return level ? levelInfo(level) || null : null;
 }
 
 function levelStageText(info) {
@@ -125,7 +127,7 @@ async function renderStoryPage(root) {
   const slug = root.dataset.story;
   const story = storyBySlug(slug);
   const basePath = root.dataset.basePath || ".";
-  const requestedLevel = levelInfoFromHash();
+  const requestedLevel = levelInfoFromUrl();
 
   document.title = requestedLevel ? `${story.title} - Level ${requestedLevel.level}` : story.title;
   root.querySelector("h1").textContent = requestedLevel ? `${story.title}: Level ${requestedLevel.level}` : story.title;
@@ -211,7 +213,7 @@ function renderIndexResults(root) {
     const heading = document.createElement("h3");
     heading.textContent = story.title;
     const link = document.createElement("a");
-    link.href = `lessons/${story.slug}/index.html#level-${currentLevel.level}`;
+    link.href = `lessons/${story.slug}/index.html?level=${currentLevel.level}`;
     link.textContent = `Open Level ${currentLevel.level}`;
     card.appendChild(heading);
     card.appendChild(link);
