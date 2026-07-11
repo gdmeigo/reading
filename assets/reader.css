@@ -35,6 +35,16 @@ a {
   text-underline-offset: 4px;
 }
 
+button {
+  border: 1.5px solid #111;
+  background: #fff;
+  color: #111;
+  cursor: pointer;
+  font: inherit;
+  font-size: 9.5pt;
+  padding: 5px 9px;
+}
+
 .note,
 .stage,
 .nav {
@@ -68,11 +78,20 @@ h2 {
 }
 
 .stage {
-  margin: -4px 0 10px;
+  color: #555;
+  font-size: 8.5pt;
+  margin: 10px 0 0;
 }
 
 p {
   margin: 0 0 8px;
+}
+
+.text-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 12px;
 }
 
 .loading,
@@ -93,6 +112,10 @@ p {
   }
 
   .nav {
+    display: none;
+  }
+
+  .text-actions {
     display: none;
   }
 }

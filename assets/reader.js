@@ -177,6 +177,10 @@ function appendParagraph(parent, text, className) {
   parent.appendChild(p);
 }
 
+function readingBodyText(text) {
+  return textToBlocks(text).slice(1).join("\n\n");
+}
+
 async function loadText(path) {
   const response = await fetch(path);
   if (!response.ok) {
@@ -185,9 +189,64 @@ async function loadText(path) {
   return response.text();
 }
 
-function renderBlocks(section, text) {
-  const blocks = textToBlocks(text);
-  blocks.slice(1).forEach((block) => appendParagraph(section, block));
+function downloadText(filename, text) {
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.left = "-9999px";
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  textarea.remove();
+}
+
+function appendTextActions(section, text, filename) {
+  const actions = document.createElement("div");
+  actions.className = "text-actions";
+
+  const copyButton = document.createElement("button");
+  copyButton.type = "button";
+  copyButton.textContent = "Copy text";
+  copyButton.addEventListener("click", async () => {
+    await copyText(text);
+    copyButton.textContent = "Copied";
+    window.setTimeout(() => {
+      copyButton.textContent = "Copy text";
+    }, 1200);
+  });
+
+  const downloadButton = document.createElement("button");
+  downloadButton.type = "button";
+  downloadButton.textContent = "Download .txt";
+  downloadButton.addEventListener("click", () => downloadText(filename, text));
+
+  actions.appendChild(copyButton);
+  actions.appendChild(downloadButton);
+  section.appendChild(actions);
+}
+
+function renderReadingSection(section, text, info, filename) {
+  const bodyText = readingBodyText(text);
+  appendTextActions(section, bodyText, filename);
+  textToBlocks(text).slice(1).forEach((block) => appendParagraph(section, block));
+  appendParagraph(section, levelStageText(info), "stage");
 }
 
 async function renderStoryPage(root) {
@@ -211,9 +270,8 @@ async function renderStoryPage(root) {
     heading.textContent = `Level ${info.level}`;
     section.appendChild(heading);
     section.id = `level-${info.level}`;
-    appendParagraph(section, levelStageText(info), "stage");
     const text = await loadText(`${basePath}/level-${info.level}.txt`);
-    renderBlocks(section, text);
+    renderReadingSection(section, text, info, `${story.slug}-level-${info.level}.txt`);
     container.appendChild(section);
   }
 }
@@ -225,7 +283,7 @@ async function renderLevelPage(root) {
 
   document.title = `Level ${level} Readings`;
   root.querySelector("h1").textContent = `Level ${level} Readings`;
-  root.querySelector("[data-level-stage]").textContent = levelStageText(info);
+  root.querySelector("[data-level-stage]")?.remove();
 
   const container = root.querySelector("[data-content]");
   container.textContent = "";
@@ -237,7 +295,7 @@ async function renderLevelPage(root) {
     heading.textContent = story.title;
     section.appendChild(heading);
     const text = await loadText(`${basePath}/${story.slug}/level-${level}.txt`);
-    renderBlocks(section, text);
+    renderReadingSection(section, text, info, `${story.slug}-level-${level}.txt`);
     container.appendChild(section);
   }
 }
