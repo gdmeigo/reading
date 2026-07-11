@@ -1,12 +1,12 @@
 const STORIES = [
-  { slug: "graded-story", title: "The Little Door", genre: "Mystery" },
-  { slug: "blue-lunch-box", title: "The Blue Lunch Box", genre: "Mystery" },
-  { slug: "kite-day", title: "The Paper Rocket", genre: "Mystery" },
+  { slug: "graded-story", title: "The Little Door", genre: "Mystery", levels: [1, 2, 3, 4, 5, 6, 7] },
+  { slug: "blue-lunch-box", title: "The Blue Lunch Box", genre: "Human Drama" },
+  { slug: "kite-day", title: "The Paper Rocket", genre: "Human Drama" },
   { slug: "night-bus", title: "The Last Bus", genre: "Mystery" },
-  { slug: "bread-shop", title: "The Quiet Bread Shop", genre: "Mystery" },
-  { slug: "star-bus", title: "The Star Bus", genre: "SF", levels: [7] },
-  { slug: "moon-cup", title: "The Moon Cup", genre: "Fantasy", levels: [7] },
-  { slug: "wrong-robot", title: "The Wrong Robot", genre: "Comedy", levels: [7] },
+  { slug: "bread-shop", title: "The Quiet Bread Shop", genre: "Human Drama", levels: [1, 2, 3, 4, 5, 6, 7] },
+  { slug: "star-bus", title: "The Star Bus", genre: "SF", levels: [1, 2, 3, 4, 5, 6, 7] },
+  { slug: "moon-cup", title: "The Moon Cup", genre: "Fantasy", levels: [1, 2, 3, 4, 5, 6, 7] },
+  { slug: "wrong-robot", title: "The Wrong Robot", genre: "Comedy", levels: [1, 2, 3, 4, 5, 6, 7] },
 ];
 
 const DEFAULT_STORY_LEVELS = [1, 2, 3, 4, 5, 6];
