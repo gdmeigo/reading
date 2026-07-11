@@ -1,7 +1,7 @@
-The Last Bus
+﻿The Last Bus
 
-Yui is at the bus stop.
-Ken is with Yui.
+Mika is at the bus stop.
+Ren is with Mika.
 
 An old woman is there.
 She has a small bag.
@@ -10,10 +10,10 @@ She looks sad.
 The bus comes.
 The woman does not get on.
 
-Ken sees a card on the bench.
+Ren sees a card on the bench.
 It says, "Hospital."
 
-Yui gives the card to the woman.
+Mika gives the card to the woman.
 The woman smiles.
 
 "Thank you," she says.

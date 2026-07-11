@@ -1,6 +1,6 @@
-The Quiet Bread Shop
+﻿The Quiet Bread Shop
 
-Ken and Yui walked by a bread shop.
+Daichi and Emi walked by a bread shop.
 The shop was quiet.
 No one was in it.
 
@@ -8,11 +8,11 @@ There were many rolls on the table.
 An old man was behind the table.
 He looked sad.
 
-Yui saw a sign on the door.
+Emi saw a sign on the door.
 It said, "Closed."
 
-"But the door is open," said Ken.
-Yui turned the sign.
+"But the door is open," said Daichi.
+Emi turned the sign.
 Now it said, "Open."
 
 Soon, a woman came in.

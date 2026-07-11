@@ -1,17 +1,17 @@
-The Quiet Bread Shop
+﻿The Quiet Bread Shop
 
-Ken sees a bread shop.
+Daichi sees a bread shop.
 No one is in the shop.
 
-Yui sees a sign.
+Emi sees a sign.
 The sign says, "Closed."
 
 But the door is open.
 An old man is in the shop.
 He has many rolls.
 
-Ken looks at the sign.
-Yui turns the sign.
+Daichi looks at the sign.
+Emi turns the sign.
 
 Now it says, "Open."
 
