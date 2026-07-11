@@ -217,26 +217,6 @@ function bootIndexPage(root) {
   const gdmInput = root.querySelector("[data-gdm-current]");
   const nh1Input = root.querySelector("[data-nh1-current]");
   const form = root.querySelector("[data-id-form]");
-  const currentIds = document.createElement("datalist");
-  currentIds.id = "gdm-current-id-options";
-  LEVELS.forEach((info) => {
-    const option = document.createElement("option");
-    option.value = info.gdmCurrentId;
-    currentIds.appendChild(option);
-  });
-  root.appendChild(currentIds);
-  gdmInput.setAttribute("list", currentIds.id);
-
-  const nh1Ids = document.createElement("datalist");
-  nh1Ids.id = "nh1-current-id-options";
-  ["0", ...new Set(LEVELS.map((info) => info.nh1CurrentId).filter((id) => id !== "0"))].forEach((id) => {
-    const option = document.createElement("option");
-    option.value = id;
-    nh1Ids.appendChild(option);
-  });
-  root.appendChild(nh1Ids);
-  nh1Input.setAttribute("list", nh1Ids.id);
-
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     renderIndexResults(root);

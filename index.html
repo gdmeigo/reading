@@ -77,6 +77,7 @@
     }
 
     input,
+    select,
     button {
       min-height: 42px;
       border: 2px solid #111;
@@ -130,11 +131,20 @@
     <form class="id-form" data-id-form>
       <label>
         GDM Current ID
-        <input type="text" value="GDM-41-10" data-gdm-current>
+        <select data-gdm-current>
+          <option value="GDM-41-10">GDM-41-10 / Level 1</option>
+          <option value="GDM-42-4">GDM-42-4 / Level 2</option>
+          <option value="GDM-60-1">GDM-60-1 / Level 3</option>
+          <option value="GDM-82">GDM-82 / Level 4</option>
+          <option value="GDM-83">GDM-83 / Level 5</option>
+          <option value="GDM-106">GDM-106 / Level 6</option>
+        </select>
       </label>
       <label>
         NH1 Current ID
-        <input type="text" value="0" data-nh1-current>
+        <select data-nh1-current>
+          <option value="0">0 / NH1 not started</option>
+        </select>
       </label>
       <button type="submit">Show Stories</button>
     </form>
