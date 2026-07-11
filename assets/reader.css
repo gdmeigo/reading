@@ -1,0 +1,98 @@
+@page {
+  size: A4;
+  margin: 14mm;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: #111;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12pt;
+  line-height: 1.45;
+}
+
+main {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 26px 20px 40px;
+}
+
+h1 {
+  margin: 0 0 6px;
+  font-size: 25pt;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+a {
+  color: #111;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.note,
+.stage,
+.nav {
+  font-size: 10pt;
+  line-height: 1.35;
+}
+
+.note {
+  margin: 0 0 14px;
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin: 0 0 18px;
+}
+
+section {
+  border-top: 1.5px solid #111;
+  padding-top: 12px;
+  margin-top: 18px;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+h2 {
+  margin: 0 0 8px;
+  font-size: 16pt;
+  letter-spacing: 0;
+}
+
+.stage {
+  margin: -4px 0 10px;
+}
+
+p {
+  margin: 0 0 8px;
+}
+
+.loading,
+.error {
+  border-top: 1.5px solid #111;
+  margin-top: 18px;
+  padding-top: 12px;
+}
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  main {
+    padding: 0;
+  }
+
+  .nav {
+    display: none;
+  }
+}
