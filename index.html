@@ -64,7 +64,7 @@
 
     .id-form {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
       gap: 12px;
       align-items: end;
       margin-bottom: 18px;
@@ -127,7 +127,7 @@
 
   <section class="id-picker">
     <h2 class="group">Choose By Current ID</h2>
-    <p>Enter the current progress IDs from the Excel workbook. Use <strong>0</strong> for NH1 before it starts.</p>
+    <p>Choose the current GDM progress ID and genre. NH1 IDs are handled inside each content target when needed.</p>
     <form class="id-form" data-id-form>
       <label>
         GDM Current ID
@@ -139,12 +139,6 @@
           <option value="GDM-83">GDM-83 / Level 5</option>
           <option value="GDM-106">GDM-106 / Level 6</option>
           <option value="GDM-198">GDM-198 / Level 7 final</option>
-        </select>
-      </label>
-      <label>
-        NH1 Current ID
-        <select data-nh1-current>
-          <option value="0">0 / NH1 not started</option>
         </select>
       </label>
       <label>
@@ -279,6 +273,6 @@
     </p>
   </section>
 </main>
-<script src="assets/reader.js?v=20260711f"></script>
+<script src="assets/reader.js?v=20260711g"></script>
 </body>
 </html>
