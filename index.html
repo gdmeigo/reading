@@ -64,7 +64,7 @@
 
     .id-form {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
       gap: 12px;
       align-items: end;
       margin-bottom: 18px;
@@ -138,12 +138,23 @@
           <option value="GDM-82">GDM-82 / Level 4</option>
           <option value="GDM-83">GDM-83 / Level 5</option>
           <option value="GDM-106">GDM-106 / Level 6</option>
+          <option value="GDM-198">GDM-198 / Level 7 final</option>
         </select>
       </label>
       <label>
         NH1 Current ID
         <select data-nh1-current>
           <option value="0">0 / NH1 not started</option>
+        </select>
+      </label>
+      <label>
+        Genre
+        <select data-genre>
+          <option value="all">All</option>
+          <option value="mystery">Mystery</option>
+          <option value="sf">SF</option>
+          <option value="fantasy">Fantasy</option>
+          <option value="comedy">Comedy</option>
         </select>
       </label>
       <button type="submit">Show Stories</button>
@@ -185,6 +196,27 @@
     <h2>Graded Story: The Quiet Bread Shop</h2>
     <p>
       <a href="lessons/bread-shop/index.html">Open text-only levels 1-6</a>
+    </p>
+  </section>
+
+  <section class="lesson">
+    <h2>SF: The Star Bus</h2>
+    <p>
+      <a href="lessons/star-bus/index.html?level=7">Open Level 7</a>
+    </p>
+  </section>
+
+  <section class="lesson">
+    <h2>Fantasy: The Moon Cup</h2>
+    <p>
+      <a href="lessons/moon-cup/index.html?level=7">Open Level 7</a>
+    </p>
+  </section>
+
+  <section class="lesson">
+    <h2>Comedy: The Wrong Robot</h2>
+    <p>
+      <a href="lessons/wrong-robot/index.html?level=7">Open Level 7</a>
     </p>
   </section>
 
@@ -231,7 +263,14 @@
       <a href="levels/level-6.html">Open all stories at Level 6</a>
     </p>
   </section>
+
+  <section class="lesson">
+    <h2>Level 7 Readings</h2>
+    <p>
+      <a href="levels/level-7.html">Open all stories at Level 7</a>
+    </p>
+  </section>
 </main>
-<script src="assets/reader.js?v=20260711c"></script>
+<script src="assets/reader.js?v=20260711d"></script>
 </body>
 </html>

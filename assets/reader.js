@@ -1,10 +1,15 @@
 const STORIES = [
-  { slug: "graded-story", title: "The Little Door" },
-  { slug: "blue-lunch-box", title: "The Blue Lunch Box" },
-  { slug: "kite-day", title: "The Paper Rocket" },
-  { slug: "night-bus", title: "The Last Bus" },
-  { slug: "bread-shop", title: "The Quiet Bread Shop" },
+  { slug: "graded-story", title: "The Little Door", genre: "Mystery" },
+  { slug: "blue-lunch-box", title: "The Blue Lunch Box", genre: "Mystery" },
+  { slug: "kite-day", title: "The Paper Rocket", genre: "Mystery" },
+  { slug: "night-bus", title: "The Last Bus", genre: "Mystery" },
+  { slug: "bread-shop", title: "The Quiet Bread Shop", genre: "Mystery" },
+  { slug: "star-bus", title: "The Star Bus", genre: "SF", levels: [7] },
+  { slug: "moon-cup", title: "The Moon Cup", genre: "Fantasy", levels: [7] },
+  { slug: "wrong-robot", title: "The Wrong Robot", genre: "Comedy", levels: [7] },
 ];
+
+const DEFAULT_STORY_LEVELS = [1, 2, 3, 4, 5, 6];
 
 const LEVELS = [
   {
@@ -42,6 +47,12 @@ const LEVELS = [
     gdmCurrentId: "GDM-106",
     nh1CurrentId: "0",
     stage: "Assumed grading: Level 5 plus longer paragraphs, callbacks, multi-scene resolution, richer ending.",
+  },
+  {
+    level: 7,
+    gdmCurrentId: "GDM-198",
+    nh1CurrentId: "NH1-1-11-1-MAYBE",
+    stage: "Assumed grading: final GDM and NH1 IDs, longer scenes, stronger genre voice, clear comic or emotional resolution.",
   },
 ];
 
@@ -95,6 +106,14 @@ const NH1_CURRENT_OPTIONS = [
 
 function storyBySlug(slug) {
   return STORIES.find((story) => story.slug === slug);
+}
+
+function storyLevels(story) {
+  return story.levels || DEFAULT_STORY_LEVELS;
+}
+
+function storySupportsLevel(story, level) {
+  return storyLevels(story).includes(Number(level));
 }
 
 function levelInfo(level) {
@@ -183,7 +202,10 @@ async function renderStoryPage(root) {
   const container = root.querySelector("[data-content]");
   container.textContent = "";
 
-  for (const info of requestedLevel ? [requestedLevel] : LEVELS) {
+  const visibleLevels = requestedLevel ? [requestedLevel] : LEVELS.filter((info) => storySupportsLevel(story, info.level));
+
+  for (const info of visibleLevels) {
+    if (!storySupportsLevel(story, info.level)) continue;
     const section = document.createElement("section");
     const heading = document.createElement("h2");
     heading.textContent = `Level ${info.level}`;
@@ -208,7 +230,7 @@ async function renderLevelPage(root) {
   const container = root.querySelector("[data-content]");
   container.textContent = "";
 
-  for (const story of STORIES) {
+  for (const story of STORIES.filter((item) => storySupportsLevel(item, level))) {
     const section = document.createElement("section");
     section.id = story.slug;
     const heading = document.createElement("h2");
@@ -223,9 +245,11 @@ async function renderLevelPage(root) {
 function renderIndexResults(root) {
   const gdmInput = root.querySelector("[data-gdm-current]");
   const nh1Input = root.querySelector("[data-nh1-current]");
+  const genreInput = root.querySelector("[data-genre]");
   const container = root.querySelector("[data-id-results]");
   const gdmCurrentId = gdmInput.value.trim();
   const nh1CurrentId = nh1Input.value.trim() || "0";
+  const genre = genreInput.value;
   const levels = eligibleLevels(gdmCurrentId, nh1CurrentId);
 
   container.textContent = "";
@@ -255,15 +279,27 @@ function renderIndexResults(root) {
 
   const list = document.createElement("div");
   list.className = "choice-grid";
-  STORIES.forEach((story) => {
+  const storyChoices = STORIES.filter((story) => storySupportsLevel(story, currentLevel.level))
+    .filter((story) => genre === "all" || story.genre.toLowerCase() === genre);
+
+  if (!storyChoices.length) {
+    appendParagraph(container, "No stories match this genre at the current ID yet.", "note");
+    return;
+  }
+
+  storyChoices.forEach((story) => {
     const card = document.createElement("section");
     card.className = "lesson choice-card";
     const heading = document.createElement("h3");
     heading.textContent = story.title;
+    const genreText = document.createElement("p");
+    genreText.className = "note";
+    genreText.textContent = story.genre;
     const link = document.createElement("a");
     link.href = `lessons/${story.slug}/index.html?level=${currentLevel.level}`;
     link.textContent = `Open Level ${currentLevel.level}`;
     card.appendChild(heading);
+    card.appendChild(genreText);
     card.appendChild(link);
     list.appendChild(card);
   });
@@ -273,6 +309,7 @@ function renderIndexResults(root) {
 function bootIndexPage(root) {
   const gdmInput = root.querySelector("[data-gdm-current]");
   const nh1Input = root.querySelector("[data-nh1-current]");
+  const genreInput = root.querySelector("[data-genre]");
   const form = root.querySelector("[data-id-form]");
   if (nh1Input.options.length <= 1) {
     NH1_CURRENT_OPTIONS.slice(1).forEach(([id, label]) => {
@@ -288,6 +325,7 @@ function bootIndexPage(root) {
   });
   gdmInput.addEventListener("change", () => renderIndexResults(root));
   nh1Input.addEventListener("change", () => renderIndexResults(root));
+  genreInput.addEventListener("change", () => renderIndexResults(root));
   renderIndexResults(root);
 }
 

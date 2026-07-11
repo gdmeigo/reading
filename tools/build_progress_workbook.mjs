@@ -284,7 +284,7 @@ const howToRows = [
   ["Startの考え方", "GDMは常に最初のIDから開始します。NH1は未開始なら0を指定します。"],
   ["GDM", "GDM-41-10 を一区切りとし、そのあたりから NH1 を併用開始する想定です。"],
   ["NH1", "NH1 Current ID が0ならGDMのみ、NH1-...ならNH1の最初からそのIDまでを併用する想定です。"],
-  ["既存コンテンツ", "Existing_Content_Map シートで、現在サイトにあるLevel 1-6本文のAssumed gradingとCurrent ID対応を確認できます。"],
+  ["既存コンテンツ", "Existing_Content_Map シートで、現在サイトにあるLevel 1-7本文のAssumed gradingとCurrent ID対応を確認できます。"],
   ["名詞", "ユーザー方針により、名詞は導入リスト外でも自然な物語に必要なら使用可です。"],
   ["品質方針", "4コマ漫画のように起承転結を持たせ、次の展開が気になり、最後は明るく終える本文を優先します。"],
   ["確認状態", "docx内の文字は画像化されていたため、台帳の多くは画像から転記しています。原本更新時は確認状態列を見て補正してください。"],
@@ -341,6 +341,13 @@ const existingContentRows = [
     "0",
     "Level 5 plus longer paragraphs, callbacks, multi-scene resolution, richer ending.",
     "different/the same 付近まで。現行の長め本文を読む想定。",
+  ],
+  [
+    7,
+    "GDM-198",
+    "NH1-1-11-1-MAYBE",
+    "final GDM and NH1 IDs, longer scenes, stronger genre voice, clear comic or emotional resolution.",
+    "SF/Fantasy/Comedy の最終ID到達後本文。GDMとNH1の最終IDを併用する想定。",
   ],
 ];
 
@@ -454,7 +461,7 @@ styleSheet(prompt, `A4:B${3 + promptRows.length}`, 4);
 setWidths(prompt, [24, 120]);
 
 const contentMap = workbook.worksheets.add("Existing_Content_Map");
-addTitle(contentMap, "既存コンテンツ Current ID 対応", "現在サイトに入っているLevel 1-6本文のAssumed gradingを、GDM/NH1 Current IDに対応づけた表です。", 6);
+addTitle(contentMap, "既存コンテンツ Current ID 対応", "現在サイトに入っているLevel 1-7本文のAssumed gradingを、GDM/NH1 Current IDに対応づけた表です。", 6);
 writeMatrix(contentMap, { row: 3, col: 0 }, [
   ["Level", "GDM Current ID", "NH1 Current ID", "Assumed grading", "対応メモ"],
   ...existingContentRows,
