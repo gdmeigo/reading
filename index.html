@@ -41,21 +41,105 @@
       margin-bottom: 16px;
     }
 
-    .lesson h2 {
+    .lesson h2,
+    .lesson h3 {
       margin: 0 0 8px;
       font-size: 22px;
+    }
+
+    .lesson h3 {
+      font-size: 18px;
     }
 
     h2.group {
       margin: 28px 0 12px;
       font-size: 24px;
     }
+
+    .id-picker {
+      border: 2px solid #111;
+      padding: 18px;
+      margin: 24px 0;
+    }
+
+    .id-form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+      gap: 12px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      font-weight: 700;
+    }
+
+    input,
+    button {
+      min-height: 42px;
+      border: 2px solid #111;
+      background: #fff;
+      color: #111;
+      font: inherit;
+      padding: 8px 10px;
+    }
+
+    button {
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .choice-card {
+      margin: 0;
+    }
+
+    .note,
+    .error {
+      font-size: 14px;
+    }
+
+    .error {
+      border: 2px solid #111;
+      padding: 12px;
+    }
+
+    @media (max-width: 680px) {
+      .id-form,
+      .choice-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
-<main>
+<main data-reader="index">
   <h1>GDM Reading Materials</h1>
   <p>Printable English reading lessons for staged GDM vocabulary introduction.</p>
+
+  <section class="id-picker">
+    <h2 class="group">Choose By Current ID</h2>
+    <p>Enter the current progress IDs from the Excel workbook. Use <strong>0</strong> for NH1 before it starts.</p>
+    <form class="id-form" data-id-form>
+      <label>
+        GDM Current ID
+        <input type="text" value="GDM-41-10" data-gdm-current>
+      </label>
+      <label>
+        NH1 Current ID
+        <input type="text" value="0" data-nh1-current>
+      </label>
+      <button type="submit">Show Stories</button>
+    </form>
+    <div data-id-results></div>
+  </section>
 
   <h2 class="group">By Story</h2>
 
@@ -138,5 +222,6 @@
     </p>
   </section>
 </main>
+<script src="assets/reader.js"></script>
 </body>
 </html>

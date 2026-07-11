@@ -284,6 +284,7 @@ const howToRows = [
   ["Startの考え方", "GDMは常に最初のIDから開始します。NH1は未開始なら0を指定します。"],
   ["GDM", "GDM-41-10 を一区切りとし、そのあたりから NH1 を併用開始する想定です。"],
   ["NH1", "NH1 Current ID が0ならGDMのみ、NH1-...ならNH1の最初からそのIDまでを併用する想定です。"],
+  ["既存コンテンツ", "Existing_Content_Map シートで、現在サイトにあるLevel 1-6本文のAssumed gradingとCurrent ID対応を確認できます。"],
   ["名詞", "ユーザー方針により、名詞は導入リスト外でも自然な物語に必要なら使用可です。"],
   ["品質方針", "4コマ漫画のように起承転結を持たせ、次の展開が気になり、最後は明るく終える本文を優先します。"],
   ["確認状態", "docx内の文字は画像化されていたため、台帳の多くは画像から転記しています。原本更新時は確認状態列を見て補正してください。"],
@@ -296,6 +297,51 @@ const promptRows = [
   ["物語制約", "4コマ漫画的に起承転結を作り、謎や違和感で次を読ませ、最後はハッピーにする。"],
   ["人物制約", "日本人に性別が分かりやすい名前を使い、話ごとに年齢・職業・関係性のバリエーションを出す。"],
   ["出力", "タイトル、GDM Current ID、NH1 Current ID、本文、語数、使用した主な導入項目メモを出す。"],
+];
+
+const existingContentRows = [
+  [
+    1,
+    "GDM-41-10",
+    "0",
+    "very short present sentences, be/have/see/open/go, this/it, basic prepositions, simple nouns.",
+    "see まとめまで。NH1は未開始。",
+  ],
+  [
+    2,
+    "GDM-42-4",
+    "0",
+    "Level 1 plus longer present sequences, basic questions, says/asks, not/no, repeated nouns.",
+    "say まで。現在形の会話と基本疑問を想定。",
+  ],
+  [
+    3,
+    "GDM-60-1",
+    "0",
+    "Level 2 plus basic past forms, said/saw/came/opened/took, did not, simple dialogue.",
+    "come まで。過去形・did not・移動を含む現行本文に合わせる。",
+  ],
+  [
+    4,
+    "GDM-82",
+    "0",
+    "Level 3 plus there was/were, before/after, careful observation, simple reveal.",
+    "before/after と when question までを想定。",
+  ],
+  [
+    5,
+    "GDM-83",
+    "0",
+    "Level 4 plus fuller scenes, reason links, more characters, clearer resolution.",
+    "nothing/something まで。伏線と解決を少し増やす。",
+  ],
+  [
+    6,
+    "GDM-106",
+    "0",
+    "Level 5 plus longer paragraphs, callbacks, multi-scene resolution, richer ending.",
+    "different/the same 付近まで。現行の長め本文を読む想定。",
+  ],
 ];
 
 const combinedRows = [
@@ -407,7 +453,17 @@ styleHeader(prompt.getRange("A4:B4"));
 styleSheet(prompt, `A4:B${3 + promptRows.length}`, 4);
 setWidths(prompt, [24, 120]);
 
-for (const sheet of [howTo, request, progress, gdm, nh1, prompt]) {
+const contentMap = workbook.worksheets.add("Existing_Content_Map");
+addTitle(contentMap, "既存コンテンツ Current ID 対応", "現在サイトに入っているLevel 1-6本文のAssumed gradingを、GDM/NH1 Current IDに対応づけた表です。", 6);
+writeMatrix(contentMap, { row: 3, col: 0 }, [
+  ["Level", "GDM Current ID", "NH1 Current ID", "Assumed grading", "対応メモ"],
+  ...existingContentRows,
+]);
+styleHeader(contentMap.getRange("A4:E4"));
+styleSheet(contentMap, `A4:E${4 + existingContentRows.length}`, 4);
+setWidths(contentMap, [10, 18, 16, 82, 52]);
+
+for (const sheet of [howTo, request, progress, gdm, nh1, prompt, contentMap]) {
   sheet.getUsedRange().format.autofitRows();
 }
 
