@@ -60,6 +60,63 @@ const READING_VARIANTS = [
   { key: "long", level: 7, label: "Long", note: "fuller story reading" },
 ];
 
+const GLOSSARY_NOTES = [
+  { headword: "arrow", terms: ["arrow", "arrows"], note: "a mark that shows where to go" },
+  { headword: "bag", terms: ["bag", "bags"], note: "something you use to carry things" },
+  { headword: "bell", terms: ["bell", "bells"], note: "a thing that makes a clear sound" },
+  { headword: "bird", terms: ["bird", "birds"], note: "a small animal with wings" },
+  { headword: "board", terms: ["board", "boards"], note: "a flat place for writing or showing things" },
+  { headword: "bottle", terms: ["bottle", "bottles"], note: "a small thing that can hold water" },
+  { headword: "bread", terms: ["bread"], note: "food made from flour" },
+  { headword: "button", terms: ["button", "buttons"], note: "a small thing you press" },
+  { headword: "card", terms: ["card", "cards"], note: "a small piece of paper" },
+  { headword: "clock", terms: ["clock", "clocks"], note: "a thing that shows time" },
+  { headword: "cloud", terms: ["cloud", "clouds"], note: "a white or gray thing in the sky" },
+  { headword: "club", terms: ["club", "clubs"], note: "a school group that does an activity" },
+  { headword: "cookie", terms: ["cookie", "cookies"], note: "a small sweet food" },
+  { headword: "curtain", terms: ["curtain", "curtains"], note: "cloth by a window or stage" },
+  { headword: "desk", terms: ["desk", "desks"], note: "a table for work or study" },
+  { headword: "disk", terms: ["disk", "disks"], note: "a small flat round thing" },
+  { headword: "door", terms: ["door", "doors"], note: "a thing you open to go in or out" },
+  { headword: "dot", terms: ["dot", "dots"], note: "a very small round mark" },
+  { headword: "flag", terms: ["flag", "flags"], note: "a small piece of cloth or paper used as a sign" },
+  { headword: "flower", terms: ["flower", "flowers"], note: "a colorful part of a plant" },
+  { headword: "footprint", terms: ["footprint", "footprints"], note: "a mark from a foot" },
+  { headword: "gate", terms: ["gate", "gates"], note: "an entrance you can open and close" },
+  { headword: "glove", terms: ["glove", "gloves"], note: "something you wear on your hand" },
+  { headword: "goal", terms: ["goal", "goals"], note: "a place to send a ball in a game" },
+  { headword: "hall", terms: ["hall", "halls"], note: "a long space inside a building" },
+  { headword: "hat", terms: ["hat", "hats"], note: "something you wear on your head" },
+  { headword: "hill", terms: ["hill", "hills"], note: "a small high place of land" },
+  { headword: "key", terms: ["key", "keys"], note: "a small thing used to open a lock" },
+  { headword: "library", terms: ["library", "libraries"], note: "a place with many books" },
+  { headword: "line", terms: ["line", "lines"], note: "a long thin mark" },
+  { headword: "map", terms: ["map", "maps"], note: "a picture that shows places" },
+  { headword: "mirror", terms: ["mirror", "mirrors"], note: "glass that shows your face or a room" },
+  { headword: "moon", terms: ["moon", "moons"], note: "the round light we see in the night sky" },
+  { headword: "notebook", terms: ["notebook", "notebooks"], note: "a book for writing notes" },
+  { headword: "paper", terms: ["paper", "papers"], note: "a thin white thing for writing" },
+  { headword: "picture", terms: ["picture", "pictures"], note: "something drawn or shown to look at" },
+  { headword: "pocket", terms: ["pocket", "pockets"], note: "a small place in clothes or a bag" },
+  { headword: "poster", terms: ["poster", "posters"], note: "a large paper on a wall" },
+  { headword: "recipe", terms: ["recipe", "recipes"], note: "words that tell how to cook food" },
+  { headword: "robot", terms: ["robot", "robots"], note: "a machine that can do work" },
+  { headword: "roll", terms: ["roll", "rolls"], note: "a small piece of bread" },
+  { headword: "roof", terms: ["roof", "roofs"], note: "the top of a building" },
+  { headword: "seat", terms: ["seat", "seats"], note: "a place to sit" },
+  { headword: "shadow", terms: ["shadow", "shadows"], note: "a dark shape made by light" },
+  { headword: "shelf", terms: ["shelf", "shelves"], note: "a flat place on a wall for things" },
+  { headword: "shirt", terms: ["shirt", "shirts"], note: "clothes for the top of the body" },
+  { headword: "sign", terms: ["sign", "signs"], note: "words or a mark that tell something" },
+  { headword: "signal", terms: ["signal", "signals"], note: "a light, sound, or mark that sends a message" },
+  { headword: "station", terms: ["station", "stations"], note: "a place where trains or buses stop" },
+  { headword: "stone", terms: ["stone", "stones"], note: "a small hard piece of rock" },
+  { headword: "string", terms: ["string", "strings"], note: "a thin line used to tie things" },
+  { headword: "ticket", terms: ["ticket", "tickets"], note: "a small paper for a train, bus, or event" },
+  { headword: "umbrella", terms: ["umbrella", "umbrellas"], note: "a thing used in rain" },
+  { headword: "window", terms: ["window", "windows"], note: "glass in a wall for seeing outside" },
+];
+
 const PROGRESS_ITEMS = [
   { id: "GDM-1", series: "GDM", label: "You / He / She / It" },
   { id: "GDM-10", series: "GDM", label: "This book is" },
@@ -279,6 +336,53 @@ function readingBodyText(text) {
   return textToBlocks(text).slice(1).join("\n\n");
 }
 
+function escapeRegExp(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function glossaryPattern(terms) {
+  return new RegExp(`\\b(${terms.map(escapeRegExp).join("|")})\\b`, "i");
+}
+
+function glossaryNotesForText(text) {
+  return GLOSSARY_NOTES.map((entry) => ({
+    ...entry,
+    index: text.search(glossaryPattern(entry.terms)),
+  }))
+    .filter((entry) => entry.index >= 0)
+    .sort((a, b) => a.index - b.index || a.headword.localeCompare(b.headword, "en"));
+}
+
+function textWithFootnotes(text, notes) {
+  if (!notes.length) return text;
+  const lines = notes.map((entry) => `${entry.headword}: ${entry.note}`);
+  return `${text}\n\nFootnotes\n${lines.join("\n")}`;
+}
+
+function appendFootnotes(section, notes) {
+  if (!notes.length) return;
+
+  const aside = document.createElement("aside");
+  aside.className = "footnotes";
+
+  const heading = document.createElement("h3");
+  heading.textContent = "Footnotes";
+  aside.appendChild(heading);
+
+  const list = document.createElement("ol");
+  notes.forEach((entry) => {
+    const item = document.createElement("li");
+    const term = document.createElement("strong");
+    term.textContent = entry.headword;
+    item.appendChild(term);
+    item.append(`: ${entry.note}`);
+    list.appendChild(item);
+  });
+
+  aside.appendChild(list);
+  section.appendChild(aside);
+}
+
 async function loadText(path) {
   const response = await fetch(path);
   if (!response.ok) {
@@ -342,8 +446,10 @@ function appendTextActions(section, text, filename) {
 
 function renderReadingSection(section, text, info, filename) {
   const bodyText = readingBodyText(text);
-  appendTextActions(section, bodyText, filename);
+  const notes = glossaryNotesForText(bodyText);
+  appendTextActions(section, textWithFootnotes(bodyText, notes), filename);
   textToBlocks(text).slice(1).forEach((block) => appendParagraph(section, block));
+  appendFootnotes(section, notes);
   appendParagraph(section, levelStageText(info), "stage");
 }
 

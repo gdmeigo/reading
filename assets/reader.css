@@ -77,6 +77,12 @@ h2 {
   letter-spacing: 0;
 }
 
+h3 {
+  margin: 0 0 5px;
+  font-size: 10pt;
+  letter-spacing: 0;
+}
+
 .stage {
   color: #555;
   font-size: 8.5pt;
@@ -92,6 +98,28 @@ p {
   flex-wrap: wrap;
   gap: 8px;
   margin: 0 0 12px;
+}
+
+.footnotes {
+  border-top: 1px solid #777;
+  margin-top: 12px;
+  padding-top: 8px;
+  font-size: 9.5pt;
+  line-height: 1.35;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.footnotes ol {
+  columns: 2;
+  column-gap: 22px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.footnotes li {
+  break-inside: avoid;
+  margin: 0 0 3px;
 }
 
 .loading,
