@@ -8,6 +8,16 @@ const STORIES = [
   { slug: "moon-cup", title: "The Moon Cup", genre: "Fantasy", levels: [1, 2, 3, 4, 5, 6, 7] },
   { slug: "wrong-robot", title: "The Wrong Robot", genre: "Comedy", levels: [1, 2, 3, 4, 5, 6, 7] },
   { slug: "banana-principal", title: "The Banana Principal", genre: "Comedy", levels: [3] },
+  { slug: "red-pin", title: "The Red Pin", genre: "Mystery", levels: [3] },
+  { slug: "book-under-hat", title: "The Book Under the Hat", genre: "Comedy", levels: [3] },
+  { slug: "water-pen-trick", title: "The Water Pen Trick", genre: "Mystery", levels: [3] },
+  { slug: "where-is-the-bell", title: "Where Is the Bell?", genre: "Mystery", levels: [3] },
+  { slug: "rina-brother", title: "Rina's Brother", genre: "Human Drama", levels: [3] },
+  { slug: "window-note", title: "The Window Note", genre: "Mystery", levels: [3] },
+  { slug: "rainy-club-map", title: "The Rainy Club Map", genre: "Human Drama", levels: [7] },
+  { slug: "can-clock-sing", title: "Can the Clock Sing?", genre: "Fantasy", levels: [7] },
+  { slug: "dont-be-a-hero", title: "Don't Be a Hero", genre: "Human Drama", levels: [7] },
+  { slug: "gift-lesson", title: "The Gift Lesson", genre: "Comedy", levels: [7] },
 ];
 
 const DEFAULT_STORY_LEVELS = [1, 2, 3, 4, 5, 6];
@@ -44,20 +54,30 @@ const PROGRESS_ITEMS = [
 ];
 
 const CONTENT_ITEMS = [
+  { id: "GDM-1", variant: "short", level: 3, slug: "red-pin" },
+  { id: "GDM-10", variant: "short", level: 3, slug: "book-under-hat" },
+  { id: "GDM-22", variant: "short", level: 3, slug: "water-pen-trick" },
+  { id: "GDM-37-4", variant: "short", level: 3, slug: "where-is-the-bell" },
   { id: "GDM-41-10", variant: "short", level: 3, slug: "graded-story" },
+  { id: "NH1-0-FAMILY", variant: "short", level: 3, slug: "rina-brother" },
   { id: "NH1-1-1-V", variant: "short", level: 3, slug: "bread-shop" },
+  { id: "NH1-1-1-V", variant: "long", level: 7, slug: "rainy-club-map" },
   { id: "NH1-1-3-CAN-Q", variant: "short", level: 3, slug: "star-bus" },
+  { id: "NH1-1-3-CAN-Q", variant: "long", level: 7, slug: "can-clock-sing" },
   { id: "NH1-1-5-2-DONTBE", variant: "short", level: 3, slug: "wrong-robot" },
+  { id: "NH1-1-5-2-DONTBE", variant: "long", level: 7, slug: "dont-be-a-hero" },
+  { id: "NH1-1-6-V", variant: "short", level: 3, slug: "window-note" },
   { id: "NH1-1-8-3-WHY", variant: "short", level: 3, slug: "moon-cup" },
-  { id: "NH1-1-10-V", variant: "long", level: 7, slug: "bread-shop" },
-  { id: "NH1-1-11-1-MAYBE", variant: "long", level: 7, slug: "graded-story" },
+  { id: "NH1-1-10-V", variant: "long", level: 7, slug: "rainy-club-map" },
+  { id: "NH1-1-11-1-MAYBE", variant: "long", level: 7, slug: "can-clock-sing" },
   { id: "NH2-2-1-3-SVOO", variant: "short", level: 3, slug: "bread-shop" },
+  { id: "NH2-2-1-3-SVOO", variant: "long", level: 7, slug: "gift-lesson" },
   { id: "NH2-2-2-4-BECAUSE", variant: "short", level: 3, slug: "wrong-robot" },
-  { id: "NH2-2-3-1-SHOULD", variant: "long", level: 7, slug: "star-bus" },
-  { id: "NH2-2-4-1-HAVE-TO", variant: "long", level: 7, slug: "graded-story" },
+  { id: "NH2-2-3-1-SHOULD", variant: "long", level: 7, slug: "dont-be-a-hero" },
+  { id: "NH2-2-4-1-HAVE-TO", variant: "long", level: 7, slug: "gift-lesson" },
   { id: "NH2-2-5-1-HOW-TO", variant: "short", level: 3, slug: "moon-cup" },
   { id: "NH2-2-6-MORE-THAN", variant: "short", level: 3, slug: "bread-shop" },
-  { id: "NH2-2-7-2-VOICE", variant: "long", level: 7, slug: "wrong-robot" },
+  { id: "NH2-2-7-2-VOICE", variant: "long", level: 7, slug: "gift-lesson" },
 ];
 
 const LEVELS = [
@@ -342,6 +362,7 @@ function renderIndexResults(root) {
     .map((item) => ({ item, story: storyBySlug(item.slug) }))
     .filter(({ story, item }) => story && storySupportsLevel(story, item.level))
     .filter(({ story }) => genre === "all" || story.genre.toLowerCase() === genre)
+    .sort((a, b) => progressIndex(a.item.id) - progressIndex(b.item.id))
     .slice(-MAX_VISIBLE_CHOICES)
     .reverse();
 
