@@ -38,6 +38,11 @@ const STORIES = [
   { slug: "can-lantern", title: "Can the Lantern Fly?", genre: "Adventure", levels: [3] },
   { slug: "dont-be-late", title: "Don't Be Late", genre: "Adventure", levels: [3] },
   { slug: "show-me-the-seat", title: "Show Me the Seat", genre: "Adventure", levels: [7] },
+  { slug: "signal-under-water", title: "The Signal Under Water", genre: "SF", levels: [3] },
+  { slug: "orbit-note", title: "The Orbit Note", genre: "SF", levels: [3] },
+  { slug: "why-moon-robot", title: "Why the Moon Robot Stops", genre: "SF", levels: [3] },
+  { slug: "maybe-mars-window", title: "Maybe at the Mars Window", genre: "SF", levels: [3] },
+  { slug: "station-was-moved", title: "The Station Was Moved", genre: "SF", levels: [7] },
 ];
 
 const DEFAULT_STORY_LEVELS = [1, 2, 3, 4, 5, 6];
@@ -118,6 +123,11 @@ const CONTENT_ITEMS = [
   { id: "NH1-1-3-CAN-Q", variant: "short", level: 3, slug: "can-lantern" },
   { id: "NH1-1-5-2-DONTBE", variant: "short", level: 3, slug: "dont-be-late" },
   { id: "NH2-2-1-3-SVOO", variant: "long", level: 7, slug: "show-me-the-seat" },
+  { id: "GDM-22", variant: "short", level: 3, slug: "signal-under-water" },
+  { id: "NH1-1-6-V", variant: "short", level: 3, slug: "orbit-note" },
+  { id: "NH1-1-8-3-WHY", variant: "short", level: 3, slug: "why-moon-robot" },
+  { id: "NH1-1-11-1-MAYBE", variant: "short", level: 3, slug: "maybe-mars-window" },
+  { id: "NH2-2-7-2-VOICE", variant: "long", level: 7, slug: "station-was-moved" },
 ];
 
 const LEVELS = [

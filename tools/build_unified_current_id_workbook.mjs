@@ -74,6 +74,11 @@ const contentRows = [
   ["NH1-1-3-CAN-Q", "Short", "Adventure", "Can the Lantern Fly?", "can-lantern", "lessons/can-lantern/level-3.txt"],
   ["NH1-1-5-2-DONTBE", "Short", "Adventure", "Don't Be Late", "dont-be-late", "lessons/dont-be-late/level-3.txt"],
   ["NH2-2-1-3-SVOO", "Long", "Adventure", "Show Me the Seat", "show-me-the-seat", "lessons/show-me-the-seat/level-7.txt"],
+  ["GDM-22", "Short", "SF", "The Signal Under Water", "signal-under-water", "lessons/signal-under-water/level-3.txt"],
+  ["NH1-1-6-V", "Short", "SF", "The Orbit Note", "orbit-note", "lessons/orbit-note/level-3.txt"],
+  ["NH1-1-8-3-WHY", "Short", "SF", "Why the Moon Robot Stops", "why-moon-robot", "lessons/why-moon-robot/level-3.txt"],
+  ["NH1-1-11-1-MAYBE", "Short", "SF", "Maybe at the Mars Window", "maybe-mars-window", "lessons/maybe-mars-window/level-3.txt"],
+  ["NH2-2-7-2-VOICE", "Long", "SF", "The Station Was Moved", "station-was-moved", "lessons/station-was-moved/level-7.txt"],
 ];
 
 function write(sheet, row, col, rows) {
