@@ -43,6 +43,11 @@ const STORIES = [
   { slug: "why-moon-robot", title: "Why the Moon Robot Stops", genre: "SF", levels: [3] },
   { slug: "maybe-mars-window", title: "Maybe at the Mars Window", genre: "SF", levels: [3] },
   { slug: "station-was-moved", title: "The Station Was Moved", genre: "SF", levels: [7] },
+  { slug: "where-the-roof-door", title: "Where the Roof Door Opens", genre: "Mystery", levels: [7] },
+  { slug: "traveling-shadow-ticket", title: "The Traveling Shadow Ticket", genre: "Mystery", levels: [7] },
+  { slug: "because-the-wall-listened", title: "Because the Wall Listened", genre: "Mystery", levels: [7] },
+  { slug: "how-to-read-the-stone", title: "How to Read the Stone", genre: "Mystery", levels: [7] },
+  { slug: "more-than-one-moon", title: "More Than One Moon", genre: "Mystery", levels: [7] },
 ];
 
 const DEFAULT_STORY_LEVELS = [1, 2, 3, 4, 5, 6];
@@ -128,6 +133,11 @@ const CONTENT_ITEMS = [
   { id: "NH1-1-8-3-WHY", variant: "short", level: 3, slug: "why-moon-robot" },
   { id: "NH1-1-11-1-MAYBE", variant: "short", level: 3, slug: "maybe-mars-window" },
   { id: "NH2-2-7-2-VOICE", variant: "long", level: 7, slug: "station-was-moved" },
+  { id: "GDM-37-4", variant: "long", level: 7, slug: "where-the-roof-door" },
+  { id: "NH1-1-10-V", variant: "long", level: 7, slug: "traveling-shadow-ticket" },
+  { id: "NH2-2-2-4-BECAUSE", variant: "long", level: 7, slug: "because-the-wall-listened" },
+  { id: "NH2-2-5-1-HOW-TO", variant: "long", level: 7, slug: "how-to-read-the-stone" },
+  { id: "NH2-2-6-MORE-THAN", variant: "long", level: 7, slug: "more-than-one-moon" },
 ];
 
 const LEVELS = [

@@ -79,6 +79,11 @@ const contentRows = [
   ["NH1-1-8-3-WHY", "Short", "SF", "Why the Moon Robot Stops", "why-moon-robot", "lessons/why-moon-robot/level-3.txt"],
   ["NH1-1-11-1-MAYBE", "Short", "SF", "Maybe at the Mars Window", "maybe-mars-window", "lessons/maybe-mars-window/level-3.txt"],
   ["NH2-2-7-2-VOICE", "Long", "SF", "The Station Was Moved", "station-was-moved", "lessons/station-was-moved/level-7.txt"],
+  ["GDM-37-4", "Long", "Mystery", "Where the Roof Door Opens", "where-the-roof-door", "lessons/where-the-roof-door/level-7.txt"],
+  ["NH1-1-10-V", "Long", "Mystery", "The Traveling Shadow Ticket", "traveling-shadow-ticket", "lessons/traveling-shadow-ticket/level-7.txt"],
+  ["NH2-2-2-4-BECAUSE", "Long", "Mystery", "Because the Wall Listened", "because-the-wall-listened", "lessons/because-the-wall-listened/level-7.txt"],
+  ["NH2-2-5-1-HOW-TO", "Long", "Mystery", "How to Read the Stone", "how-to-read-the-stone", "lessons/how-to-read-the-stone/level-7.txt"],
+  ["NH2-2-6-MORE-THAN", "Long", "Mystery", "More Than One Moon", "more-than-one-moon", "lessons/more-than-one-moon/level-7.txt"],
 ];
 
 function write(sheet, row, col, rows) {
