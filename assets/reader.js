@@ -431,7 +431,11 @@ function renderIndexResults(root) {
   const storyChoices = selectedId === "all" ? matchingChoices : matchingChoices.slice(-MAX_VISIBLE_CHOICES).reverse();
 
   if (!storyChoices.length) {
-    appendParagraph(container, "No stories match this genre and length near this ID yet.", "note");
+    const emptyText =
+      selectedId === "all"
+        ? "No stories match this genre and length yet."
+        : "No stories match this genre and length near this ID yet. Choose ID: All to search every story.";
+    appendParagraph(container, emptyText, "note");
     return;
   }
 
