@@ -64,7 +64,7 @@
 
     .id-form {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
       align-items: end;
       margin-bottom: 18px;
@@ -121,18 +121,38 @@
 
   <section class="id-picker">
     <h2 class="group">Choose By Current ID</h2>
-    <p>Choose the current GDM progress ID and genre.</p>
+    <p>Choose one Current ID. After the GDM bridge point, the sequence follows NH1 and then NH2.</p>
     <div class="id-form">
       <label>
-        GDM Current ID
-        <select data-gdm-current>
-          <option value="GDM-41-10">GDM-41-10 / Level 1</option>
-          <option value="GDM-42-4">GDM-42-4 / Level 2</option>
-          <option value="GDM-60-1">GDM-60-1 / Level 3</option>
-          <option value="GDM-82">GDM-82 / Level 4</option>
-          <option value="GDM-83">GDM-83 / Level 5</option>
-          <option value="GDM-106">GDM-106 / Level 6</option>
-          <option value="GDM-198">GDM-198 / Level 7 final</option>
+        Current ID
+        <select data-current-id>
+          <option value="GDM-1">GDM-1 / You He She It</option>
+          <option value="GDM-10">GDM-10 / This book is</option>
+          <option value="GDM-22">GDM-22 / water, pens</option>
+          <option value="GDM-37-4">GDM-37-4 / Where</option>
+          <option value="GDM-41-10">GDM-41-10 / GDM bridge</option>
+          <option value="NH1-0-FAMILY">NH1-0-FAMILY / family</option>
+          <option value="NH1-1-1-V">NH1-1-1-V / daily verbs</option>
+          <option value="NH1-1-3-CAN-Q">NH1-1-3-CAN-Q / can question</option>
+          <option value="NH1-1-5-2-DONTBE">NH1-1-5-2-DONTBE / Don't be</option>
+          <option value="NH1-1-6-V">NH1-1-6-V / write</option>
+          <option value="NH1-1-8-3-WHY">NH1-1-8-3-WHY / Why</option>
+          <option value="NH1-1-10-V">NH1-1-10-V / travel, visit</option>
+          <option value="NH1-1-11-1-MAYBE">NH1-1-11-1-MAYBE / maybe</option>
+          <option value="NH2-2-1-3-SVOO">NH2-2-1-3-SVOO / show, teach, give</option>
+          <option value="NH2-2-2-4-BECAUSE">NH2-2-2-4-BECAUSE / because</option>
+          <option value="NH2-2-3-1-SHOULD">NH2-2-3-1-SHOULD / should</option>
+          <option value="NH2-2-4-1-HAVE-TO">NH2-2-4-1-HAVE-TO / have to</option>
+          <option value="NH2-2-5-1-HOW-TO">NH2-2-5-1-HOW-TO / how to do</option>
+          <option value="NH2-2-6-MORE-THAN">NH2-2-6-MORE-THAN / more than</option>
+          <option value="NH2-2-7-2-VOICE" selected>NH2-2-7-2-VOICE / passive voice</option>
+        </select>
+      </label>
+      <label>
+        Length
+        <select data-reading-variant>
+          <option value="short">Short</option>
+          <option value="long">Long</option>
         </select>
       </label>
       <label>
@@ -155,117 +175,67 @@
   <section class="lesson">
     <h2>Mystery: The Little Door</h2>
     <p>
-      <a href="lessons/graded-story/index.html">Open text-only levels 1-7</a>
+      <a href="lessons/graded-story/index.html">Open story archive</a>
     </p>
   </section>
 
   <section class="lesson">
     <h2>Human Drama: The Blue Lunch Box</h2>
     <p>
-      <a href="lessons/blue-lunch-box/index.html">Open text-only levels 1-6</a>
+      <a href="lessons/blue-lunch-box/index.html">Open story archive</a>
     </p>
   </section>
 
   <section class="lesson">
     <h2>Human Drama: The Paper Rocket</h2>
     <p>
-      <a href="lessons/kite-day/index.html">Open text-only levels 1-6</a>
+      <a href="lessons/kite-day/index.html">Open story archive</a>
     </p>
   </section>
 
   <section class="lesson">
     <h2>Mystery: The Last Bus</h2>
     <p>
-      <a href="lessons/night-bus/index.html">Open text-only levels 1-6</a>
+      <a href="lessons/night-bus/index.html">Open story archive</a>
     </p>
   </section>
 
   <section class="lesson">
     <h2>Human Drama: The Quiet Bread Shop</h2>
     <p>
-      <a href="lessons/bread-shop/index.html">Open text-only levels 1-7</a>
+      <a href="lessons/bread-shop/index.html">Open story archive</a>
     </p>
   </section>
 
   <section class="lesson">
     <h2>SF: The Star Bus</h2>
     <p>
-      <a href="lessons/star-bus/index.html">Open text-only levels 1-7</a>
+      <a href="lessons/star-bus/index.html">Open story archive</a>
     </p>
   </section>
 
   <section class="lesson">
     <h2>Fantasy: The Moon Cup</h2>
     <p>
-      <a href="lessons/moon-cup/index.html">Open text-only levels 1-7</a>
+      <a href="lessons/moon-cup/index.html">Open story archive</a>
     </p>
   </section>
 
   <section class="lesson">
     <h2>Comedy: The Wrong Robot</h2>
     <p>
-      <a href="lessons/wrong-robot/index.html">Open text-only levels 1-7</a>
+      <a href="lessons/wrong-robot/index.html">Open story archive</a>
     </p>
   </section>
 
   <section class="lesson">
     <h2>Comedy: The Banana Principal</h2>
     <p>
-      <a href="lessons/banana-principal/index.html?level=3">Open Level 3</a>
+      <a href="lessons/banana-principal/index.html?level=3">Open short archive</a>
     </p>
   </section>
 
-  <h2 class="group">By Level</h2>
-
-  <section class="lesson">
-    <h2>Level 1 Readings</h2>
-    <p>
-      <a href="levels/level-1.html">Open all stories at Level 1</a>
-    </p>
-  </section>
-
-  <section class="lesson">
-    <h2>Level 2 Readings</h2>
-    <p>
-      <a href="levels/level-2.html">Open all stories at Level 2</a>
-    </p>
-  </section>
-
-  <section class="lesson">
-    <h2>Level 3 Readings</h2>
-    <p>
-      <a href="levels/level-3.html">Open all stories at Level 3</a>
-    </p>
-  </section>
-
-  <section class="lesson">
-    <h2>Level 4 Readings</h2>
-    <p>
-      <a href="levels/level-4.html">Open all stories at Level 4</a>
-    </p>
-  </section>
-
-  <section class="lesson">
-    <h2>Level 5 Readings</h2>
-    <p>
-      <a href="levels/level-5.html">Open all stories at Level 5</a>
-    </p>
-  </section>
-
-  <section class="lesson">
-    <h2>Level 6 Readings</h2>
-    <p>
-      <a href="levels/level-6.html">Open all stories at Level 6</a>
-    </p>
-  </section>
-
-  <section class="lesson">
-    <h2>Level 7 Readings</h2>
-    <p>
-      <a href="levels/level-7.html">Open all stories at Level 7</a>
-    </p>
-  </section>
 </main>
-<script src="assets/reader.js?v=20260711i"></script>
+<script src="assets/reader.js?v=20260712a"></script>
 </body>
 </html>

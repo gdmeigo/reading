@@ -11,49 +11,88 @@ const STORIES = [
 ];
 
 const DEFAULT_STORY_LEVELS = [1, 2, 3, 4, 5, 6];
+const TARGET_READING_LEVELS = [3, 7];
+
+const READING_VARIANTS = [
+  { key: "short", level: 3, label: "Short", note: "about the current Level 3 length" },
+  { key: "long", level: 7, label: "Long", note: "about the current Level 7 length" },
+];
+
+const PROGRESS_ITEMS = [
+  { id: "GDM-1", series: "GDM", label: "You / He / She / It" },
+  { id: "GDM-10", series: "GDM", label: "This book is" },
+  { id: "GDM-22", series: "GDM", label: "water / These pens are" },
+  { id: "GDM-37-4", series: "GDM", label: "Where" },
+  { id: "GDM-41-10", series: "GDM", label: "see review / NH bridge point" },
+  { id: "NH1-0-FAMILY", series: "NH1", label: "family / 's" },
+  { id: "NH1-1-1-V", series: "NH1", label: "drink / play / watch / speak / study / read" },
+  { id: "NH1-1-3-CAN-Q", series: "NH1", label: "can question" },
+  { id: "NH1-1-5-2-DONTBE", series: "NH1", label: "Don't be" },
+  { id: "NH1-1-6-V", series: "NH1", label: "write" },
+  { id: "NH1-1-8-3-WHY", series: "NH1", label: "Why" },
+  { id: "NH1-1-10-V", series: "NH1", label: "travel / visit / listen / feel" },
+  { id: "NH1-1-11-1-MAYBE", series: "NH1", label: "maybe" },
+  { id: "NH2-2-1-3-SVOO", series: "NH2", label: "SVOO: show / teach / give" },
+  { id: "NH2-2-2-4-BECAUSE", series: "NH2", label: "because" },
+  { id: "NH2-2-3-1-SHOULD", series: "NH2", label: "should" },
+  { id: "NH2-2-4-1-HAVE-TO", series: "NH2", label: "have to" },
+  { id: "NH2-2-5-1-HOW-TO", series: "NH2", label: "how to do" },
+  { id: "NH2-2-6-MORE-THAN", series: "NH2", label: "more than / half" },
+  { id: "NH2-2-7-2-VOICE", series: "NH2", label: "passive voice" },
+];
+
+const CONTENT_ITEMS = [
+  { currentId: "GDM-41-10", slug: "graded-story" },
+  { currentId: "NH1-1-1-V", slug: "bread-shop" },
+  { currentId: "NH1-1-3-CAN-Q", slug: "star-bus" },
+  { currentId: "NH1-1-5-2-DONTBE", slug: "wrong-robot" },
+  { currentId: "NH1-1-8-3-WHY", slug: "moon-cup" },
+  { currentId: "NH1-1-10-V", slug: "bread-shop" },
+  { currentId: "NH1-1-11-1-MAYBE", slug: "graded-story" },
+  { currentId: "NH2-2-1-3-SVOO", slug: "bread-shop" },
+  { currentId: "NH2-2-2-4-BECAUSE", slug: "wrong-robot" },
+  { currentId: "NH2-2-3-1-SHOULD", slug: "star-bus" },
+  { currentId: "NH2-2-4-1-HAVE-TO", slug: "graded-story" },
+  { currentId: "NH2-2-5-1-HOW-TO", slug: "moon-cup" },
+  { currentId: "NH2-2-6-MORE-THAN", slug: "bread-shop" },
+  { currentId: "NH2-2-7-2-VOICE", slug: "wrong-robot" },
+];
 
 const LEVELS = [
   {
     level: 1,
-    gdmCurrentId: "GDM-41-10",
-    nh1CurrentId: "0",
+    currentId: "GDM-41-10",
     stage: "Assumed grading: very short present sentences, be/have/see/open/go, this/it, basic prepositions, simple nouns.",
   },
   {
     level: 2,
-    gdmCurrentId: "GDM-42-4",
-    nh1CurrentId: "0",
+    currentId: "GDM-41-10",
     stage: "Assumed grading: Level 1 plus longer present sequences, basic questions, says/asks, not/no, repeated nouns.",
   },
   {
     level: 3,
-    gdmCurrentId: "GDM-60-1",
-    nh1CurrentId: "NH1-1-5-2",
-    stage: "Assumed grading: Level 2 plus basic past forms, said/saw/came/opened/took, did not, simple dialogue. Required target items include come, Don't be, Let's, something/nothing, and How.",
+    currentId: "NH1-1-5-2-DONTBE",
+    stage: "Assumed grading: Short reading length. Basic past forms, simple dialogue, and NH1 bridge expressions are allowed.",
   },
   {
     level: 4,
-    gdmCurrentId: "GDM-82",
-    nh1CurrentId: "0",
+    currentId: "NH1-1-6-V",
     stage: "Assumed grading: Level 3 plus there was/were, before/after, careful observation, simple reveal.",
   },
   {
     level: 5,
-    gdmCurrentId: "GDM-83",
-    nh1CurrentId: "0",
+    currentId: "NH1-1-8-3-WHY",
     stage: "Assumed grading: Level 4 plus fuller scenes, reason links, more characters, clearer resolution.",
   },
   {
     level: 6,
-    gdmCurrentId: "GDM-106",
-    nh1CurrentId: "0",
+    currentId: "NH1-1-11-1-MAYBE",
     stage: "Assumed grading: Level 5 plus longer paragraphs, callbacks, multi-scene resolution, richer ending.",
   },
   {
     level: 7,
-    gdmCurrentId: "GDM-198",
-    nh1CurrentId: "NH1-1-11-1-MAYBE",
-    stage: "Assumed grading: final GDM and NH1 IDs, longer scenes, stronger genre voice, clear comic or emotional resolution.",
+    currentId: "NH2-2-7-2-VOICE",
+    stage: "Assumed grading: Long reading length. NH1 completion and NH2 items through the selected Current ID may be used.",
   },
 ];
 
@@ -81,29 +120,49 @@ function levelInfoFromUrl() {
   return level ? levelInfo(level) || null : null;
 }
 
+function progressItem(id) {
+  return PROGRESS_ITEMS.find((item) => item.id === id);
+}
+
+function progressIndex(id) {
+  return PROGRESS_ITEMS.findIndex((item) => item.id === id);
+}
+
+function previousProgressItems(currentId, count = 10) {
+  const index = progressIndex(currentId);
+  if (index < 0) return [];
+  return PROGRESS_ITEMS.slice(Math.max(0, index - count + 1), index + 1);
+}
+
+function variantByKey(key) {
+  return READING_VARIANTS.find((variant) => variant.key === key);
+}
+
+function variantByLevel(level) {
+  return READING_VARIANTS.find((variant) => variant.level === Number(level));
+}
+
+function levelLabel(level) {
+  const variant = variantByLevel(level);
+  return variant ? variant.label : `Level ${level}`;
+}
+
+function storyContentItem(story, currentId) {
+  return CONTENT_ITEMS.find((item) => item.slug === story.slug && item.currentId === currentId);
+}
+
+function readingInfo(baseInfo, requestedId) {
+  const item = requestedId ? progressItem(requestedId) : null;
+  if (!item) return baseInfo;
+  return {
+    ...baseInfo,
+    currentId: item.id,
+    stage: `${baseInfo.stage} Selected Current ID: ${item.id} (${item.label}).`,
+  };
+}
+
 function levelStageText(info) {
-  return `${info.stage} Current ID: ${info.gdmCurrentId} / NH1 ${info.nh1CurrentId}.`;
-}
-
-function progressValue(id, series) {
-  const text = String(id || "").trim().toUpperCase();
-  if (!text || text === "0") return 0;
-  const prefix = `${series}-`;
-  if (!text.startsWith(prefix)) return -1;
-  const parts = text
-    .slice(prefix.length)
-    .split("-")
-    .map((part) => {
-      const match = part.match(/\d+/);
-      return match ? Number(match[0]) : 0;
-    });
-  while (parts.length < 3) parts.push(0);
-  return parts[0] * 10000 + parts[1] * 100 + parts[2];
-}
-
-function eligibleLevelsByGdm(gdmCurrentId) {
-  const gdmCurrent = progressValue(gdmCurrentId, "GDM");
-  return LEVELS.filter((info) => gdmCurrent >= progressValue(info.gdmCurrentId, "GDM"));
+  return `${info.stage} Current ID: ${info.currentId}.`;
 }
 
 function textToBlocks(text) {
@@ -199,9 +258,10 @@ async function renderStoryPage(root) {
   const story = storyBySlug(slug);
   const basePath = root.dataset.basePath || ".";
   const requestedLevel = levelInfoFromUrl();
+  const requestedId = new URLSearchParams(window.location.search).get("id");
 
-  document.title = requestedLevel ? `${story.title} - Level ${requestedLevel.level}` : story.title;
-  root.querySelector("h1").textContent = requestedLevel ? `${story.title}: Level ${requestedLevel.level}` : story.title;
+  document.title = requestedLevel ? `${story.title} - ${levelLabel(requestedLevel.level)}` : story.title;
+  root.querySelector("h1").textContent = requestedLevel ? `${story.title}: ${levelLabel(requestedLevel.level)}` : story.title;
 
   const container = root.querySelector("[data-content]");
   container.textContent = "";
@@ -212,11 +272,11 @@ async function renderStoryPage(root) {
     if (!storySupportsLevel(story, info.level)) continue;
     const section = document.createElement("section");
     const heading = document.createElement("h2");
-    heading.textContent = `Level ${info.level}`;
+    heading.textContent = levelLabel(info.level);
     section.appendChild(heading);
     section.id = `level-${info.level}`;
     const text = await loadText(`${basePath}/level-${info.level}.txt`);
-    renderReadingSection(section, text, info, `${story.slug}-level-${info.level}.txt`);
+    renderReadingSection(section, text, readingInfo(info, requestedId), `${story.slug}-${levelLabel(info.level).toLowerCase()}.txt`);
     container.appendChild(section);
   }
 }
@@ -246,59 +306,52 @@ async function renderLevelPage(root) {
 }
 
 function renderIndexResults(root) {
-  const gdmInput = root.querySelector("[data-gdm-current]");
+  const currentInput = root.querySelector("[data-current-id]");
+  const variantInput = root.querySelector("[data-reading-variant]");
   const genreInput = root.querySelector("[data-genre]");
   const container = root.querySelector("[data-id-results]");
-  const gdmCurrentId = gdmInput.value.trim();
+  const currentId = currentInput.value.trim();
+  const variant = variantByKey(variantInput.value);
   const genre = genreInput.value;
-  const levels = eligibleLevelsByGdm(gdmCurrentId);
+  const recentItems = previousProgressItems(currentId, 10);
+  const recentIds = new Set(recentItems.map((item) => item.id));
 
   container.textContent = "";
 
-  if (progressValue(gdmCurrentId, "GDM") < 0) {
-    appendParagraph(container, "Use a GDM ID like GDM-41-10 or GDM-60-1.", "error");
+  if (!recentItems.length || !variant) {
+    appendParagraph(container, "Choose a valid Current ID and reading length.", "error");
     return;
   }
 
-  if (!levels.length) {
-    appendParagraph(container, "No current stories match this ID yet.", "note");
-    return;
-  }
-
-  const currentLevel = levels[levels.length - 1];
   const summary = document.createElement("p");
   summary.className = "note";
-  summary.textContent = `Current GDM ID: ${gdmCurrentId}. Recommended reading set: Level ${currentLevel.level}.`;
+  summary.textContent = `Current ID: ${currentId}. Showing content attached to this ID and the previous ${recentItems.length - 1} IDs. Length: ${variant.label} (${variant.note}).`;
   container.appendChild(summary);
-
-  const allLink = document.createElement("p");
-  const levelLink = document.createElement("a");
-  levelLink.href = `levels/level-${currentLevel.level}.html`;
-  levelLink.textContent = `Open all Level ${currentLevel.level} stories`;
-  allLink.appendChild(levelLink);
-  container.appendChild(allLink);
 
   const list = document.createElement("div");
   list.className = "choice-grid";
-  const storyChoices = STORIES.filter((story) => storySupportsLevel(story, currentLevel.level))
-    .filter((story) => genre === "all" || story.genre.toLowerCase() === genre);
+  const storyChoices = CONTENT_ITEMS.filter((item) => recentIds.has(item.currentId))
+    .map((item) => ({ item, story: storyBySlug(item.slug) }))
+    .filter(({ story }) => story && storySupportsLevel(story, variant.level))
+    .filter(({ story }) => genre === "all" || story.genre.toLowerCase() === genre);
 
   if (!storyChoices.length) {
-    appendParagraph(container, "No stories match this genre at the current ID yet.", "note");
+    appendParagraph(container, "No stories match this genre and length in the last 10 IDs yet.", "note");
     return;
   }
 
-  storyChoices.forEach((story) => {
+  storyChoices.forEach(({ item, story }) => {
+    const progress = progressItem(item.currentId);
     const card = document.createElement("section");
     card.className = "lesson choice-card";
     const heading = document.createElement("h3");
     heading.textContent = story.title;
     const genreText = document.createElement("p");
     genreText.className = "note";
-    genreText.textContent = story.genre;
+    genreText.textContent = `${story.genre} / ${item.currentId}${progress ? ` / ${progress.label}` : ""}`;
     const link = document.createElement("a");
-    link.href = `lessons/${story.slug}/index.html?level=${currentLevel.level}`;
-    link.textContent = `Open Level ${currentLevel.level}`;
+    link.href = `lessons/${story.slug}/index.html?level=${variant.level}&id=${encodeURIComponent(item.currentId)}`;
+    link.textContent = `Open ${variant.label}`;
     card.appendChild(heading);
     card.appendChild(genreText);
     card.appendChild(link);
@@ -308,9 +361,11 @@ function renderIndexResults(root) {
 }
 
 function bootIndexPage(root) {
-  const gdmInput = root.querySelector("[data-gdm-current]");
+  const currentInput = root.querySelector("[data-current-id]");
+  const variantInput = root.querySelector("[data-reading-variant]");
   const genreInput = root.querySelector("[data-genre]");
-  gdmInput.addEventListener("change", () => renderIndexResults(root));
+  currentInput.addEventListener("change", () => renderIndexResults(root));
+  variantInput.addEventListener("change", () => renderIndexResults(root));
   genreInput.addEventListener("change", () => renderIndexResults(root));
   renderIndexResults(root);
 }
