@@ -13,6 +13,7 @@ const STORIES = [
 const DEFAULT_STORY_LEVELS = [1, 2, 3, 4, 5, 6];
 const TARGET_READING_LEVELS = [3, 7];
 const MAX_VISIBLE_CHOICES = 3;
+const INDEX_SELECTION_STORAGE_KEY = "reading.indexSelection.v1";
 
 const READING_VARIANTS = [
   { key: "short", level: 3, label: "Short", note: "compact classroom reading" },
@@ -369,13 +370,52 @@ function renderIndexResults(root) {
   container.appendChild(list);
 }
 
+function saveIndexSelection(root) {
+  const selection = {
+    id: root.querySelector("[data-id]")?.value || "",
+    variant: root.querySelector("[data-reading-variant]")?.value || "",
+    genre: root.querySelector("[data-genre]")?.value || "",
+  };
+  try {
+    localStorage.setItem(INDEX_SELECTION_STORAGE_KEY, JSON.stringify(selection));
+  } catch {
+    // Selection persistence is a convenience; reading should still work without storage.
+  }
+}
+
+function restoreIndexSelection(root) {
+  let selection = null;
+  try {
+    selection = JSON.parse(localStorage.getItem(INDEX_SELECTION_STORAGE_KEY) || "null");
+  } catch {
+    return;
+  }
+  if (!selection) return;
+
+  [
+    [root.querySelector("[data-id]"), selection.id],
+    [root.querySelector("[data-reading-variant]"), selection.variant],
+    [root.querySelector("[data-genre]"), selection.genre],
+  ].forEach(([input, value]) => {
+    if (!input || !value) return;
+    if ([...input.options].some((option) => option.value === value)) {
+      input.value = value;
+    }
+  });
+}
+
 function bootIndexPage(root) {
   const currentInput = root.querySelector("[data-id]");
   const variantInput = root.querySelector("[data-reading-variant]");
   const genreInput = root.querySelector("[data-genre]");
-  currentInput.addEventListener("change", () => renderIndexResults(root));
-  variantInput.addEventListener("change", () => renderIndexResults(root));
-  genreInput.addEventListener("change", () => renderIndexResults(root));
+  const handleChange = () => {
+    saveIndexSelection(root);
+    renderIndexResults(root);
+  };
+  restoreIndexSelection(root);
+  currentInput.addEventListener("change", handleChange);
+  variantInput.addEventListener("change", handleChange);
+  genreInput.addEventListener("change", handleChange);
   renderIndexResults(root);
 }
 
