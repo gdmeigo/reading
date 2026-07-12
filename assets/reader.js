@@ -407,18 +407,18 @@ function renderIndexResults(root) {
   summary.className = "note";
   const idText = selectedId === "all" ? "All IDs" : `ID: ${selectedId}`;
   const scopeText = selectedId === "all" ? "all content IDs" : "content attached to this ID and nearby previous IDs";
-  summary.textContent = `${idText}. Showing up to ${MAX_VISIBLE_CHOICES} choices from ${scopeText}. Length: ${variant.label} (${variant.note}).`;
+  const limitText = selectedId === "all" ? "Showing all matching choices" : `Showing up to ${MAX_VISIBLE_CHOICES} choices`;
+  summary.textContent = `${idText}. ${limitText} from ${scopeText}. Length: ${variant.label} (${variant.note}).`;
   container.appendChild(summary);
 
   const list = document.createElement("div");
   list.className = "choice-grid";
-  const storyChoices = CONTENT_ITEMS.filter((item) => recentIds.has(item.id) && (variant.key === "all" || item.variant === variant.key))
+  const matchingChoices = CONTENT_ITEMS.filter((item) => recentIds.has(item.id) && (variant.key === "all" || item.variant === variant.key))
     .map((item) => ({ item, story: storyBySlug(item.slug) }))
     .filter(({ story, item }) => story && storySupportsLevel(story, item.level))
     .filter(({ story }) => genre === "all" || story.genre.toLowerCase() === genre)
-    .sort((a, b) => progressIndex(a.item.id) - progressIndex(b.item.id))
-    .slice(-MAX_VISIBLE_CHOICES)
-    .reverse();
+    .sort((a, b) => progressIndex(a.item.id) - progressIndex(b.item.id));
+  const storyChoices = selectedId === "all" ? matchingChoices : matchingChoices.slice(-MAX_VISIBLE_CHOICES).reverse();
 
   if (!storyChoices.length) {
     appendParagraph(container, "No stories match this genre and length near this ID yet.", "note");
