@@ -196,8 +196,20 @@ function previousProgressItems(id, count = 10) {
   return PROGRESS_ITEMS.slice(Math.max(0, index - count + 1), index + 1);
 }
 
+function progressScopeItems(id, count = 10) {
+  if (id === "all") return PROGRESS_ITEMS;
+  return previousProgressItems(id, count);
+}
+
 function variantByKey(key) {
   return READING_VARIANTS.find((variant) => variant.key === key);
+}
+
+function variantChoice(key) {
+  if (key === "all") {
+    return { key: "all", label: "All", note: "short and long readings" };
+  }
+  return variantByKey(key);
 }
 
 function variantByLevel(level) {
@@ -379,9 +391,9 @@ function renderIndexResults(root) {
   const genreInput = root.querySelector("[data-genre]");
   const container = root.querySelector("[data-id-results]");
   const selectedId = currentInput.value.trim();
-  const variant = variantByKey(variantInput.value);
+  const variant = variantChoice(variantInput.value);
   const genre = genreInput.value;
-  const recentItems = previousProgressItems(selectedId, 10);
+  const recentItems = progressScopeItems(selectedId, 10);
   const recentIds = new Set(recentItems.map((item) => item.id));
 
   container.textContent = "";
@@ -393,12 +405,14 @@ function renderIndexResults(root) {
 
   const summary = document.createElement("p");
   summary.className = "note";
-  summary.textContent = `ID: ${selectedId}. Showing up to ${MAX_VISIBLE_CHOICES} choices from content attached to this ID and nearby previous IDs. Length: ${variant.label} (${variant.note}).`;
+  const idText = selectedId === "all" ? "All IDs" : `ID: ${selectedId}`;
+  const scopeText = selectedId === "all" ? "all content IDs" : "content attached to this ID and nearby previous IDs";
+  summary.textContent = `${idText}. Showing up to ${MAX_VISIBLE_CHOICES} choices from ${scopeText}. Length: ${variant.label} (${variant.note}).`;
   container.appendChild(summary);
 
   const list = document.createElement("div");
   list.className = "choice-grid";
-  const storyChoices = CONTENT_ITEMS.filter((item) => recentIds.has(item.id) && item.variant === variant.key)
+  const storyChoices = CONTENT_ITEMS.filter((item) => recentIds.has(item.id) && (variant.key === "all" || item.variant === variant.key))
     .map((item) => ({ item, story: storyBySlug(item.slug) }))
     .filter(({ story, item }) => story && storySupportsLevel(story, item.level))
     .filter(({ story }) => genre === "all" || story.genre.toLowerCase() === genre)
@@ -413,6 +427,7 @@ function renderIndexResults(root) {
 
   storyChoices.forEach(({ item, story }) => {
     const progress = progressItem(item.id);
+    const itemVariant = variantByKey(item.variant);
     const card = document.createElement("section");
     card.className = "lesson choice-card";
     const heading = document.createElement("h3");
@@ -422,7 +437,7 @@ function renderIndexResults(root) {
     genreText.textContent = `${story.genre} / ${item.id}${progress ? ` / ${progress.label}` : ""}`;
     const link = document.createElement("a");
     link.href = `lessons/${story.slug}/index.html?level=${item.level}&id=${encodeURIComponent(item.id)}`;
-    link.textContent = `Open ${variant.label}`;
+    link.textContent = `Open ${itemVariant ? itemVariant.label : variant.label}`;
     card.appendChild(heading);
     card.appendChild(genreText);
     card.appendChild(link);

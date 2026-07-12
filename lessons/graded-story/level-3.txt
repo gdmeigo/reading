@@ -10,6 +10,7 @@ She saw the key.
 "But it is not my key."
 
 Then Yui saw a small door under Ken's desk.
+"Can you see the door?" she asked.
 The door was shut.
 Ken put the key in the door.
 The door opened.
@@ -24,4 +25,3 @@ Yui did not open it.
 
 Then the bag moved again.
 Ken said, "I think something is in this bag."
-
