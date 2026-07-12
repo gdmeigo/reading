@@ -471,7 +471,7 @@ function renderIndexResults(root) {
 }
 
 function storySortTitle(title) {
-  return title.replace(/^(the|a|an)\s+/i, "");
+  return title.toLowerCase();
 }
 
 function renderStoryPicker(root) {
