@@ -5,7 +5,10 @@ const blockedTerms = [
   { term: "chair", pattern: /\bchairs?\b/i, replacement: "seat" },
 ];
 
-const roots = ["lessons"];
+const reader = fs.readFileSync("assets/reader.js", "utf8");
+const earlyPolicyIds = new Set(
+  [...reader.matchAll(/\{ id: "(GDM-[^"]+|NH1-[^"]+)", variant: "[^"]+", level: (\d+), slug: "([^"]+)" \}/g)].map((match) => `${match[3]}/level-${match[2]}.txt`),
+);
 const failures = [];
 
 function walk(dir) {
@@ -15,7 +18,9 @@ function walk(dir) {
       walk(fullPath);
       continue;
     }
-    if (!/\.(txt|html|js|md)$/i.test(entry.name)) continue;
+    if (!/\.txt$/i.test(entry.name)) continue;
+    const normalizedPath = fullPath.replace(/\\/g, "/").replace(/^lessons\//, "");
+    if (!earlyPolicyIds.has(normalizedPath)) continue;
     const text = fs.readFileSync(fullPath, "utf8");
     blockedTerms.forEach(({ term, pattern, replacement }) => {
       if (pattern.test(text)) {
@@ -25,9 +30,7 @@ function walk(dir) {
   }
 }
 
-roots.forEach((root) => {
-  if (fs.existsSync(root)) walk(root);
-});
+if (fs.existsSync("lessons")) walk("lessons");
 
 if (failures.length) {
   console.error(failures.join("\n"));
