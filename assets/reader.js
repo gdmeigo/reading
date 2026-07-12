@@ -407,7 +407,7 @@ function renderIndexResults(root) {
   summary.className = "note";
   const idText = selectedId === "all" ? "All IDs" : `ID: ${selectedId}`;
   const scopeText = selectedId === "all" ? "all content IDs" : "content attached to this ID and nearby previous IDs";
-  const limitText = selectedId === "all" ? `Showing up to ${MAX_VISIBLE_CHOICES} choices` : "Showing all matching choices";
+  const limitText = selectedId === "all" ? "Showing all matching choices" : `Showing up to ${MAX_VISIBLE_CHOICES} choices`;
   summary.textContent = `${idText}. ${limitText} from ${scopeText}. Length: ${variant.label} (${variant.note}).`;
   container.appendChild(summary);
 
@@ -418,7 +418,7 @@ function renderIndexResults(root) {
     .filter(({ story, item }) => story && storySupportsLevel(story, item.level))
     .filter(({ story }) => genre === "all" || story.genre.toLowerCase() === genre)
     .sort((a, b) => progressIndex(a.item.id) - progressIndex(b.item.id));
-  const storyChoices = selectedId === "all" ? matchingChoices.slice(-MAX_VISIBLE_CHOICES).reverse() : matchingChoices.reverse();
+  const storyChoices = selectedId === "all" ? matchingChoices : matchingChoices.slice(-MAX_VISIBLE_CHOICES).reverse();
 
   if (!storyChoices.length) {
     appendParagraph(container, "No stories match this genre and length near this ID yet.", "note");
