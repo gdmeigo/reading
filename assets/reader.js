@@ -12,6 +12,7 @@ const STORIES = [
 
 const DEFAULT_STORY_LEVELS = [1, 2, 3, 4, 5, 6];
 const TARGET_READING_LEVELS = [3, 7];
+const MAX_VISIBLE_CHOICES = 3;
 
 const READING_VARIANTS = [
   { key: "short", level: 3, label: "Short", note: "compact classroom reading" },
@@ -328,7 +329,7 @@ function renderIndexResults(root) {
 
   const summary = document.createElement("p");
   summary.className = "note";
-  summary.textContent = `Current ID: ${currentId}. Showing content attached to this ID and the previous ${recentItems.length - 1} IDs. Length: ${variant.label} (${variant.note}).`;
+  summary.textContent = `Current ID: ${currentId}. Showing up to ${MAX_VISIBLE_CHOICES} choices from content attached to this ID and nearby previous IDs. Length: ${variant.label} (${variant.note}).`;
   container.appendChild(summary);
 
   const list = document.createElement("div");
@@ -336,10 +337,12 @@ function renderIndexResults(root) {
   const storyChoices = CONTENT_ITEMS.filter((item) => recentIds.has(item.currentId))
     .map((item) => ({ item, story: storyBySlug(item.slug) }))
     .filter(({ story }) => story && storySupportsLevel(story, variant.level))
-    .filter(({ story }) => genre === "all" || story.genre.toLowerCase() === genre);
+    .filter(({ story }) => genre === "all" || story.genre.toLowerCase() === genre)
+    .slice(-MAX_VISIBLE_CHOICES)
+    .reverse();
 
   if (!storyChoices.length) {
-    appendParagraph(container, "No stories match this genre and length in the last 10 IDs yet.", "note");
+    appendParagraph(container, "No stories match this genre and length near the current ID yet.", "note");
     return;
   }
 
