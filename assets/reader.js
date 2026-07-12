@@ -43,57 +43,57 @@ const PROGRESS_ITEMS = [
 ];
 
 const CONTENT_ITEMS = [
-  { currentId: "GDM-41-10", slug: "graded-story" },
-  { currentId: "NH1-1-1-V", slug: "bread-shop" },
-  { currentId: "NH1-1-3-CAN-Q", slug: "star-bus" },
-  { currentId: "NH1-1-5-2-DONTBE", slug: "wrong-robot" },
-  { currentId: "NH1-1-8-3-WHY", slug: "moon-cup" },
-  { currentId: "NH1-1-10-V", slug: "bread-shop" },
-  { currentId: "NH1-1-11-1-MAYBE", slug: "graded-story" },
-  { currentId: "NH2-2-1-3-SVOO", slug: "bread-shop" },
-  { currentId: "NH2-2-2-4-BECAUSE", slug: "wrong-robot" },
-  { currentId: "NH2-2-3-1-SHOULD", slug: "star-bus" },
-  { currentId: "NH2-2-4-1-HAVE-TO", slug: "graded-story" },
-  { currentId: "NH2-2-5-1-HOW-TO", slug: "moon-cup" },
-  { currentId: "NH2-2-6-MORE-THAN", slug: "bread-shop" },
-  { currentId: "NH2-2-7-2-VOICE", slug: "wrong-robot" },
+  { id: "GDM-41-10", variant: "short", level: 3, slug: "graded-story" },
+  { id: "NH1-1-1-V", variant: "short", level: 3, slug: "bread-shop" },
+  { id: "NH1-1-3-CAN-Q", variant: "short", level: 3, slug: "star-bus" },
+  { id: "NH1-1-5-2-DONTBE", variant: "short", level: 3, slug: "wrong-robot" },
+  { id: "NH1-1-8-3-WHY", variant: "short", level: 3, slug: "moon-cup" },
+  { id: "NH1-1-10-V", variant: "long", level: 7, slug: "bread-shop" },
+  { id: "NH1-1-11-1-MAYBE", variant: "long", level: 7, slug: "graded-story" },
+  { id: "NH2-2-1-3-SVOO", variant: "short", level: 3, slug: "bread-shop" },
+  { id: "NH2-2-2-4-BECAUSE", variant: "short", level: 3, slug: "wrong-robot" },
+  { id: "NH2-2-3-1-SHOULD", variant: "long", level: 7, slug: "star-bus" },
+  { id: "NH2-2-4-1-HAVE-TO", variant: "long", level: 7, slug: "graded-story" },
+  { id: "NH2-2-5-1-HOW-TO", variant: "short", level: 3, slug: "moon-cup" },
+  { id: "NH2-2-6-MORE-THAN", variant: "short", level: 3, slug: "bread-shop" },
+  { id: "NH2-2-7-2-VOICE", variant: "long", level: 7, slug: "wrong-robot" },
 ];
 
 const LEVELS = [
   {
     level: 1,
-    currentId: "GDM-41-10",
+    id: "GDM-41-10",
     stage: "Assumed grading: legacy very short archive. Present sentences, be/have/see/open/go, this/it, basic prepositions, simple nouns.",
   },
   {
     level: 2,
-    currentId: "GDM-41-10",
+    id: "GDM-41-10",
     stage: "Assumed grading: legacy short archive. Longer present sequences, basic questions, says/asks, not/no, repeated nouns.",
   },
   {
     level: 3,
-    currentId: "NH1-1-5-2-DONTBE",
-    stage: "Assumed grading: Short. Compact reading of about 120-180 words, simple paragraphs, clear four-part story movement, basic past forms, simple dialogue, and one visible target expression from the selected Current ID.",
+    id: "NH1-1-5-2-DONTBE",
+    stage: "Assumed grading: Short. Compact reading of about 120-180 words, simple paragraphs, clear four-part story movement, basic past forms, simple dialogue, and one visible target expression from the selected ID.",
   },
   {
     level: 4,
-    currentId: "NH1-1-6-V",
+    id: "NH1-1-6-V",
     stage: "Assumed grading: legacy middle archive. There was/were, before/after, careful observation, simple reveal.",
   },
   {
     level: 5,
-    currentId: "NH1-1-8-3-WHY",
+    id: "NH1-1-8-3-WHY",
     stage: "Assumed grading: legacy middle archive. Fuller scenes, reason links, more characters, clearer resolution.",
   },
   {
     level: 6,
-    currentId: "NH1-1-11-1-MAYBE",
+    id: "NH1-1-11-1-MAYBE",
     stage: "Assumed grading: legacy long archive. Longer paragraphs, callbacks, multi-scene resolution, richer ending.",
   },
   {
     level: 7,
-    currentId: "NH2-2-7-2-VOICE",
-    stage: "Assumed grading: Long. Fuller reading of about 300-450 words, multiple paragraphs, richer setting and motive, clearer suspense or emotional turn, and natural use of the selected Current ID target item while avoiding structures not yet introduced.",
+    id: "NH2-2-7-2-VOICE",
+    stage: "Assumed grading: Long. Fuller reading of about 300-450 words, multiple paragraphs, richer setting and motive, clearer suspense or emotional turn, and natural use of the selected ID target item while avoiding structures not yet introduced.",
   },
 ];
 
@@ -129,8 +129,8 @@ function progressIndex(id) {
   return PROGRESS_ITEMS.findIndex((item) => item.id === id);
 }
 
-function previousProgressItems(currentId, count = 10) {
-  const index = progressIndex(currentId);
+function previousProgressItems(id, count = 10) {
+  const index = progressIndex(id);
   if (index < 0) return [];
   return PROGRESS_ITEMS.slice(Math.max(0, index - count + 1), index + 1);
 }
@@ -148,8 +148,8 @@ function levelLabel(level) {
   return variant ? variant.label : "Archive";
 }
 
-function storyContentItem(story, currentId) {
-  return CONTENT_ITEMS.find((item) => item.slug === story.slug && item.currentId === currentId);
+function storyContentItem(story, id) {
+  return CONTENT_ITEMS.find((item) => item.slug === story.slug && item.id === id);
 }
 
 function readingInfo(baseInfo, requestedId) {
@@ -157,13 +157,13 @@ function readingInfo(baseInfo, requestedId) {
   if (!item) return baseInfo;
   return {
     ...baseInfo,
-    currentId: item.id,
-    stage: `${baseInfo.stage} Selected Current ID: ${item.id} (${item.label}).`,
+    id: item.id,
+    stage: `${baseInfo.stage} Selected ID: ${item.id} (${item.label}).`,
   };
 }
 
 function levelStageText(info) {
-  return `${info.stage} Current ID: ${info.currentId}.`;
+  return `${info.stage} ID: ${info.id}.`;
 }
 
 function textToBlocks(text) {
@@ -259,7 +259,8 @@ async function renderStoryPage(root) {
   const story = storyBySlug(slug);
   const basePath = root.dataset.basePath || ".";
   const requestedLevel = levelInfoFromUrl();
-  const requestedId = new URLSearchParams(window.location.search).get("id");
+  const params = new URLSearchParams(window.location.search);
+  const requestedId = params.get("id");
 
   document.title = requestedLevel ? `${story.title} - ${levelLabel(requestedLevel.level)}` : story.title;
   root.querySelector("h1").textContent = requestedLevel ? `${story.title}: ${levelLabel(requestedLevel.level)}` : story.title;
@@ -278,7 +279,9 @@ async function renderStoryPage(root) {
     heading.textContent = levelLabel(info.level);
     section.appendChild(heading);
     section.id = `level-${info.level}`;
-    const text = await loadText(`${basePath}/level-${info.level}.txt`);
+    const contentItem = requestedId ? CONTENT_ITEMS.find((item) => item.id === requestedId && item.slug === story.slug) : null;
+    const contentLevel = contentItem?.level || info.level;
+    const text = await loadText(`${basePath}/level-${contentLevel}.txt`);
     renderReadingSection(section, text, readingInfo(info, requestedId), `${story.slug}-${levelLabel(info.level).toLowerCase()}.txt`);
     container.appendChild(section);
   }
@@ -310,53 +313,53 @@ async function renderLevelPage(root) {
 }
 
 function renderIndexResults(root) {
-  const currentInput = root.querySelector("[data-current-id]");
+  const currentInput = root.querySelector("[data-id]");
   const variantInput = root.querySelector("[data-reading-variant]");
   const genreInput = root.querySelector("[data-genre]");
   const container = root.querySelector("[data-id-results]");
-  const currentId = currentInput.value.trim();
+  const selectedId = currentInput.value.trim();
   const variant = variantByKey(variantInput.value);
   const genre = genreInput.value;
-  const recentItems = previousProgressItems(currentId, 10);
+  const recentItems = previousProgressItems(selectedId, 10);
   const recentIds = new Set(recentItems.map((item) => item.id));
 
   container.textContent = "";
 
   if (!recentItems.length || !variant) {
-    appendParagraph(container, "Choose a valid Current ID and reading length.", "error");
+    appendParagraph(container, "Choose a valid ID and reading length.", "error");
     return;
   }
 
   const summary = document.createElement("p");
   summary.className = "note";
-  summary.textContent = `Current ID: ${currentId}. Showing up to ${MAX_VISIBLE_CHOICES} choices from content attached to this ID and nearby previous IDs. Length: ${variant.label} (${variant.note}).`;
+  summary.textContent = `ID: ${selectedId}. Showing up to ${MAX_VISIBLE_CHOICES} choices from content attached to this ID and nearby previous IDs. Length: ${variant.label} (${variant.note}).`;
   container.appendChild(summary);
 
   const list = document.createElement("div");
   list.className = "choice-grid";
-  const storyChoices = CONTENT_ITEMS.filter((item) => recentIds.has(item.currentId))
+  const storyChoices = CONTENT_ITEMS.filter((item) => recentIds.has(item.id) && item.variant === variant.key)
     .map((item) => ({ item, story: storyBySlug(item.slug) }))
-    .filter(({ story }) => story && storySupportsLevel(story, variant.level))
+    .filter(({ story, item }) => story && storySupportsLevel(story, item.level))
     .filter(({ story }) => genre === "all" || story.genre.toLowerCase() === genre)
     .slice(-MAX_VISIBLE_CHOICES)
     .reverse();
 
   if (!storyChoices.length) {
-    appendParagraph(container, "No stories match this genre and length near the current ID yet.", "note");
+    appendParagraph(container, "No stories match this genre and length near this ID yet.", "note");
     return;
   }
 
   storyChoices.forEach(({ item, story }) => {
-    const progress = progressItem(item.currentId);
+    const progress = progressItem(item.id);
     const card = document.createElement("section");
     card.className = "lesson choice-card";
     const heading = document.createElement("h3");
     heading.textContent = story.title;
     const genreText = document.createElement("p");
     genreText.className = "note";
-    genreText.textContent = `${story.genre} / ${item.currentId}${progress ? ` / ${progress.label}` : ""}`;
+    genreText.textContent = `${story.genre} / ${item.id}${progress ? ` / ${progress.label}` : ""}`;
     const link = document.createElement("a");
-    link.href = `lessons/${story.slug}/index.html?level=${variant.level}&id=${encodeURIComponent(item.currentId)}`;
+    link.href = `lessons/${story.slug}/index.html?level=${item.level}&id=${encodeURIComponent(item.id)}`;
     link.textContent = `Open ${variant.label}`;
     card.appendChild(heading);
     card.appendChild(genreText);
@@ -367,7 +370,7 @@ function renderIndexResults(root) {
 }
 
 function bootIndexPage(root) {
-  const currentInput = root.querySelector("[data-current-id]");
+  const currentInput = root.querySelector("[data-id]");
   const variantInput = root.querySelector("[data-reading-variant]");
   const genreInput = root.querySelector("[data-genre]");
   currentInput.addEventListener("change", () => renderIndexResults(root));
