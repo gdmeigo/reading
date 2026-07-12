@@ -14,8 +14,8 @@ const DEFAULT_STORY_LEVELS = [1, 2, 3, 4, 5, 6];
 const TARGET_READING_LEVELS = [3, 7];
 
 const READING_VARIANTS = [
-  { key: "short", level: 3, label: "Short", note: "about the current Level 3 length" },
-  { key: "long", level: 7, label: "Long", note: "about the current Level 7 length" },
+  { key: "short", level: 3, label: "Short", note: "compact classroom reading" },
+  { key: "long", level: 7, label: "Long", note: "fuller story reading" },
 ];
 
 const PROGRESS_ITEMS = [
@@ -62,37 +62,37 @@ const LEVELS = [
   {
     level: 1,
     currentId: "GDM-41-10",
-    stage: "Assumed grading: very short present sentences, be/have/see/open/go, this/it, basic prepositions, simple nouns.",
+    stage: "Assumed grading: legacy very short archive. Present sentences, be/have/see/open/go, this/it, basic prepositions, simple nouns.",
   },
   {
     level: 2,
     currentId: "GDM-41-10",
-    stage: "Assumed grading: Level 1 plus longer present sequences, basic questions, says/asks, not/no, repeated nouns.",
+    stage: "Assumed grading: legacy short archive. Longer present sequences, basic questions, says/asks, not/no, repeated nouns.",
   },
   {
     level: 3,
     currentId: "NH1-1-5-2-DONTBE",
-    stage: "Assumed grading: Short reading length. Basic past forms, simple dialogue, and NH1 bridge expressions are allowed.",
+    stage: "Assumed grading: Short. Compact reading of about 120-180 words, simple paragraphs, clear four-part story movement, basic past forms, simple dialogue, and one visible target expression from the selected Current ID.",
   },
   {
     level: 4,
     currentId: "NH1-1-6-V",
-    stage: "Assumed grading: Level 3 plus there was/were, before/after, careful observation, simple reveal.",
+    stage: "Assumed grading: legacy middle archive. There was/were, before/after, careful observation, simple reveal.",
   },
   {
     level: 5,
     currentId: "NH1-1-8-3-WHY",
-    stage: "Assumed grading: Level 4 plus fuller scenes, reason links, more characters, clearer resolution.",
+    stage: "Assumed grading: legacy middle archive. Fuller scenes, reason links, more characters, clearer resolution.",
   },
   {
     level: 6,
     currentId: "NH1-1-11-1-MAYBE",
-    stage: "Assumed grading: Level 5 plus longer paragraphs, callbacks, multi-scene resolution, richer ending.",
+    stage: "Assumed grading: legacy long archive. Longer paragraphs, callbacks, multi-scene resolution, richer ending.",
   },
   {
     level: 7,
     currentId: "NH2-2-7-2-VOICE",
-    stage: "Assumed grading: Long reading length. NH1 completion and NH2 items through the selected Current ID may be used.",
+    stage: "Assumed grading: Long. Fuller reading of about 300-450 words, multiple paragraphs, richer setting and motive, clearer suspense or emotional turn, and natural use of the selected Current ID target item while avoiding structures not yet introduced.",
   },
 ];
 
@@ -144,7 +144,7 @@ function variantByLevel(level) {
 
 function levelLabel(level) {
   const variant = variantByLevel(level);
-  return variant ? variant.label : `Level ${level}`;
+  return variant ? variant.label : "Archive";
 }
 
 function storyContentItem(story, currentId) {
@@ -266,7 +266,9 @@ async function renderStoryPage(root) {
   const container = root.querySelector("[data-content]");
   container.textContent = "";
 
-  const visibleLevels = requestedLevel ? [requestedLevel] : LEVELS.filter((info) => storySupportsLevel(story, info.level));
+  const visibleLevels = requestedLevel
+    ? [requestedLevel]
+    : LEVELS.filter((info) => TARGET_READING_LEVELS.includes(info.level) && storySupportsLevel(story, info.level));
 
   for (const info of visibleLevels) {
     if (!storySupportsLevel(story, info.level)) continue;
@@ -285,9 +287,10 @@ async function renderLevelPage(root) {
   const level = Number(root.dataset.level);
   const info = levelInfo(level);
   const basePath = root.dataset.basePath || "../lessons";
+  const label = levelLabel(level);
 
-  document.title = `Level ${level} Readings`;
-  root.querySelector("h1").textContent = `Level ${level} Readings`;
+  document.title = `${label} Readings`;
+  root.querySelector("h1").textContent = `${label} Readings`;
   root.querySelector("[data-level-stage]")?.remove();
 
   const container = root.querySelector("[data-content]");
