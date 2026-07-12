@@ -446,6 +446,39 @@ function renderIndexResults(root) {
   container.appendChild(list);
 }
 
+function storySortTitle(title) {
+  return title.replace(/^(the|a|an)\s+/i, "");
+}
+
+function renderStoryPicker(root) {
+  const select = root.querySelector("[data-story-select]");
+  const linkContainer = root.querySelector("[data-story-link]");
+  if (!select || !linkContainer) return;
+
+  const sortedStories = [...STORIES].sort((a, b) => storySortTitle(a.title).localeCompare(storySortTitle(b.title), "en"));
+  select.textContent = "";
+
+  sortedStories.forEach((story) => {
+    const option = document.createElement("option");
+    option.value = story.slug;
+    option.textContent = `${story.title} / ${story.genre}`;
+    select.appendChild(option);
+  });
+
+  const renderLink = () => {
+    const story = storyBySlug(select.value);
+    linkContainer.textContent = "";
+    if (!story) return;
+    const link = document.createElement("a");
+    link.href = `lessons/${story.slug}/index.html`;
+    link.textContent = `Open ${story.title}`;
+    linkContainer.appendChild(link);
+  };
+
+  select.addEventListener("change", renderLink);
+  renderLink();
+}
+
 function saveIndexSelection(root) {
   const selection = {
     id: root.querySelector("[data-id]")?.value || "",
@@ -493,6 +526,7 @@ function bootIndexPage(root) {
   variantInput.addEventListener("change", handleChange);
   genreInput.addEventListener("change", handleChange);
   renderIndexResults(root);
+  renderStoryPicker(root);
 }
 
 async function boot() {
