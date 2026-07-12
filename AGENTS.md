@@ -1,3 +1,7 @@
+## Lexical Policy
+
+Follow [LEXICAL_POLICY.md](LEXICAL_POLICY.md) when writing or revising story text.
+
 # AGENTS.md
 
 このリポジトリは、中学生向け英語塾用の GDM リーディング教材を作成するためのものです。
