@@ -1,6 +1,6 @@
 ## Lexical Policy
 
-Follow [LEXICAL_POLICY.md](LEXICAL_POLICY.md) when writing or revising story text. The `seat` over `chair` rule applies through NH1 and is not enforced from NH2 onward.
+Follow [LEXICAL_POLICY.md](LEXICAL_POLICY.md) when writing or revising story text. The `seat` over `chair` rule applies only to GDM-stage stories and is not enforced from NH1 onward.
 
 # AGENTS.md
 

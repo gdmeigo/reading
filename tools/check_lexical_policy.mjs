@@ -7,7 +7,7 @@ const blockedTerms = [
 
 const reader = fs.readFileSync("assets/reader.js", "utf8");
 const earlyPolicyIds = new Set(
-  [...reader.matchAll(/\{ id: "(GDM-[^"]+|NH1-[^"]+)", variant: "[^"]+", level: (\d+), slug: "([^"]+)" \}/g)].map((match) => `${match[3]}/level-${match[2]}.txt`),
+  [...reader.matchAll(/\{ id: "(GDM-[^"]+)", variant: "[^"]+", level: (\d+), slug: "([^"]+)" \}/g)].map((match) => `${match[3]}/level-${match[2]}.txt`),
 );
 const failures = [];
 
