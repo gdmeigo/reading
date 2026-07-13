@@ -277,6 +277,15 @@ function storyContentItem(story, id) {
   return CONTENT_ITEMS.find((item) => item.slug === story.slug && item.id === id);
 }
 
+function uniqueStoryVariantChoices(choices) {
+  const byStoryVariant = new Map();
+  choices.forEach((choice) => {
+    byStoryVariant.set(`${choice.item.slug}:${choice.item.variant}`, choice);
+  });
+  return Array.from(byStoryVariant.values())
+    .sort((a, b) => progressIndex(a.item.id) - progressIndex(b.item.id));
+}
+
 function readingInfo(baseInfo, requestedId) {
   const item = requestedId ? progressItem(requestedId) : null;
   if (!item) return baseInfo;
@@ -528,7 +537,8 @@ function renderIndexResults(root) {
     .filter(({ story, item }) => story && storySupportsLevel(story, item.level))
     .filter(({ story }) => genre === "all" || story.genre.toLowerCase() === genre)
     .sort((a, b) => progressIndex(a.item.id) - progressIndex(b.item.id));
-  const storyChoices = selectedId === "all" ? matchingChoices : matchingChoices.slice(-MAX_VISIBLE_CHOICES).reverse();
+  const uniqueChoices = uniqueStoryVariantChoices(matchingChoices);
+  const storyChoices = selectedId === "all" ? uniqueChoices : uniqueChoices.slice(-MAX_VISIBLE_CHOICES).reverse();
 
   if (!storyChoices.length) {
     const emptyText =
