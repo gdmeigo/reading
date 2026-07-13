@@ -81,6 +81,7 @@ const GLOSSARY_NOTES = [
   { headword: "arrow", terms: ["arrow", "arrows"], note: "a mark that shows where to go" },
   { headword: "board", terms: ["board", "boards"], note: "a flat place for writing or showing things" },
   { headword: "bottle", terms: ["bottle", "bottles"], note: "a small thing that can hold water" },
+  { headword: "brave", terms: ["brave"], note: "not afraid; ready to do something hard" },
   { headword: "curtain", terms: ["curtain", "curtains"], note: "cloth by a window or stage" },
   { headword: "disk", terms: ["disk", "disks"], note: "a small flat round thing" },
   { headword: "footprint", terms: ["footprint", "footprints"], note: "a mark from a foot" },
