@@ -34,6 +34,8 @@ const contentRows = [
   ["GDM-1", "Very Short", "Human Drama", "The Blue Lunch Box", "blue-lunch-box", "lessons/blue-lunch-box/level-1.txt"],
   ["GDM-1", "Very Short", "Human Drama", "The Quiet Bread Shop", "bread-shop", "lessons/bread-shop/level-1.txt"],
   ["GDM-1", "Very Short", "SF", "The Star Bus", "star-bus", "lessons/star-bus/level-1.txt"],
+  ["GDM-1", "Very Short", "Fantasy", "The Silver Stone", "silver-stone", "lessons/silver-stone/level-1.txt"],
+  ["GDM-1", "Very Short", "Adventure", "The Red Bag Path", "red-bag-path", "lessons/red-bag-path/level-1.txt"],
   ["GDM-1", "Very Short", "Comedy", "The Wrong Robot", "wrong-robot", "lessons/wrong-robot/level-1.txt"],
   ["GDM-1", "Short", "Mystery", "The Red Pin", "red-pin", "lessons/red-pin/level-3.txt"],
   ["GDM-10", "Short", "Comedy", "The Book Under the Hat", "book-under-hat", "lessons/book-under-hat/level-3.txt"],
