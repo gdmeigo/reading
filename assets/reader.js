@@ -468,7 +468,6 @@ function speechSupported() {
 
 function speechText(text) {
   return text
-    .replace(/^.+\n+/, "")
     .replace(/\[[^\]]+\]/g, "")
     .trim();
 }
