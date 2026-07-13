@@ -2,6 +2,10 @@
 
 Follow [LEXICAL_POLICY.md](LEXICAL_POLICY.md) when writing or revising story text. The `seat` over `chair` rule applies only to GDM-stage stories and is not enforced from NH1 onward.
 
+## Character Policy
+
+Follow [CHARACTER_GUIDE.md](CHARACTER_GUIDE.md) when writing or revising story text. Reuse a character name only when the role matches the guide; otherwise choose a different name or add a new character entry.
+
 # AGENTS.md
 
 このリポジトリは、中学生向け英語塾用の GDM リーディング教材を作成するためのものです。
