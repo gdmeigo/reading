@@ -101,6 +101,22 @@ const contentRows = [
   ["NH2-2-7-2-VOICE", "Very Long", "Fantasy", "The Moon Lantern Path", "moon-lantern-path", "lessons/moon-lantern-path/level-8.txt"],
   ["NH2-2-7-2-VOICE", "Very Long", "Adventure", "The Folded Map Race", "folded-map-race", "lessons/folded-map-race/level-8.txt"],
   ["NH2-2-7-2-VOICE", "Very Long", "Comedy", "The Pudding Case", "jaio-pudding-case", "lessons/jaio-pudding-case/level-8.txt"],
+  ["NH2-2-7-2-VOICE", "Short", "Mystery", "Another Door Opens", "another-door-opens", "lessons/another-door-opens/level-3.txt"],
+  ["NH2-2-2-4-BECAUSE", "Short", "SF", "Echo on the Moon", "echo-on-the-moon", "lessons/echo-on-the-moon/level-3.txt"],
+  ["NH1-1-6-V", "Short", "Human Drama", "Inside the Kite", "inside-the-kite", "lessons/inside-the-kite/level-3.txt"],
+  ["NH2-2-1-3-SVOO", "Short", "Comedy", "Jiro's Quiet Joke", "jiro-quiet-joke", "lessons/jiro-quiet-joke/level-3.txt"],
+  ["NH2-2-5-1-HOW-TO", "Short", "Adventure", "Kaito's Key Map", "kaito-key-map", "lessons/kaito-key-map/level-3.txt"],
+  ["NH1-1-11-1-MAYBE", "Short", "Fantasy / Adventure", "Noa and the Night Door", "noa-night-door", "lessons/noa-night-door/level-3.txt"],
+  ["NH2-2-3-1-SHOULD", "Short", "Mystery", "Under the Red Desk", "under-red-desk", "lessons/under-red-desk/level-3.txt"],
+  ["NH2-2-7-2-VOICE", "Short", "Mystery", "Voices in the Wall", "voices-in-wall", "lessons/voices-in-wall/level-3.txt"],
+  ["NH2-2-6-MORE-THAN", "Short", "Adventure", "X Marks the Lunch Box", "x-marks-lunch-box", "lessons/x-marks-lunch-box/level-3.txt"],
+  ["NH1-0-FAMILY", "Short", "Human Drama", "Yuna's Thank-You Note", "yuna-thank-you-note", "lessons/yuna-thank-you-note/level-3.txt"],
+  ["NH2-2-4-1-HAVE-TO", "Short", "SF", "Zero at the Station", "zero-at-station", "lessons/zero-at-station/level-3.txt"],
+  ["GDM-22", "Short", "SF", "Green Glass Signal", "green-glass-signal", "lessons/green-glass-signal/level-3.txt"],
+  ["NH1-1-10-V", "Short", "Human Drama", "Lost Library Card", "lost-library-card", "lessons/lost-library-card/level-3.txt"],
+  ["NH1-1-5-2-DONTBE", "Short", "Comedy", "Open on Monday", "open-on-monday", "lessons/open-on-monday/level-3.txt"],
+  ["NH1-1-3-CAN-Q", "Short", "Fantasy", "Paper Star Plan", "paper-star-plan", "lessons/paper-star-plan/level-3.txt"],
+  ["NH2-2-3-1-SHOULD", "Short", "Mystery", "Quiet Question", "quiet-question", "lessons/quiet-question/level-3.txt"],
 ];
 
 function write(sheet, row, col, rows) {
