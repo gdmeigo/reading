@@ -22,6 +22,8 @@ Use this guide whenever a story reuses a named character. If the role does not f
 | Riku | boy, middle school | Good-natured comic victim | Gets into odd trouble, accepts help, joins the laugh at the end | School comedy, object mix-ups | Making him mean-spirited |
 | Aya | girl, teen | Empathetic community starter | Notices quiet sadness, asks how to help, starts small public actions | Shops, town stories, human drama | Making her solve things by force |
 | Aiko | girl, teen / club leader | Tech-club leader | Has a plan, explains devices, can turn a serious signal into a joke | SF, science club, light/signal stories | Making her technically clueless |
+| Jaio | boy, middle school | Pushy or unfair strong character | Acts big, tries to take control, learns a small lesson | Mild conflict, comedy, rivalry | Making him truly cruel or frightening |
+| Suneta | boy, middle school | Jaio's follower | Copies Jaio, complains, changes direction when the group changes | Mild conflict, comic support | Making him the main threat |
 
 ## Adult Characters
 
@@ -37,7 +39,7 @@ Use this guide whenever a story reuses a named character. If the role does not f
 
 - Reuse a name only when the role matches the character above.
 - If a story needs a different personality, choose a different name or create a new entry here.
-- If a story needs a negative role, such as a mean student, bully, or unfair rival, use an English-leaning name that does not overlap with the Japanese student names in this guide. Prefer names such as Jack, Ben, Mike, Nick, or Emma. Keep the behavior mild enough for classroom reading.
+- If a story needs a negative role, use `Jaio` for a pushy or unfair strong character and `Suneta` for Jaio's follower. Keep the behavior mild enough for classroom reading.
 - Do not use Mika and Miki interchangeably. Mika is evidence and analysis; Miki is maps, organization, and guidance.
 - Keep gender signals clear for Japanese learners.
 - Low-level stories may show only one trait, but it should still point in the same direction.
