@@ -30,6 +30,11 @@ const progressRows = [
 ];
 
 const contentRows = [
+  ["GDM-1", "Very Short", "Mystery", "The Little Door", "graded-story", "lessons/graded-story/level-1.txt"],
+  ["GDM-1", "Very Short", "Human Drama", "The Blue Lunch Box", "blue-lunch-box", "lessons/blue-lunch-box/level-1.txt"],
+  ["GDM-1", "Very Short", "Human Drama", "The Quiet Bread Shop", "bread-shop", "lessons/bread-shop/level-1.txt"],
+  ["GDM-1", "Very Short", "SF", "The Star Bus", "star-bus", "lessons/star-bus/level-1.txt"],
+  ["GDM-1", "Very Short", "Comedy", "The Wrong Robot", "wrong-robot", "lessons/wrong-robot/level-1.txt"],
   ["GDM-1", "Short", "Mystery", "The Red Pin", "red-pin", "lessons/red-pin/level-3.txt"],
   ["GDM-10", "Short", "Comedy", "The Book Under the Hat", "book-under-hat", "lessons/book-under-hat/level-3.txt"],
   ["GDM-22", "Short", "Mystery", "The Water Pen Trick", "water-pen-trick", "lessons/water-pen-trick/level-3.txt"],
@@ -84,6 +89,7 @@ const contentRows = [
   ["NH2-2-2-4-BECAUSE", "Long", "Mystery", "Because the Wall Listened", "because-the-wall-listened", "lessons/because-the-wall-listened/level-7.txt"],
   ["NH2-2-5-1-HOW-TO", "Long", "Mystery", "How to Read the Stone", "how-to-read-the-stone", "lessons/how-to-read-the-stone/level-7.txt"],
   ["NH2-2-6-MORE-THAN", "Long", "Mystery", "More Than One Moon", "more-than-one-moon", "lessons/more-than-one-moon/level-7.txt"],
+  ["NH2-2-7-2-VOICE", "Very Long", "Comedy", "The Pudding Case", "jaio-pudding-case", "lessons/jaio-pudding-case/level-8.txt"],
 ];
 
 function write(sheet, row, col, rows) {
@@ -129,23 +135,23 @@ function style(sheet, usedRange, headerRange, widths) {
 const workbook = Workbook.create();
 
 const howTo = workbook.worksheets.add("How_To_Use");
-title(howTo, "Unified ID 方針", "GDMは41-10までを橋渡しとして使い、その後はNH1、NH2のIDを一本で指定する。本文量はShortとLongの二段階で選ぶ。", 2);
+title(howTo, "Unified ID 方針", "GDMは41-10までを橋渡しとして使い、その後はNH1、NH2のIDを一本で指定する。本文量はVery Short / Short / Long / Very Longから選ぶ。", 2);
 write(howTo, 3, 0, [
   ["項目", "内容"],
   ["ID", "GDMとNHを別々に指定しない。ひとつのIDだけを指定する。"],
   ["進行順", "GDM-41-10まではGDM中心。その後はNH1、NH2へ進む。"],
   ["候補表示", "サイトでは選択したID以下の近いIDに紐づくコンテンツを最大3件まで表示する。"],
-  ["本文量", "Shortは120〜180語程度。Longは300〜450語程度。UIでは旧段階表記を使わない。"],
-  ["注意", "ShortとLongは別IDへ紐づける。個別IDの必須語・文法を完全反映する新作本文は今後追加する。"],
+  ["本文量", "Very Shortはごく短い導入用。Shortは120〜180語程度。Longは300〜450語程度。Very Longは650〜900語程度。UIでは旧段階表記を使わない。"],
+  ["注意", "各Lengthは別IDへ紐づける。個別IDの必須語・文法を完全反映する新作本文は今後追加する。"],
 ]);
 style(howTo, "A4:B9", "A4:B4", [24, 110]);
 
 const request = workbook.worksheets.add("Story_Request");
-title(request, "Story Request", "本文生成時に使う入力欄。IDは1つだけ指定し、LengthでShort/Longを選ぶ。", 4);
+title(request, "Story Request", "本文生成時に使う入力欄。IDは1つだけ指定し、Lengthで本文量を選ぶ。", 4);
 write(request, 3, 0, [
   ["項目", "入力例", "選択肢・説明", "生成時の扱い"],
   ["ID", "NH1-1-8-3-WHY", "Unified_ProgressのIDから選ぶ", "このIDまでのGDM/NH項目を使用可"],
-  ["Length", "Short", "Short / Long", "Short=120〜180語程度、Long=300〜450語程度"],
+  ["Length", "Short", "Very Short / Short / Long / Very Long", "Very Short=ごく短い導入、Short=120〜180語程度、Long=300〜450語程度、Very Long=650〜900語程度"],
   ["Genre", "Mystery", "Mystery / Human Drama / SF / Fantasy / Comedy", "ジャンルの声と展開を変える"],
   ["Target Reader", "中学生", "英語塾向け", "名詞は必要ならリスト外も可"],
   ["Story Shape", "4コマ的な起承転結", "明るい終わり", "次の展開が気になる構成にする"],
@@ -162,7 +168,7 @@ write(progress, 3, 0, [
 style(progress, `A4:H${4 + progressRows.length}`, "A4:H4", [24, 12, 10, 14, 42, 18, 68, 18]);
 
 const content = workbook.worksheets.add("Content_Map");
-title(content, "Content Map", "既存本文をIDへ紐づけ、Short/Longの二段階で選べるようにした表。ShortとLongは別IDで管理する。", 6);
+title(content, "Content Map", "既存本文をIDへ紐づけ、Length別に選べるようにした表。LengthごとにIDで管理する。", 6);
 write(content, 3, 0, [
   ["ID", "Length", "Genre", "Title", "Slug", "Text"],
   ...contentRows,
@@ -170,11 +176,11 @@ write(content, 3, 0, [
 style(content, `A4:F${4 + contentRows.length}`, "A4:F4", [24, 14, 18, 30, 20, 44]);
 
 const prompt = workbook.worksheets.add("Prompt_Template");
-title(prompt, "Prompt Template", "生成時はIDを1つだけ使い、本文量をShort/Longで指定する。", 2);
+title(prompt, "Prompt Template", "生成時はIDを1つだけ使い、本文量をLengthで指定する。", 2);
 write(prompt, 3, 0, [
   ["項目", "テンプレート"],
   ["生成指示", "IDは {ID}。GDM-41-10まではGDMを使い、以降はNH1/NH2の進行順に沿って、このIDまでの語彙・文法を使用する。"],
-  ["本文量", "{Length} で生成する。Shortは120〜180語程度、Longは300〜450語程度。"],
+  ["本文量", "{Length} で生成する。Very Shortはごく短い導入、Shortは120〜180語程度、Longは300〜450語程度、Very Longは650〜900語程度。"],
   ["必須項目", "指定されたIDそのものの導入語・文法は本文に必ず自然に入れる。"],
   ["物語品質", "4コマ的な起承転結を持たせ、最後は明るく、次の展開が気になる本文にする。"],
   ["出力", "Title / ID / Length / Genre / English text / used target items memo"],

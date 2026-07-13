@@ -48,16 +48,19 @@ const STORIES = [
   { slug: "because-the-wall-listened", title: "Because the Wall Listened", genre: "Mystery", levels: [7] },
   { slug: "how-to-read-the-stone", title: "How to Read the Stone", genre: "Mystery", levels: [7] },
   { slug: "more-than-one-moon", title: "More Than One Moon", genre: "Mystery", levels: [7] },
+  { slug: "jaio-pudding-case", title: "The Pudding Case", genre: "Comedy", levels: [8] },
 ];
 
 const DEFAULT_STORY_LEVELS = [1, 2, 3, 4, 5, 6];
-const TARGET_READING_LEVELS = [3, 7];
+const TARGET_READING_LEVELS = [1, 3, 7, 8];
 const MAX_VISIBLE_CHOICES = 3;
 const INDEX_SELECTION_STORAGE_KEY = "reading.indexSelection.v1";
 
 const READING_VARIANTS = [
+  { key: "very-short", level: 1, label: "Very Short", note: "tiny starter reading" },
   { key: "short", level: 3, label: "Short", note: "compact classroom reading" },
   { key: "long", level: 7, label: "Long", note: "fuller story reading" },
+  { key: "very-long", level: 8, label: "Very Long", note: "extended classroom reading" },
 ];
 
 const GLOSSARY_NOTES = [
@@ -116,6 +119,11 @@ const PROGRESS_ITEMS = [
 ];
 
 const CONTENT_ITEMS = [
+  { id: "GDM-1", variant: "very-short", level: 1, slug: "graded-story" },
+  { id: "GDM-1", variant: "very-short", level: 1, slug: "blue-lunch-box" },
+  { id: "GDM-1", variant: "very-short", level: 1, slug: "bread-shop" },
+  { id: "GDM-1", variant: "very-short", level: 1, slug: "star-bus" },
+  { id: "GDM-1", variant: "very-short", level: 1, slug: "wrong-robot" },
   { id: "GDM-1", variant: "short", level: 3, slug: "red-pin" },
   { id: "GDM-10", variant: "short", level: 3, slug: "book-under-hat" },
   { id: "GDM-22", variant: "short", level: 3, slug: "water-pen-trick" },
@@ -170,6 +178,7 @@ const CONTENT_ITEMS = [
   { id: "NH2-2-2-4-BECAUSE", variant: "long", level: 7, slug: "because-the-wall-listened" },
   { id: "NH2-2-5-1-HOW-TO", variant: "long", level: 7, slug: "how-to-read-the-stone" },
   { id: "NH2-2-6-MORE-THAN", variant: "long", level: 7, slug: "more-than-one-moon" },
+  { id: "NH2-2-7-2-VOICE", variant: "very-long", level: 8, slug: "jaio-pudding-case" },
 ];
 
 const LEVELS = [
@@ -207,6 +216,11 @@ const LEVELS = [
     level: 7,
     id: "NH2-2-7-2-VOICE",
     stage: "Assumed grading: Long. Fuller reading of about 300-450 words, multiple paragraphs, richer setting and motive, clearer suspense or emotional turn, and natural use of the selected ID target item while avoiding structures not yet introduced.",
+  },
+  {
+    level: 8,
+    id: "NH2-2-7-2-VOICE",
+    stage: "Assumed grading: Very Long. Extended reading of about 650-900 words, multiple scenes, stronger character arcs, clear comedy or mystery turns, and natural review of the selected ID target item.",
   },
 ];
 
