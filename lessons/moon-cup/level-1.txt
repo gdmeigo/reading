@@ -4,7 +4,7 @@ Yui sees a cup.
 The cup is blue.
 It is on the shelf.
 
-Ken sees the cup, too.
+Haru sees the cup, too.
 "Is this your cup?" he says.
 
 Yui puts water in it.
@@ -13,5 +13,5 @@ It goes up.
 
 A small moon is in the cup.
 
-Ken says, "Oh!"
+Haru says, "Oh!"
 Yui says, "It is looking at us."

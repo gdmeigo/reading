@@ -2,7 +2,7 @@ The Little Door
 
 Ken has a key.
 The key is small.
-Yui sees the key.
+Mika sees the key.
 
 Ken sees a door.
 The door is small.
@@ -11,7 +11,7 @@ It is under the desk.
 Ken puts the key in the door.
 The door opens.
 
-Ken and Yui see a bag.
+Ken and Mika see a bag.
 The bag moves.
 
 Ken says, "Oh!"

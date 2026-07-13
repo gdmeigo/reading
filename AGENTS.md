@@ -4,7 +4,7 @@ Follow [LEXICAL_POLICY.md](LEXICAL_POLICY.md) when writing or revising story tex
 
 ## Character Policy
 
-Follow [CHARACTER_GUIDE.md](CHARACTER_GUIDE.md) when writing or revising story text. Reuse a character name only when the role matches the guide; otherwise choose a different name or add a new character entry.
+Follow [CHARACTER_GUIDE.md](CHARACTER_GUIDE.md) when writing or revising story text. Choose characters from the story genre's cast first; do not reuse a student name across unrelated genres just because the role is similar.
 
 # AGENTS.md
 

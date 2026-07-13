@@ -1,7 +1,7 @@
 The Last Bus
 
 Mika is at the bus stop.
-Ren is with Mika.
+Riku is with Mika.
 
 An old woman is there.
 She has a bag.
@@ -10,7 +10,7 @@ She looks sad.
 A bus comes.
 The woman does not get on.
 
-Ren sees a card.
+Riku sees a card.
 It says, "Hospital."
 
 Mika gives the card to the woman.

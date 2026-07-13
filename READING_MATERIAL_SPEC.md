@@ -1,3 +1,11 @@
+# Character Cast Policy
+
+- Choose recurring student characters by genre before writing or revising a story.
+- Do not reuse the same student name across unrelated genres, because learners may assume the stories share one world or one person.
+- Use [CHARACTER_GUIDE.md](CHARACTER_GUIDE.md) as the source of truth for each genre cast.
+- If a story needs a familiar role in another genre, create a new genre-specific name instead of borrowing an existing one.
+- Multi-genre stories should use a dedicated combined-lane cast unless the story is intentionally a crossover.
+
 # GDM リーディング教材仕様
 
 ## 目的

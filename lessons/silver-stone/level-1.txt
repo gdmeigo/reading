@@ -4,7 +4,7 @@ Yui sees a stone.
 It is small.
 It is silver.
 
-Ken sees it, too.
+Haru sees it, too.
 "Is it yours?" he asks.
 "No," says Yui.
 
@@ -16,5 +16,5 @@ The stone opens.
 
 A small light is in it.
 
-Ken says, "It is a star."
+Haru says, "It is a star."
 Yui says, "It is here."

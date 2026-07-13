@@ -2,37 +2,39 @@
 
 Review date: 2026-07-13
 
-## Policy Added
+## Policy Updated
 
-- Added `CHARACTER_GUIDE.md` as the source of truth for recurring named characters.
-- Future story writing should choose names by role first. If the needed role does not fit a name, change the name instead of changing the character's personality.
+- `CHARACTER_GUIDE.md` now separates recurring student characters by genre.
+- Future story writing should choose the genre cast first, then choose a role inside that cast.
+- The same student name should not be reused across unrelated genres, because it can make learners think the story worlds are connected.
+
+## Genre Cast Assignment
+
+| Genre | Main cast |
+| --- | --- |
+| Mystery | Ken, Mika, Riku, Toma |
+| Human Drama | Daichi, Emi, Rina, Sota, Aya, Yuna, Kota, Ryo |
+| SF | Sora, Mina, Aiko, Leo |
+| Fantasy | Yui, Haru, Mio |
+| Comedy | Taro, Hana, Jiro, Jaio, Suneta |
+| Adventure | Kaito, Nana, Ren, Miki, Saki, Gaku, Bunta |
+| Fantasy / Adventure | Yuto, Noa, Iori |
 
 ## Existing Content Review
 
-The current content was checked against the new character guide. The main recurring patterns are consistent enough to keep:
+The existing story text was updated so that student names mostly stay inside their genre casts:
 
-- Ken is usually the first observer or actor: keys, doors, odd boxes, clocks, signals, water pens, and small mysteries.
-- Yui is usually the imaginative or gentle helper: notes, stars, fantasy objects, and emotional readings.
-- Taro is usually the energetic comic spark: quick action, funny guesses, and playful misunderstandings.
-- Mika is usually the careful checker: evidence, patterns, counting, and grounded explanations.
-- Miki is used separately from Mika for map/route/organizing stories.
-- Ren is used as a maker/try-first helper in rocket, bus-stop, and practical-help stories.
-- Daichi and Emi are stable in the bread-shop short sequence: Daichi notices the practical sign problem, Emi handles the warm social action.
-- Mina works as Ken's skeptical science-minded partner in SF and experiment-like stories.
-- Rina and Sota work as older-sister / younger-child family characters.
-- Aya works as an empathetic community starter in the long bread-shop story.
-
-## Content Adjustments Needed Now
-
-No urgent name replacements were required in the existing stories after the guide was defined. A few stories use the same name in a slightly broader way, but they still fit the character:
-
-- Ken can be over-eager in "Don't Be a Hero" because the story resolves by teaching him to slow down and help safely.
-- Ren can open or test things early because his guide role is "try-first problem solver," not "careful planner."
-- Mina can appear in both SF and water-pen content because her shared trait is skeptical, evidence-based thinking.
+- Mystery stories now use Ken, Mika, Riku, and Toma.
+- Human Drama stories now use Daichi, Emi, Rina, Sota, Aya, Yuna, Kota, and Ryo.
+- SF stories now use Sora, Mina, Aiko, and Leo.
+- Fantasy stories now use Yui, Haru, and Mio.
+- Comedy stories now use Taro, Hana, Jiro, Jaio, and Suneta.
+- Adventure stories now use Kaito, Nana, Ren, Miki, Saki, Gaku, and Bunta.
+- The Dice Gate uses the dedicated Fantasy / Adventure cast: Yuto, Noa, and Iori.
 
 ## Future Watch Points
 
-- Avoid adding new Ken/Yui stories by default. Use the guide to select names by role.
-- When creating new mystery stories, do not always make Ken the finder and Mika the explainer. Vary the lead while preserving each character's core trait.
-- If a story needs a negative role, use `Jaio` for a pushy or unfair strong character and `Suneta` for Jaio's follower.
-- When using a new proper name, add it to `CHARACTER_GUIDE.md` in the same commit.
+- Avoid adding new cross-genre uses of Ken, Yui, Taro, Mika, Miki, or Mina by default.
+- If a story needs a familiar role in another genre, create a new genre-specific name instead of borrowing the old one.
+- If a new proper name is used, add it to `CHARACTER_GUIDE.md` in the same commit.
+- Adults may recur more freely than students, but avoid using the same adult as the emotional center of many unrelated genres.

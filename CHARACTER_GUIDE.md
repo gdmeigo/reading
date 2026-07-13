@@ -1,46 +1,99 @@
 # Character Guide
 
-Use this guide whenever a story reuses a named character. If the role does not fit the character, change the name instead of bending the character.
+Use this guide whenever a story reuses a named character. Characters are separated by genre so that the same name does not mean different things in different story worlds.
 
-## Core Student Characters
+## Genre Casts
 
-| Name | Gender / age signal | Core role | Typical behavior | Good fit | Avoid |
-| --- | --- | --- | --- | --- | --- |
-| Ken | boy, middle school | Curious observer who acts | Notices odd details, opens things, tests ideas, helps quickly, sometimes moves before thinking | Mystery, small experiments, helping scenes, first-person action | Making him cruel, lazy, or purely silly |
-| Yui | girl, middle school | Imaginative helper | Notices feelings, asks gentle questions, writes small notes or stars, accepts strange possibilities | Fantasy, emotional turns, quiet problem solving | Making her cold, bossy, or careless |
-| Taro | boy, middle school | Energetic comic spark | Runs first, jokes, misunderstands in a useful way, says the funny line | Comedy, action beats, mistaken guesses | Making him the careful analyst |
-| Mika | girl, middle school | Careful analyst | Counts, checks evidence, reads patterns, gives the grounded explanation | Mystery, science-like clues, fair objections | Making her ignore facts or rush |
-| Miki | girl, middle school | Organizer and guide | Draws maps, plans routes, helps visitors, fixes messy information | Festivals, maps, club events, public-facing tasks | Using her as the same person as Mika |
-| Ren | boy, middle school | Maker and try-first problem solver | Builds, carries, tests, tries again after failure, helps with practical tasks | Rockets, tools, errands, physical help | Making him passive for the whole story |
-| Daichi | boy, middle school | Quiet practical observer | Looks from another angle, finds the simple real-world cause, stays calm | Shops, signs, everyday mysteries | Making him loud or showy |
-| Emi | girl, middle school | Warm social helper | Smiles, speaks politely, notices people, reduces awkwardness | Human drama, gentle comedy, customer or friend scenes | Making her harsh or sarcastic |
-| Hana | girl, middle school | Bright caretaker | Notices small living things, likes playful surprises, helps without making a fuss | Animals, joke objects, younger students | Making her careless with fragile things |
-| Saki | girl, middle school | Clear-voiced leader | Gives simple directions, keeps the group moving, speaks for a team | Clubs, events, group scenes | Making her timid unless the story is about growth |
-| Mina | girl, middle school | Skeptical science-minded partner | Questions strange events, checks whether things are real, becomes convinced by evidence | SF, experiments, Ken's sister or close partner | Making her believe magic immediately |
-| Rina | girl, older child / teen | Family-minded older sister | Reads younger children's feelings, mediates, makes a happy ending feel earned | Family stories, sibling scenes | Making her self-centered |
-| Sota | boy, young child | Honest younger child | Says direct funny things, gets nervous, needs help naming feelings | Family, robots, simple comedy | Making him sound like an adult |
-| Riku | boy, middle school | Good-natured comic victim | Gets into odd trouble, accepts help, joins the laugh at the end | School comedy, object mix-ups | Making him mean-spirited |
-| Aya | girl, teen | Empathetic community starter | Notices quiet sadness, asks how to help, starts small public actions | Shops, town stories, human drama | Making her solve things by force |
-| Aiko | girl, teen / club leader | Tech-club leader | Has a plan, explains devices, can turn a serious signal into a joke | SF, science club, light/signal stories | Making her technically clueless |
-| Jaio | boy, middle school | Pushy or unfair strong character | Acts big, tries to take control, learns a small lesson | Mild conflict, comedy, rivalry | Making him truly cruel or frightening |
-| Suneta | boy, middle school | Jaio's follower | Copies Jaio, complains, changes direction when the group changes | Mild conflict, comic support | Making him the main threat |
+### Mystery
+
+| Name | Gender / age signal | Core role | Typical behavior |
+| --- | --- | --- | --- |
+| Ken | boy, middle school | Curious observer who acts | Notices odd details, opens things, asks the first question, helps quickly |
+| Mika | girl, middle school | Careful analyst | Counts, checks evidence, reads patterns, gives the grounded explanation |
+| Riku | boy, middle school | Comic witness | Gets nervous, says the funny possibility, joins the final laugh |
+| Toma | boy, first-year student | Nervous clue holder | Did something small and honest; needs help explaining it |
+
+### Human Drama
+
+| Name | Gender / age signal | Core role | Typical behavior |
+| --- | --- | --- | --- |
+| Daichi | boy, middle school | Quiet practical observer | Finds simple real-world causes, helps without showing off |
+| Emi | girl, middle school | Warm social helper | Speaks politely, notices feelings, makes awkward scenes softer |
+| Rina | girl, older child / teen | Family-minded older sister | Reads younger children's feelings, mediates, makes a happy ending earned |
+| Sota | boy, young child | Honest younger child | Says direct funny things, gets nervous, needs help naming feelings |
+| Aya | girl, teen | Empathetic community starter | Notices quiet sadness and starts small public actions |
+| Yuna | girl, middle school | Gentle owner or recipient | Receives help, says thanks clearly, gives human drama a soft close |
+| Kota | boy, middle school | Overconfident but harmless classmate | Wants to look strong, learns to include others |
+| Ryo | boy, middle school | Agreeing classmate | Backs up Kota, then follows the kinder solution |
+
+### SF
+
+| Name | Gender / age signal | Core role | Typical behavior |
+| --- | --- | --- | --- |
+| Sora | boy, middle school | Space-minded observer | Looks up, follows signals, takes strange technology seriously |
+| Mina | girl, middle school | Skeptical science-minded partner | Questions strange events, checks whether things are real, accepts evidence |
+| Aiko | girl, teen / club leader | Tech-club leader | Has a plan, explains devices, turns a serious signal into a joke |
+| Leo | boy, middle school | Try-first test helper | Measures, presses safe buttons, reacts quickly to moving machines |
+
+### Fantasy
+
+| Name | Gender / age signal | Core role | Typical behavior |
+| --- | --- | --- | --- |
+| Yui | girl, middle school | Imaginative helper | Notices feelings, accepts strange possibilities, solves gently |
+| Haru | boy, middle school | Brave but kind visitor | Steps into magical places first, protects friends without acting cruel |
+| Mio | girl, middle school | Calm magic reader | Reads signs, listens to objects, explains rules of a magical place |
+
+### Comedy
+
+| Name | Gender / age signal | Core role | Typical behavior |
+| --- | --- | --- | --- |
+| Taro | boy, middle school | Energetic comic spark | Runs first, jokes, misunderstands in a useful way |
+| Hana | girl, middle school | Bright caretaker | Notices playful surprises and keeps the joke kind |
+| Jiro | boy, middle school | Good-natured comic victim | Gets into odd trouble, accepts help, joins the laugh at the end |
+| Jaio | boy, middle school | Pushy or unfair strong character | Acts big, tries to take control, learns a small lesson |
+| Suneta | boy, middle school | Jaio's follower | Copies Jaio, complains, changes direction when the group changes |
+
+### Adventure
+
+| Name | Gender / age signal | Core role | Typical behavior |
+| --- | --- | --- | --- |
+| Kaito | boy, middle school | Field leader | Opens paths, asks direct questions, keeps moving |
+| Nana | girl, middle school | Kind route finder | Notices people and places, keeps the goal humane |
+| Ren | boy, middle school | Maker and try-first problem solver | Builds, carries, tests, tries again after failure |
+| Miki | girl, middle school | Organizer and guide | Draws maps, plans routes, fixes messy information |
+| Saki | girl, middle school | Clear-voiced checker | Gives directions, reads signs, keeps the team on task |
+| Gaku | boy, middle school | Rival challenger | Pushes too hard in a contest, but stays classroom-safe |
+| Bunta | boy, middle school | Rival follower | Follows Gaku, complains, becomes cooperative by the end |
+
+### Fantasy / Adventure Combined Lane
+
+Use a separate cast for stories that are intentionally both fantasy and adventure. Do not borrow the regular Fantasy or Adventure cast unless the story is planned as a true crossover.
+
+| Name | Gender / age signal | Core role | Typical behavior |
+| --- | --- | --- | --- |
+| Yuto | boy, middle school | Brave game-world traveler | Enters strange rules and protects the group |
+| Noa | girl, middle school | Rule reader | Notices magical rules and emotional costs |
+| Iori | boy, middle school | Map and item keeper | Tracks objects, doors, dice, and route changes |
 
 ## Adult Characters
 
-| Name | Role | Character use |
-| --- | --- | --- |
-| Mr. Tanaka | teacher | Warm but odd lesson setups; can give strange assignments that teach a target pattern. |
-| Ms. Kato | cooking-room adult | Practical, kind, receives food or helps with cooking scenes. |
-| Mr. Sato | older teacher / staff | Holds school memories; useful for reveals about old objects or events. |
-| Mr. Mori | baker | Quiet, gentle, carries emotional history connected to bread and family. |
-| Mr. Ito | guest | Polite visitor; useful for "show / teach / give" scenes. |
+Adult characters may recur, but avoid making them the emotional center across unrelated genres. Prefer a genre-fit adult when possible.
+
+| Name | Best genre | Role | Character use |
+| --- | --- | --- | --- |
+| Mr. Sato | Mystery / school archive | older teacher / staff | Holds school memories; useful for reveals about old objects or events. |
+| Ms. Kato | Human Drama | cooking-room adult | Practical, kind, receives food or helps with cooking scenes. |
+| Mr. Mori | Human Drama | baker | Quiet, gentle, carries emotional history connected to bread and family. |
+| Mr. Ito | Comedy / Human Drama | guest | Polite visitor; useful for "show / teach / give" scenes. |
 
 ## Naming Rules
 
-- Reuse a name only when the role matches the character above.
+- Choose the cast from the story's genre before writing the plot.
+- Do not reuse a student name in another genre just because the role is similar. Add a new genre-specific name instead.
+- Multi-genre stories use the combined-lane cast unless the point of the story is an explicit crossover.
 - If a story needs a different personality, choose a different name or create a new entry here.
-- If a story needs a negative role, use `Jaio` for a pushy or unfair strong character and `Suneta` for Jaio's follower. Keep the behavior mild enough for classroom reading.
-- Do not use Mika and Miki interchangeably. Mika is evidence and analysis; Miki is maps, organization, and guidance.
+- For Comedy, use `Jaio` for a pushy or unfair strong character and `Suneta` for Jaio's follower. In other genres, use a genre-specific rival name such as `Gaku` and `Bunta` for Adventure.
+- Do not use Mika and Miki interchangeably. Mika is Mystery evidence and analysis; Miki is Adventure maps, organization, and guidance.
 - Keep gender signals clear for Japanese learners.
 - Low-level stories may show only one trait, but it should still point in the same direction.
 - In a series with the same title across levels, keep the same character roles across those levels unless the level is intentionally a different story.
