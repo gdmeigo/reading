@@ -34,4 +34,5 @@ No urgent name replacements were required in the existing stories after the guid
 
 - Avoid adding new Ken/Yui stories by default. Use the guide to select names by role.
 - When creating new mystery stories, do not always make Ken the finder and Mika the explainer. Vary the lead while preserving each character's core trait.
+- If a story needs a negative role, use an English-leaning name so the role does not overlap with Japanese student names used for regular recurring characters.
 - When using a new proper name, add it to `CHARACTER_GUIDE.md` in the same commit.

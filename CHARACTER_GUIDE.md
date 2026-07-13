@@ -37,6 +37,7 @@ Use this guide whenever a story reuses a named character. If the role does not f
 
 - Reuse a name only when the role matches the character above.
 - If a story needs a different personality, choose a different name or create a new entry here.
+- If a story needs a negative role, such as a mean student, bully, or unfair rival, use an English-leaning name that does not overlap with the Japanese student names in this guide. Prefer names such as Jack, Ben, Mike, Nick, or Emma. Keep the behavior mild enough for classroom reading.
 - Do not use Mika and Miki interchangeably. Mika is evidence and analysis; Miki is maps, organization, and guidance.
 - Keep gender signals clear for Japanese learners.
 - Low-level stories may show only one trait, but it should still point in the same direction.
