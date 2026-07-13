@@ -155,6 +155,8 @@ EP Book1 の `41-10` 付近は、NH1 へ接続する目安地点とする。
 ## 脚注基準
 
 - 脚注は、指定 ID までの導入語にない語のうち、中学生の基本英単語として一般的でない語を中心につける。
+- CEFR A1 語は基本語として扱い、原則として脚注をつけない。現在の判定には Oxford 3000 の CEFR A1 リストを使う。
+- CEFR A1 ソースは `data/source-vocabulary/cefr/` に保存し、表示用データは `assets/cefr-a1-words.js` に反映する。
 - 例: `duty`, `astronomy`, `committee`, `temporary`, `volunteer` など。
 - `book`, `pen`, `water`, `desk` のような基本語、本文理解に支障が少ない基本動詞、固有名詞には原則として脚注をつけない。
 - 脚注の説明は英語で短くし、中学生が本文を読み進められる助けになる表現にする。

@@ -1,2 +1,5 @@
 node_modules/
 *.inspect.ndjson
+data/source-vocabulary/**/*.html
+data/source-vocabulary/**/*.pdf
+data/source-vocabulary/**/*.xlsx

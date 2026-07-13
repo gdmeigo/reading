@@ -66,6 +66,7 @@ const DEFAULT_STORY_LEVELS = [1, 2, 3, 4, 5, 6];
 const TARGET_READING_LEVELS = [1, 3, 7, 8];
 const MAX_VISIBLE_CHOICES = 3;
 const INDEX_SELECTION_STORAGE_KEY = "reading.indexSelection.v1";
+const CEFR_A1_WORDS = new Set((window.CEFR_A1_WORDS || []).map((word) => word.toLowerCase()));
 
 const READING_VARIANTS = [
   { key: "very-short", level: 1, label: "Very Short", note: "tiny starter reading" },
@@ -423,6 +424,22 @@ function glossaryPattern(terms) {
   return new RegExp(`\\b(${terms.map(escapeRegExp).join("|")})\\b`, "i");
 }
 
+function glossaryTermIsCefrA1(term) {
+  const normalized = term.toLowerCase();
+  if (CEFR_A1_WORDS.has(normalized)) return true;
+  if (normalized.endsWith("ies") && CEFR_A1_WORDS.has(`${normalized.slice(0, -3)}y`)) return true;
+  if (normalized.endsWith("es") && CEFR_A1_WORDS.has(normalized.slice(0, -2))) return true;
+  return normalized.endsWith("s") && CEFR_A1_WORDS.has(normalized.slice(0, -1));
+}
+
+function glossaryMatchIndex(text, terms) {
+  return terms
+    .filter((term) => !glossaryTermIsCefrA1(term))
+    .map((term) => text.search(glossaryPattern([term])))
+    .filter((index) => index >= 0)
+    .sort((a, b) => a - b)[0] ?? -1;
+}
+
 function glossaryEntryIsNewForId(entry, id) {
   if (!entry.introducedFromId) return true;
   const currentIndex = progressIndex(id);
@@ -435,7 +452,7 @@ function glossaryNotesForText(text, id) {
   return GLOSSARY_NOTES.filter((entry) => glossaryEntryIsNewForId(entry, id))
     .map((entry) => ({
     ...entry,
-    index: text.search(glossaryPattern(entry.terms)),
+    index: glossaryMatchIndex(text, entry.terms),
   }))
     .filter((entry) => entry.index >= 0)
     .sort((a, b) => a.index - b.index || a.headword.localeCompare(b.headword, "en"));
