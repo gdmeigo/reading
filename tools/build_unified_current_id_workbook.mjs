@@ -89,6 +89,11 @@ const contentRows = [
   ["NH2-2-2-4-BECAUSE", "Long", "Mystery", "Because the Wall Listened", "because-the-wall-listened", "lessons/because-the-wall-listened/level-7.txt"],
   ["NH2-2-5-1-HOW-TO", "Long", "Mystery", "How to Read the Stone", "how-to-read-the-stone", "lessons/how-to-read-the-stone/level-7.txt"],
   ["NH2-2-6-MORE-THAN", "Long", "Mystery", "More Than One Moon", "more-than-one-moon", "lessons/more-than-one-moon/level-7.txt"],
+  ["NH2-2-7-2-VOICE", "Very Long", "Mystery", "The Locked Umbrella Room", "locked-umbrella-room", "lessons/locked-umbrella-room/level-8.txt"],
+  ["NH2-2-7-2-VOICE", "Very Long", "Human Drama", "The Last Seat at the Table", "last-seat-table", "lessons/last-seat-table/level-8.txt"],
+  ["NH2-2-7-2-VOICE", "Very Long", "SF", "The Library That Was Moved", "library-moved", "lessons/library-moved/level-8.txt"],
+  ["NH2-2-7-2-VOICE", "Very Long", "Fantasy", "The Moon Lantern Path", "moon-lantern-path", "lessons/moon-lantern-path/level-8.txt"],
+  ["NH2-2-7-2-VOICE", "Very Long", "Adventure", "The Folded Map Race", "folded-map-race", "lessons/folded-map-race/level-8.txt"],
   ["NH2-2-7-2-VOICE", "Very Long", "Comedy", "The Pudding Case", "jaio-pudding-case", "lessons/jaio-pudding-case/level-8.txt"],
 ];
 

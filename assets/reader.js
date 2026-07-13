@@ -48,6 +48,11 @@ const STORIES = [
   { slug: "because-the-wall-listened", title: "Because the Wall Listened", genre: "Mystery", levels: [7] },
   { slug: "how-to-read-the-stone", title: "How to Read the Stone", genre: "Mystery", levels: [7] },
   { slug: "more-than-one-moon", title: "More Than One Moon", genre: "Mystery", levels: [7] },
+  { slug: "locked-umbrella-room", title: "The Locked Umbrella Room", genre: "Mystery", levels: [8] },
+  { slug: "last-seat-table", title: "The Last Seat at the Table", genre: "Human Drama", levels: [8] },
+  { slug: "library-moved", title: "The Library That Was Moved", genre: "SF", levels: [8] },
+  { slug: "moon-lantern-path", title: "The Moon Lantern Path", genre: "Fantasy", levels: [8] },
+  { slug: "folded-map-race", title: "The Folded Map Race", genre: "Adventure", levels: [8] },
   { slug: "jaio-pudding-case", title: "The Pudding Case", genre: "Comedy", levels: [8] },
 ];
 
@@ -178,6 +183,11 @@ const CONTENT_ITEMS = [
   { id: "NH2-2-2-4-BECAUSE", variant: "long", level: 7, slug: "because-the-wall-listened" },
   { id: "NH2-2-5-1-HOW-TO", variant: "long", level: 7, slug: "how-to-read-the-stone" },
   { id: "NH2-2-6-MORE-THAN", variant: "long", level: 7, slug: "more-than-one-moon" },
+  { id: "NH2-2-7-2-VOICE", variant: "very-long", level: 8, slug: "locked-umbrella-room" },
+  { id: "NH2-2-7-2-VOICE", variant: "very-long", level: 8, slug: "last-seat-table" },
+  { id: "NH2-2-7-2-VOICE", variant: "very-long", level: 8, slug: "library-moved" },
+  { id: "NH2-2-7-2-VOICE", variant: "very-long", level: 8, slug: "moon-lantern-path" },
+  { id: "NH2-2-7-2-VOICE", variant: "very-long", level: 8, slug: "folded-map-race" },
   { id: "NH2-2-7-2-VOICE", variant: "very-long", level: 8, slug: "jaio-pudding-case" },
 ];
 
