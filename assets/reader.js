@@ -23,6 +23,7 @@ const STORIES = [
   { slug: "principal-dance", title: "Can the Principal Dance?", genre: "Comedy", levels: [7] },
   { slug: "hat-said-no", title: "Because the Hat Said No", genre: "Comedy", levels: [7] },
   { slug: "cake-was-moved", title: "The Cake Was Moved", genre: "Comedy", levels: [7] },
+  { slug: "dice-gate", title: "The Dice Gate", genre: "Fantasy / Adventure", genres: ["Fantasy", "Adventure"], levels: [7] },
   { slug: "red-pin-parade", title: "The Red Pin Parade", genre: "Adventure", levels: [7] },
   { slug: "old-book-signal", title: "The Old Book Signal", genre: "Adventure", levels: [7] },
   { slug: "pens-in-water", title: "The Pens in the Water", genre: "Adventure", levels: [7] },
@@ -160,6 +161,7 @@ const CONTENT_ITEMS = [
   { id: "NH2-2-3-1-SHOULD", variant: "long", level: 7, slug: "dont-be-a-hero" },
   { id: "NH2-2-4-1-HAVE-TO", variant: "long", level: 7, slug: "gift-lesson" },
   { id: "NH2-2-5-1-HOW-TO", variant: "short", level: 3, slug: "moon-cup" },
+  { id: "NH2-2-5-1-HOW-TO", variant: "long", level: 7, slug: "dice-gate" },
   { id: "NH2-2-6-MORE-THAN", variant: "short", level: 3, slug: "bread-shop" },
   { id: "NH2-2-7-2-VOICE", variant: "long", level: 7, slug: "gift-lesson" },
   { id: "NH2-2-7-2-VOICE", variant: "long", level: 7, slug: "cake-was-moved" },
@@ -254,6 +256,18 @@ function storyLevels(story) {
 
 function storySupportsLevel(story, level) {
   return storyLevels(story).includes(Number(level));
+}
+
+function storyGenres(story) {
+  return story.genres || story.genre.split("/").map((genre) => genre.trim());
+}
+
+function storyGenreLabel(story) {
+  return storyGenres(story).join(" / ");
+}
+
+function storyMatchesGenre(story, genre) {
+  return genre === "all" || storyGenres(story).some((item) => item.toLowerCase() === genre);
 }
 
 function levelInfo(level) {
@@ -569,7 +583,7 @@ function renderIndexResults(root) {
   const matchingChoices = CONTENT_ITEMS.filter((item) => recentIds.has(item.id) && (variant.key === "all" || item.variant === variant.key))
     .map((item) => ({ item, story: storyBySlug(item.slug) }))
     .filter(({ story, item }) => story && storySupportsLevel(story, item.level))
-    .filter(({ story }) => genre === "all" || story.genre.toLowerCase() === genre)
+    .filter(({ story }) => storyMatchesGenre(story, genre))
     .sort((a, b) => progressIndex(a.item.id) - progressIndex(b.item.id));
   const uniqueChoices = uniqueStoryVariantChoices(matchingChoices);
   const storyChoices = selectedId === "all" ? uniqueChoices : uniqueChoices.slice(-MAX_VISIBLE_CHOICES).reverse();
@@ -592,7 +606,7 @@ function renderIndexResults(root) {
     heading.textContent = story.title;
     const genreText = document.createElement("p");
     genreText.className = "note";
-    genreText.textContent = `${story.genre} / ${item.id}${progress ? ` / ${progress.label}` : ""}`;
+    genreText.textContent = `${storyGenreLabel(story)} / ${item.id}${progress ? ` / ${progress.label}` : ""}`;
     const link = document.createElement("a");
     link.href = `lessons/${story.slug}/index.html?level=${item.level}&id=${encodeURIComponent(item.id)}`;
     link.textContent = `Open ${itemVariant ? itemVariant.label : variant.label}`;
@@ -619,7 +633,7 @@ function renderStoryPicker(root) {
   sortedStories.forEach((story) => {
     const option = document.createElement("option");
     option.value = story.slug;
-    option.textContent = `${story.title} / ${story.genre}`;
+    option.textContent = `${story.title} / ${storyGenreLabel(story)}`;
     select.appendChild(option);
   });
 

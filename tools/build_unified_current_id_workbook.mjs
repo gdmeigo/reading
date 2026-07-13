@@ -61,6 +61,7 @@ const contentRows = [
   ["NH2-2-3-1-SHOULD", "Long", "Human Drama", "Don't Be a Hero", "dont-be-a-hero", "lessons/dont-be-a-hero/level-7.txt"],
   ["NH2-2-4-1-HAVE-TO", "Long", "Comedy", "The Gift Lesson", "gift-lesson", "lessons/gift-lesson/level-7.txt"],
   ["NH2-2-5-1-HOW-TO", "Short", "Fantasy", "The Moon Cup", "moon-cup", "lessons/moon-cup/level-3.txt"],
+  ["NH2-2-5-1-HOW-TO", "Long", "Fantasy / Adventure", "The Dice Gate", "dice-gate", "lessons/dice-gate/level-7.txt"],
   ["NH2-2-6-MORE-THAN", "Short", "Human Drama", "The Quiet Bread Shop", "bread-shop", "lessons/bread-shop/level-3.txt"],
   ["NH2-2-7-2-VOICE", "Long", "Comedy", "The Gift Lesson", "gift-lesson", "lessons/gift-lesson/level-7.txt"],
   ["NH2-2-7-2-VOICE", "Long", "Comedy", "The Cake Was Moved", "cake-was-moved", "lessons/cake-was-moved/level-7.txt"],
