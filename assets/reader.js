@@ -66,6 +66,7 @@ const DEFAULT_STORY_LEVELS = [1, 2, 3, 4, 5, 6];
 const TARGET_READING_LEVELS = [1, 3, 7, 8];
 const MAX_VISIBLE_CHOICES = 3;
 const INDEX_SELECTION_STORAGE_KEY = "reading.indexSelection.v1";
+let activeSpeechButton = null;
 
 const READING_VARIANTS = [
   { key: "very-short", level: 1, label: "Very Short", note: "tiny starter reading" },
@@ -460,9 +461,69 @@ async function copyText(text) {
   textarea.remove();
 }
 
+function speechSupported() {
+  return "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+}
+
+function speechText(text) {
+  return text
+    .replace(/^.+\n+/, "")
+    .replace(/\[[^\]]+\]/g, "")
+    .trim();
+}
+
+function speakReading(text, button) {
+  if (!speechSupported()) {
+    button.textContent = "Read unavailable";
+    button.disabled = true;
+    return;
+  }
+
+  if (button.dataset.speaking === "true") {
+    window.speechSynthesis.cancel();
+    button.dataset.speaking = "false";
+    button.textContent = "Read aloud";
+    activeSpeechButton = null;
+    return;
+  }
+
+  if (activeSpeechButton) {
+    activeSpeechButton.dataset.speaking = "false";
+    activeSpeechButton.textContent = "Read aloud";
+  }
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(speechText(text));
+  utterance.lang = "en-US";
+  utterance.rate = 0.85;
+  utterance.pitch = 1;
+  utterance.addEventListener("end", () => {
+    button.dataset.speaking = "false";
+    button.textContent = "Read aloud";
+    if (activeSpeechButton === button) activeSpeechButton = null;
+  });
+  utterance.addEventListener("error", () => {
+    button.dataset.speaking = "false";
+    button.textContent = "Read aloud";
+    if (activeSpeechButton === button) activeSpeechButton = null;
+  });
+  button.dataset.speaking = "true";
+  button.textContent = "Stop reading";
+  activeSpeechButton = button;
+  window.speechSynthesis.speak(utterance);
+}
+
 function appendTextActions(section, text, filename) {
   const actions = document.createElement("div");
   actions.className = "text-actions";
+
+  const readButton = document.createElement("button");
+  readButton.type = "button";
+  readButton.textContent = "Read aloud";
+  readButton.addEventListener("click", () => speakReading(text, readButton));
+  if (!speechSupported()) {
+    readButton.disabled = true;
+    readButton.textContent = "Read unavailable";
+  }
 
   const copyButton = document.createElement("button");
   copyButton.type = "button";
@@ -480,6 +541,7 @@ function appendTextActions(section, text, filename) {
   downloadButton.textContent = "Download .txt";
   downloadButton.addEventListener("click", () => downloadText(filename, text));
 
+  actions.appendChild(readButton);
   actions.appendChild(copyButton);
   actions.appendChild(downloadButton);
   section.appendChild(actions);
