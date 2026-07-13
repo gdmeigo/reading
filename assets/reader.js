@@ -66,8 +66,6 @@ const DEFAULT_STORY_LEVELS = [1, 2, 3, 4, 5, 6];
 const TARGET_READING_LEVELS = [1, 3, 7, 8];
 const MAX_VISIBLE_CHOICES = 3;
 const INDEX_SELECTION_STORAGE_KEY = "reading.indexSelection.v1";
-let activeSpeechButton = null;
-let activeSpeechRun = 0;
 
 const READING_VARIANTS = [
   { key: "very-short", level: 1, label: "Very Short", note: "tiny starter reading" },
@@ -509,136 +507,9 @@ async function copyText(text) {
   textarea.remove();
 }
 
-function speechSupported() {
-  return "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
-}
-
-function speechText(text) {
-  return text
-    .replace(/\[[^\]]+\]/g, "")
-    .trim();
-}
-
-function preferredEnglishVoice() {
-  if (!speechSupported()) return null;
-  const voices = window.speechSynthesis.getVoices();
-  const englishVoices = voices.filter((voice) => /^en(-|_)?/i.test(voice.lang));
-  const preferredNames = [
-    "natural",
-    "online",
-    "neural",
-    "jenny",
-    "aria",
-    "guy",
-    "samantha",
-    "google us english",
-    "microsoft",
-    "english united states",
-  ];
-  return (
-    englishVoices.find((voice) => preferredNames.some((name) => voice.name.toLowerCase().includes(name))) ||
-    englishVoices.find((voice) => /^en-US/i.test(voice.lang)) ||
-    englishVoices[0] ||
-    null
-  );
-}
-
-function speechChunks(text) {
-  const cleanText = speechText(text);
-  const sentenceMatches = cleanText.match(/[^.!?]+[.!?"]*|[^.!?]+$/g) || [cleanText];
-  const chunks = [];
-  sentenceMatches.forEach((sentence) => {
-    const trimmed = sentence.trim();
-    if (!trimmed) return;
-    if (trimmed.length <= 180) {
-      chunks.push(trimmed);
-      return;
-    }
-    const parts = trimmed.split(/,\s+/);
-    let current = "";
-    parts.forEach((part) => {
-      const next = current ? `${current}, ${part}` : part;
-      if (next.length > 180 && current) {
-        chunks.push(current);
-        current = part;
-      } else {
-        current = next;
-      }
-    });
-    if (current) chunks.push(current);
-  });
-  return chunks;
-}
-
-function speakReading(text, button) {
-  if (!speechSupported()) {
-    button.textContent = "Read unavailable";
-    button.disabled = true;
-    return;
-  }
-
-  if (button.dataset.speaking === "true") {
-    window.speechSynthesis.cancel();
-    button.dataset.speaking = "false";
-    button.textContent = "Read aloud";
-    activeSpeechButton = null;
-    activeSpeechRun += 1;
-    return;
-  }
-
-  if (activeSpeechButton) {
-    activeSpeechButton.dataset.speaking = "false";
-    activeSpeechButton.textContent = "Read aloud";
-  }
-  window.speechSynthesis.cancel();
-  activeSpeechRun += 1;
-  const runId = activeSpeechRun;
-  const chunks = speechChunks(text);
-  const voice = preferredEnglishVoice();
-
-  const resetButton = () => {
-    button.dataset.speaking = "false";
-    button.textContent = "Read aloud";
-    if (activeSpeechButton === button) activeSpeechButton = null;
-  };
-
-  const speakChunk = (index) => {
-    if (runId !== activeSpeechRun) return;
-    if (index >= chunks.length) {
-      resetButton();
-      return;
-    }
-    const utterance = new SpeechSynthesisUtterance(chunks[index]);
-    utterance.lang = voice?.lang || "en-US";
-    utterance.voice = voice;
-    utterance.rate = 0.92;
-    utterance.pitch = 1;
-    utterance.volume = 1;
-    utterance.addEventListener("end", () => {
-      window.setTimeout(() => speakChunk(index + 1), 130);
-    });
-    utterance.addEventListener("error", resetButton);
-    window.speechSynthesis.speak(utterance);
-  };
-
-  button.dataset.speaking = "true";
-  button.textContent = "Stop reading";
-  activeSpeechButton = button;
-  speakChunk(0);
-}
-
-function appendTextActions(section, text, filename, readableText = text) {
+function appendTextActions(section, text, filename) {
   const actions = document.createElement("div");
   actions.className = "text-actions";
-
-  const readButton = document.createElement("button");
-  readButton.type = "button";
-  readButton.textContent = "Read aloud";
-  readButton.addEventListener("click", () => speakReading(readableText, readButton));
-  if (!speechSupported()) {
-    readButton.disabled = true;
-    readButton.textContent = "Read unavailable";
-  }
 
   const copyButton = document.createElement("button");
   copyButton.type = "button";
@@ -656,7 +527,6 @@ function appendTextActions(section, text, filename, readableText = text) {
   downloadButton.textContent = "Download .txt";
   downloadButton.addEventListener("click", () => downloadText(filename, text));
 
-  actions.appendChild(readButton);
   actions.appendChild(copyButton);
   actions.appendChild(downloadButton);
   section.appendChild(actions);
@@ -665,7 +535,7 @@ function appendTextActions(section, text, filename, readableText = text) {
 function renderReadingSection(section, text, info, filename) {
   const bodyText = readingBodyText(text);
   const notes = glossaryNotesForText(bodyText, info.id);
-  appendTextActions(section, textWithFootnotes(bodyText, notes), filename, bodyText);
+  appendTextActions(section, textWithFootnotes(bodyText, notes), filename);
   textToBlocks(text).slice(1).forEach((block) => appendParagraph(section, block));
   appendFootnotes(section, notes);
   appendParagraph(section, levelStageText(info), "stage");
