@@ -161,3 +161,4 @@ EP Book1 の `41-10` 付近は、NH1 へ接続する目安地点とする。
 - `book`, `pen`, `water`, `desk` のような基本語、本文理解に支障が少ない基本動詞、固有名詞には原則として脚注をつけない。
 - 脚注の説明は英語で短くし、中学生が本文を読み進められる助けになる表現にする。
 - 脚注の説明文も、導入済み語または CEFR A1 語を使う。更新時は `node tools/check_glossary_note_words.mjs` で確認する。
+- 全話の未カバー語を見直すときは `node tools/audit_story_glossary_coverage.mjs` を使う。候補レポートから、物・場所・話の理解に効く語を `GLOSSARY_NOTES` へ追加する。

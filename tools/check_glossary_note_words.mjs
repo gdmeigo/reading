@@ -18,6 +18,8 @@ for (const match of reader.matchAll(/\{\s*id:\s*"[^"]+",\s*series:\s*"[^"]+",\s*
 const allowedWords = new Set([
   ...a1Words,
   ...introducedWords,
+  "an",
+  "color",
   "cannot",
   "can't",
 ]);
