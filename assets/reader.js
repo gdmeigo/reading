@@ -536,6 +536,10 @@ function readingBodyText(text) {
   return textToBlocks(text).slice(1).join("\n\n");
 }
 
+function readingFullText(text) {
+  return textToBlocks(text).join("\n\n");
+}
+
 function escapeRegExp(text) {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -672,7 +676,7 @@ function appendTextActions(section, text, filename) {
 function renderReadingSection(section, text, info, filename) {
   const bodyText = readingBodyText(text);
   const notes = glossaryNotesForText(bodyText, info.id);
-  appendTextActions(section, textWithFootnotes(bodyText, notes), filename);
+  appendTextActions(section, textWithFootnotes(readingFullText(text), notes), filename);
   textToBlocks(text).slice(1).forEach((block) => appendParagraph(section, block));
   appendFootnotes(section, notes);
   appendParagraph(section, levelStageText(info), "stage");
