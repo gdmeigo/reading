@@ -720,6 +720,13 @@ function appendFeedbackAction(section, meta) {
   attachFeedbackThanks(feedbackLink, actions);
 }
 
+function appendReadingDivider(section) {
+  const divider = document.createElement("div");
+  divider.className = "reading-divider";
+  divider.setAttribute("aria-hidden", "true");
+  section.appendChild(divider);
+}
+
 function attachFeedbackThanks(link, container) {
   const thanks = document.createElement("span");
   thanks.className = "feedback-thanks";
@@ -738,6 +745,7 @@ function renderReadingSection(section, text, info, filename, meta) {
   const notes = glossaryNotesForText(bodyText, info.id);
   appendTextActions(section, textWithFootnotes(readingFullText(text), notes), filename);
   appendFeedbackAction(section, meta);
+  appendReadingDivider(section);
   textToBlocks(text).slice(1).forEach((block) => appendParagraph(section, block));
   appendFootnotes(section, notes);
   appendParagraph(section, levelStageText(info), "stage");

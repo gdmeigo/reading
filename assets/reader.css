@@ -74,8 +74,6 @@ button {
 }
 
 section {
-  border-top: 1.5px solid #111;
-  padding-top: 12px;
   margin-top: 18px;
   break-inside: avoid;
   page-break-inside: avoid;
@@ -107,6 +105,11 @@ p {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  margin: 0 0 12px;
+}
+
+.reading-divider {
+  border-top: 1.5px solid #111;
   margin: 0 0 12px;
 }
 
