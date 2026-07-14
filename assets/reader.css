@@ -110,6 +110,12 @@ p {
   margin: 0 0 12px;
 }
 
+.feedback-thanks {
+  align-self: center;
+  color: #555;
+  font-size: 9.5pt;
+}
+
 .footnotes {
   border-top: 1px solid #777;
   margin-top: 12px;

@@ -31,7 +31,7 @@ const progressRows = [
 ];
 
 const contentRows = [
-  ["GDM-1", "Very Short", "Mystery", "The Little Door", "graded-story", "lessons/graded-story/level-1.txt"],
+  ["GDM-41-10", "Very Short", "Mystery", "The Little Door", "graded-story", "lessons/graded-story/level-1.txt"],
   ["GDM-1", "Very Short", "Human Drama", "The Blue Lunch Box", "blue-lunch-box", "lessons/blue-lunch-box/level-1.txt"],
   ["GDM-1", "Very Short", "Human Drama", "The Quiet Bread Shop", "bread-shop", "lessons/bread-shop/level-1.txt"],
   ["GDM-1", "Very Short", "SF", "The Star Bus", "star-bus", "lessons/star-bus/level-1.txt"],

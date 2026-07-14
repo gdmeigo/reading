@@ -92,6 +92,7 @@ const TARGET_READING_LEVELS = [1, 3, 7, 8];
 const MAX_VISIBLE_CHOICES = 3;
 const INDEX_SELECTION_STORAGE_KEY = "reading.indexSelection.v1";
 const FEEDBACK_ISSUE_URL = "https://github.com/gdmeigo/reading/issues/new";
+const FEEDBACK_THANKS_TEXT = "Thank you for the feedback. If you submitted the GitHub issue, we will review it.";
 const CEFR_A1_WORDS = new Set((window.CEFR_A1_WORDS || []).map((word) => word.toLowerCase()));
 
 const READING_VARIANTS = [
@@ -280,7 +281,7 @@ const PROGRESS_ITEMS = [
 ];
 
 const CONTENT_ITEMS = [
-  { id: "GDM-1", variant: "very-short", level: 1, slug: "graded-story" },
+  { id: "GDM-41-10", variant: "very-short", level: 1, slug: "graded-story" },
   { id: "GDM-1", variant: "very-short", level: 1, slug: "blue-lunch-box" },
   { id: "GDM-1", variant: "very-short", level: 1, slug: "bread-shop" },
   { id: "GDM-1", variant: "very-short", level: 1, slug: "star-bus" },
@@ -716,6 +717,20 @@ function appendFeedbackAction(section, meta) {
   feedbackLink.rel = "noopener";
   feedbackLink.textContent = "Send feedback";
   actions.appendChild(feedbackLink);
+  attachFeedbackThanks(feedbackLink, actions);
+}
+
+function attachFeedbackThanks(link, container) {
+  const thanks = document.createElement("span");
+  thanks.className = "feedback-thanks";
+  thanks.hidden = true;
+  thanks.textContent = FEEDBACK_THANKS_TEXT;
+  link.addEventListener("click", () => {
+    window.setTimeout(() => {
+      thanks.hidden = false;
+    }, 400);
+  });
+  container.appendChild(thanks);
 }
 
 function renderReadingSection(section, text, info, filename, meta) {
@@ -754,7 +769,10 @@ async function renderStoryPage(root) {
     heading.textContent = storyDisplayTitle(story, info.level);
     section.appendChild(heading);
     section.id = `level-${info.level}`;
-    const contentItem = requestedId ? CONTENT_ITEMS.find((item) => item.id === requestedId && item.slug === story.slug) : null;
+    const contentItem = requestedId
+      ? CONTENT_ITEMS.find((item) => item.id === requestedId && item.slug === story.slug && item.level === info.level) ||
+        CONTENT_ITEMS.find((item) => item.id === requestedId && item.slug === story.slug)
+      : null;
     const contentLevel = contentItem?.level || info.level;
     const text = await loadText(`${basePath}/level-${contentLevel}.txt`);
     const itemInfo = readingInfo(info, requestedId);
@@ -951,6 +969,13 @@ function bootIndexPage(root) {
   genreInput.addEventListener("change", handleChange);
   renderIndexResults(root);
   renderStoryPicker(root);
+  setupSiteFeedbackThanks(root);
+}
+
+function setupSiteFeedbackThanks(root) {
+  const link = root.querySelector("[data-site-feedback]");
+  if (!link || !link.parentElement) return;
+  attachFeedbackThanks(link, link.parentElement);
 }
 
 async function boot() {
