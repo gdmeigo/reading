@@ -288,7 +288,7 @@ const CONTENT_ITEMS = [
   { id: "GDM-1", variant: "very-short", level: 1, slug: "silver-stone" },
   { id: "GDM-1", variant: "very-short", level: 1, slug: "red-bag-path" },
   { id: "GDM-1", variant: "very-short", level: 1, slug: "wrong-robot" },
-  { id: "GDM-1", variant: "short", level: 3, slug: "red-pin" },
+  { id: "GDM-41-10", variant: "short", level: 3, slug: "red-pin" },
   { id: "GDM-10", variant: "short", level: 3, slug: "book-under-hat" },
   { id: "NH1-1-7-V", variant: "short", level: 3, slug: "water-pen-trick" },
   { id: "GDM-37-4", variant: "short", level: 3, slug: "where-is-the-bell" },

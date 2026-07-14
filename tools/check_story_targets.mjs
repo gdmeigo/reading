@@ -7,7 +7,7 @@ const requirements = {
   "GDM-10": /this book is/i,
   "GDM-22": /(water[\s\S]*pen|pen[\s\S]*water|these pens are|pens are)/i,
   "GDM-37-4": /\bwhere\b/i,
-  "GDM-41-10": /\bsee\b/i,
+  "GDM-41-10": /\b(see|sees|saw)\b/i,
   "NH1-0-FAMILY": /\b(brother|sister|mother|father)\b|[A-Z][a-z]+'s/i,
   "NH1-1-1-V": /\b(drink|play|watch|speak|study|read)\b/i,
   "NH1-1-3-CAN-Q": /\bcan\b[^.?!]*\?/i,
