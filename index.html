@@ -11,6 +11,7 @@
       background: #fff;
       font-family: Arial, Helvetica, sans-serif;
       line-height: 1.5;
+      overflow-wrap: anywhere;
     }
 
     .feedback-thanks {
@@ -19,6 +20,7 @@
     }
 
     main {
+      width: 100%;
       max-width: 760px;
       margin: 0 auto;
       padding: 40px 20px;
@@ -44,6 +46,7 @@
       border: 2px solid #111;
       padding: 18px;
       margin-bottom: 16px;
+      min-width: 0;
     }
 
     .lesson h2,
@@ -65,6 +68,7 @@
       border: 2px solid #111;
       padding: 18px;
       margin: 24px 0;
+      min-width: 0;
     }
 
     .id-form {
@@ -83,6 +87,8 @@
 
     input,
     select {
+      width: 100%;
+      min-width: 0;
       min-height: 42px;
       border: 2px solid #111;
       background: #fff;
@@ -99,6 +105,7 @@
 
     .choice-card {
       margin: 0;
+      min-width: 0;
     }
 
     .note,
@@ -119,6 +126,10 @@
     }
 
     @media (max-width: 680px) {
+      main {
+        padding: 28px 14px;
+      }
+
       .id-form,
       .choice-grid {
         grid-template-columns: 1fr;
