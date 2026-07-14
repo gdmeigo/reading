@@ -15,8 +15,6 @@ const STORIES = [
   { slug: "bread-shop", title: "The Quiet Bread Shop", genre: "Human Drama", levels: [1, 2, 3, 4, 5, 6, 7] },
   { slug: "star-bus", title: "The Star Bus", genre: "SF", levels: [1, 2, 3, 4, 5, 6, 7] },
   { slug: "moon-cup", title: "The Moon Cup", genre: "Fantasy", levels: [1, 2, 3, 4, 5, 6, 7] },
-  { slug: "silver-stone", title: "The Silver Stone", genre: "Fantasy", levels: [1] },
-  { slug: "red-bag-path", title: "The Red Bag Path", genre: "Adventure", levels: [1] },
   { slug: "wrong-robot", title: "The Wrong Robot", genre: "Comedy", levels: [1, 2, 3, 4, 5, 6, 7] },
   { slug: "banana-principal", title: "The Banana Principal", genre: "Comedy", levels: [3] },
   { slug: "red-pin", title: "The Red Pin", genre: "Mystery", levels: [3] },
@@ -88,7 +86,7 @@ const STORIES = [
 ];
 
 const DEFAULT_STORY_LEVELS = [1, 2, 3, 4, 5, 6];
-const TARGET_READING_LEVELS = [1, 3, 7, 8];
+const TARGET_READING_LEVELS = [3, 7, 8];
 const MAX_VISIBLE_CHOICES = 3;
 const INDEX_SELECTION_STORAGE_KEY = "reading.indexSelection.v1";
 const FEEDBACK_ISSUE_URL = "https://github.com/gdmeigo/reading/issues/new";
@@ -96,7 +94,6 @@ const FEEDBACK_THANKS_TEXT = "Thank you for the feedback. If you submitted the G
 const CEFR_A1_WORDS = new Set((window.CEFR_A1_WORDS || []).map((word) => word.toLowerCase()));
 
 const READING_VARIANTS = [
-  { key: "very-short", level: 1, label: "Very Short", note: "tiny starter reading" },
   { key: "short", level: 3, label: "Short", note: "compact classroom reading" },
   { key: "long", level: 7, label: "Long", note: "fuller story reading" },
   { key: "very-long", level: 8, label: "Very Long", note: "extended classroom reading" },
@@ -281,13 +278,6 @@ const PROGRESS_ITEMS = [
 ];
 
 const CONTENT_ITEMS = [
-  { id: "GDM-41-10", variant: "very-short", level: 1, slug: "graded-story" },
-  { id: "GDM-41-10", variant: "very-short", level: 1, slug: "blue-lunch-box" },
-  { id: "GDM-41-10", variant: "very-short", level: 1, slug: "bread-shop" },
-  { id: "NH1-1-11-1-MAYBE", variant: "very-short", level: 1, slug: "star-bus" },
-  { id: "GDM-41-10", variant: "very-short", level: 1, slug: "silver-stone" },
-  { id: "GDM-41-10", variant: "very-short", level: 1, slug: "red-bag-path" },
-  { id: "NH1-1-8-3-WHY", variant: "very-short", level: 1, slug: "wrong-robot" },
   { id: "GDM-41-10", variant: "short", level: 3, slug: "red-pin" },
   { id: "NH1-1-1-V", variant: "short", level: 3, slug: "book-under-hat" },
   { id: "NH1-1-7-V", variant: "short", level: 3, slug: "water-pen-trick" },
@@ -371,11 +361,6 @@ const CONTENT_ITEMS = [
 ];
 
 const LEVELS = [
-  {
-    level: 1,
-    id: "GDM-41-10",
-    stage: "Assumed grading: legacy very short archive. Present sentences, be/have/see/open/go, this/it, basic prepositions, simple nouns.",
-  },
   {
     level: 2,
     id: "GDM-41-10",
