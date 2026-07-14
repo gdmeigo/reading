@@ -13,6 +13,7 @@ const requirements = {
   "NH1-1-3-CAN-Q": /\bcan\b[^.?!]*\?/i,
   "NH1-1-5-2-DONTBE": /don't be/i,
   "NH1-1-6-V": /\b(write|writes|wrote|written)\b/i,
+  "NH1-1-7-V": /\b(know|knows|knew|make|makes|made|buy|buys|bought)\b/i,
   "NH1-1-8-3-WHY": /\bwhy\b/i,
   "NH1-1-10-V": /\b(travel|visit|listen|feel)\b/i,
   "NH1-1-11-1-MAYBE": /\bmaybe\b/i,
