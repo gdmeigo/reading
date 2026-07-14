@@ -647,6 +647,8 @@ function feedbackIssueUrl(meta) {
     `- ID: ${meta.id}`,
     `- Page: ${pageUrl}${meta.anchor || ""}`,
     "",
+    "## Name (optional)",
+    "",
     "## Feedback Type",
     "- [ ] Too difficult",
     "- [ ] Grading / target item issue",
