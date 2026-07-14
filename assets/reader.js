@@ -687,8 +687,8 @@ async function renderStoryPage(root) {
   const requestedId = params.get("id");
 
   const pageTitle = requestedLevel ? storyDisplayTitle(story, requestedLevel.level) : story.title;
-  document.title = requestedLevel ? `${pageTitle} - ${levelLabel(requestedLevel.level)}` : story.title;
-  root.querySelector("h1").textContent = requestedLevel ? `${pageTitle}: ${levelLabel(requestedLevel.level)}` : story.title;
+  document.title = requestedLevel ? pageTitle : story.title;
+  root.querySelector("h1").textContent = requestedLevel ? pageTitle : story.title;
 
   const container = root.querySelector("[data-content]");
   container.textContent = "";
@@ -701,7 +701,7 @@ async function renderStoryPage(root) {
     if (!storySupportsLevel(story, info.level)) continue;
     const section = document.createElement("section");
     const heading = document.createElement("h2");
-    heading.textContent = `${storyDisplayTitle(story, info.level)}: ${levelLabel(info.level)}`;
+    heading.textContent = storyDisplayTitle(story, info.level);
     section.appendChild(heading);
     section.id = `level-${info.level}`;
     const contentItem = requestedId ? CONTENT_ITEMS.find((item) => item.id === requestedId && item.slug === story.slug) : null;
