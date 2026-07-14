@@ -91,6 +91,7 @@ const DEFAULT_STORY_LEVELS = [1, 2, 3, 4, 5, 6];
 const TARGET_READING_LEVELS = [1, 3, 7, 8];
 const MAX_VISIBLE_CHOICES = 3;
 const INDEX_SELECTION_STORAGE_KEY = "reading.indexSelection.v1";
+const FEEDBACK_ISSUE_URL = "https://github.com/gdmeigo/reading/issues/new";
 const CEFR_A1_WORDS = new Set((window.CEFR_A1_WORDS || []).map((word) => word.toLowerCase()));
 
 const READING_VARIANTS = [
@@ -632,6 +633,35 @@ function downloadText(filename, text) {
   URL.revokeObjectURL(url);
 }
 
+function feedbackIssueUrl(meta) {
+  const title = `[Feedback] ${meta.title}`;
+  const pageUrl = window.location.href.split("#")[0];
+  const body = [
+    "## Content",
+    `- Title: ${meta.title}`,
+    `- Slug: ${meta.slug}`,
+    `- Genre: ${meta.genre}`,
+    `- Length: ${meta.length}`,
+    `- Level: ${meta.level}`,
+    `- ID: ${meta.id}`,
+    `- Page: ${pageUrl}${meta.anchor || ""}`,
+    "",
+    "## Feedback Type",
+    "- [ ] Too difficult",
+    "- [ ] Grading / target item issue",
+    "- [ ] Vocabulary / footnote issue",
+    "- [ ] Story issue",
+    "- [ ] Typo or wording",
+    "- [ ] Display / copy / download issue",
+    "- [ ] Other",
+    "",
+    "## Comment",
+    "",
+  ].join("\n");
+  const params = new URLSearchParams({ title, body, labels: "feedback" });
+  return `${FEEDBACK_ISSUE_URL}?${params.toString()}`;
+}
+
 async function copyText(text) {
   if (navigator.clipboard && window.isSecureContext) {
     await navigator.clipboard.writeText(text);
@@ -673,10 +703,23 @@ function appendTextActions(section, text, filename) {
   section.appendChild(actions);
 }
 
-function renderReadingSection(section, text, info, filename) {
+function appendFeedbackAction(section, meta) {
+  const actions = section.querySelector(".text-actions");
+  if (!actions) return;
+  const feedbackLink = document.createElement("a");
+  feedbackLink.className = "button-link";
+  feedbackLink.href = feedbackIssueUrl(meta);
+  feedbackLink.target = "_blank";
+  feedbackLink.rel = "noopener";
+  feedbackLink.textContent = "Send feedback";
+  actions.appendChild(feedbackLink);
+}
+
+function renderReadingSection(section, text, info, filename, meta) {
   const bodyText = readingBodyText(text);
   const notes = glossaryNotesForText(bodyText, info.id);
   appendTextActions(section, textWithFootnotes(readingFullText(text), notes), filename);
+  appendFeedbackAction(section, meta);
   textToBlocks(text).slice(1).forEach((block) => appendParagraph(section, block));
   appendFootnotes(section, notes);
   appendParagraph(section, levelStageText(info), "stage");
@@ -711,7 +754,16 @@ async function renderStoryPage(root) {
     const contentItem = requestedId ? CONTENT_ITEMS.find((item) => item.id === requestedId && item.slug === story.slug) : null;
     const contentLevel = contentItem?.level || info.level;
     const text = await loadText(`${basePath}/level-${contentLevel}.txt`);
-    renderReadingSection(section, text, readingInfo(info, requestedId), `${story.slug}-${levelLabel(info.level).toLowerCase()}.txt`);
+    const itemInfo = readingInfo(info, requestedId);
+    renderReadingSection(section, text, itemInfo, `${story.slug}-${levelLabel(info.level).toLowerCase()}.txt`, {
+      title: storyDisplayTitle(story, contentLevel),
+      slug: story.slug,
+      genre: storyGenreLabel(story),
+      length: levelLabel(info.level),
+      level: contentLevel,
+      id: itemInfo.id,
+      anchor: `#level-${info.level}`,
+    });
     container.appendChild(section);
   }
 }
@@ -736,7 +788,15 @@ async function renderLevelPage(root) {
     heading.textContent = storyDisplayTitle(story, level);
     section.appendChild(heading);
     const text = await loadText(`${basePath}/${story.slug}/level-${level}.txt`);
-    renderReadingSection(section, text, info, `${story.slug}-level-${level}.txt`);
+    renderReadingSection(section, text, info, `${story.slug}-level-${level}.txt`, {
+      title: storyDisplayTitle(story, level),
+      slug: story.slug,
+      genre: storyGenreLabel(story),
+      length: levelLabel(level),
+      level,
+      id: info.id,
+      anchor: `#${story.slug}`,
+    });
     container.appendChild(section);
   }
 }

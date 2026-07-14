@@ -45,6 +45,16 @@ button {
   padding: 5px 9px;
 }
 
+.button-link {
+  border: 1.5px solid #111;
+  color: #111;
+  display: inline-block;
+  font-size: 9.5pt;
+  line-height: 1.45;
+  padding: 5px 9px;
+  text-decoration: none;
+}
+
 .note,
 .stage,
 .nav {
