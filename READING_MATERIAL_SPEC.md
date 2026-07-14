@@ -6,6 +6,17 @@
 - If a story needs a familiar role in another genre, create a new genre-specific name instead of borrowing an existing one.
 - Multi-genre stories should use a dedicated combined-lane cast unless the story is intentionally a crossover.
 
+# Grading Audit Policy
+
+- グレーディングは教材仕様の最重要条件とする。
+- 各本文は、割り当てられた `ID` までに導入済みの語彙・文法項目だけで読めることを原則にする。
+- 新しい本文を追加・修正したら、必ず `node tools/audit_grading.mjs` を実行する。
+- `node tools/audit_grading.mjs` は `assets/reader.js` の `PROGRESS_ITEMS` と `CONTENT_ITEMS` を読み、本文中にIDより後の導入項目が含まれていないか検査する。
+- 導入順序を更新した後は、`node tools/audit_grading.mjs --write` を実行して、全コンテンツの必要最小IDを再特定し、`assets/reader.js` と `tools/build_unified_current_id_workbook.mjs` の本文IDを更新する。
+- `tools/grading_rules.mjs` を、本文ターゲットチェックとグレーディング監査の共通ルールとして扱う。IDごとの語彙・文法シグナルを変更する場合は、このファイルを更新する。
+- `node tools/check_story_targets.mjs` は、各本文が割り当てIDそのもののターゲット表現を含むかを確認する。
+- `node tools/check_do_questions.mjs` は、Do/Does/Did question が導入IDより前に混入していないかを確認する。
+
 # GDM リーディング教材仕様
 
 ## 目的

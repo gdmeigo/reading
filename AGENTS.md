@@ -2,6 +2,15 @@
 
 Follow [LEXICAL_POLICY.md](LEXICAL_POLICY.md) when writing or revising story text. The `seat` over `chair` rule applies only to GDM-stage stories and is not enforced from NH1 onward.
 
+## Grading Policy
+
+Grading order is the highest-priority constraint for this project.
+
+- Before finishing any story or ID-map change, run `node tools/audit_grading.mjs`.
+- If the grading sequence or rule signals are updated, run `node tools/audit_grading.mjs --write` to recalculate the minimum valid ID for every content item, then regenerate `outputs/progress-map/unified_current_id_story_map.xlsx`.
+- Keep ID-specific vocabulary and grammar signals in `tools/grading_rules.mjs`; do not duplicate grading regexes in separate scripts.
+- Run `node tools/check_story_targets.mjs` to confirm every content item includes its assigned target expression.
+
 ## Character Policy
 
 Follow [CHARACTER_GUIDE.md](CHARACTER_GUIDE.md) when writing or revising story text. Choose characters from the story genre's cast first; do not reuse a student name across unrelated genres just because the role is similar.
