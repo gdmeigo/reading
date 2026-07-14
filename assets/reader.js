@@ -773,9 +773,12 @@ async function renderStoryPage(root) {
   for (const info of visibleLevels) {
     if (!storySupportsLevel(story, info.level)) continue;
     const section = document.createElement("section");
-    const heading = document.createElement("h2");
-    heading.textContent = storyDisplayTitle(story, info.level);
-    section.appendChild(heading);
+    const sectionTitle = storyDisplayTitle(story, info.level);
+    if (sectionTitle !== pageTitle) {
+      const heading = document.createElement("h2");
+      heading.textContent = sectionTitle;
+      section.appendChild(heading);
+    }
     section.id = `level-${info.level}`;
     const contentItem = requestedId
       ? CONTENT_ITEMS.find((item) => item.id === requestedId && item.slug === story.slug && item.level === info.level) ||
