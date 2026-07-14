@@ -41,7 +41,7 @@ const contentRows = [
   ["GDM-10", "Short", "Comedy", "The Book Under the Hat", "book-under-hat", "lessons/book-under-hat/level-3.txt"],
   ["GDM-22", "Short", "Mystery", "The Water Pen Trick", "water-pen-trick", "lessons/water-pen-trick/level-3.txt"],
   ["GDM-37-4", "Short", "Mystery", "Where Is the Bell?", "where-is-the-bell", "lessons/where-is-the-bell/level-3.txt"],
-  ["GDM-41-10", "Short", "Mystery", "The Little Door", "graded-story", "lessons/graded-story/level-3.txt"],
+  ["GDM-41-10", "Short", "Mystery", "The Little Door, Part 1", "graded-story", "lessons/graded-story/level-3.txt"],
   ["NH1-0-FAMILY", "Short", "Human Drama", "Rina's Brother", "rina-brother", "lessons/rina-brother/level-3.txt"],
   ["NH1-1-1-V", "Short", "Human Drama", "The Quiet Bread Shop", "bread-shop", "lessons/bread-shop/level-3.txt"],
   ["NH1-1-1-V", "Long", "Human Drama", "The Rainy Club Map", "rainy-club-map", "lessons/rainy-club-map/level-7.txt"],

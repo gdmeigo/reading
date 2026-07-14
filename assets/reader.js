@@ -1,5 +1,14 @@
 const STORIES = [
-  { slug: "graded-story", title: "The Little Door", genre: "Mystery", levels: [1, 2, 3, 4, 5, 6, 7] },
+  {
+    slug: "graded-story",
+    title: "The Little Door",
+    genre: "Mystery",
+    levels: [1, 2, 3, 4, 5, 6, 7],
+    levelTitles: {
+      3: "The Little Door, Part 1",
+      7: "The Little Door, Part 2",
+    },
+  },
   { slug: "blue-lunch-box", title: "The Blue Lunch Box", genre: "Human Drama" },
   { slug: "kite-day", title: "The Paper Rocket", genre: "Human Drama" },
   { slug: "night-bus", title: "The Last Bus", genre: "Mystery" },
@@ -421,6 +430,10 @@ function storyGenreLabel(story) {
   return storyGenres(story).join(" / ");
 }
 
+function storyDisplayTitle(story, level) {
+  return story.levelTitles?.[Number(level)] || story.title;
+}
+
 function storyMatchesGenre(story, genre) {
   return genre === "all" || storyGenres(story).some((item) => item.toLowerCase() === genre);
 }
@@ -673,8 +686,9 @@ async function renderStoryPage(root) {
   const params = new URLSearchParams(window.location.search);
   const requestedId = params.get("id");
 
-  document.title = requestedLevel ? `${story.title} - ${levelLabel(requestedLevel.level)}` : story.title;
-  root.querySelector("h1").textContent = requestedLevel ? `${story.title}: ${levelLabel(requestedLevel.level)}` : story.title;
+  const pageTitle = requestedLevel ? storyDisplayTitle(story, requestedLevel.level) : story.title;
+  document.title = requestedLevel ? `${pageTitle} - ${levelLabel(requestedLevel.level)}` : story.title;
+  root.querySelector("h1").textContent = requestedLevel ? `${pageTitle}: ${levelLabel(requestedLevel.level)}` : story.title;
 
   const container = root.querySelector("[data-content]");
   container.textContent = "";
@@ -687,7 +701,7 @@ async function renderStoryPage(root) {
     if (!storySupportsLevel(story, info.level)) continue;
     const section = document.createElement("section");
     const heading = document.createElement("h2");
-    heading.textContent = levelLabel(info.level);
+    heading.textContent = `${storyDisplayTitle(story, info.level)}: ${levelLabel(info.level)}`;
     section.appendChild(heading);
     section.id = `level-${info.level}`;
     const contentItem = requestedId ? CONTENT_ITEMS.find((item) => item.id === requestedId && item.slug === story.slug) : null;
@@ -715,7 +729,7 @@ async function renderLevelPage(root) {
     const section = document.createElement("section");
     section.id = story.slug;
     const heading = document.createElement("h2");
-    heading.textContent = story.title;
+    heading.textContent = storyDisplayTitle(story, level);
     section.appendChild(heading);
     const text = await loadText(`${basePath}/${story.slug}/level-${level}.txt`);
     renderReadingSection(section, text, info, `${story.slug}-level-${level}.txt`);
@@ -774,7 +788,7 @@ function renderIndexResults(root) {
     const card = document.createElement("section");
     card.className = "lesson choice-card";
     const heading = document.createElement("h3");
-    heading.textContent = story.title;
+    heading.textContent = storyDisplayTitle(story, item.level);
     const genreText = document.createElement("p");
     genreText.className = "note";
     genreText.textContent = `${storyGenreLabel(story)} / ${item.id}${progress ? ` / ${progress.label}` : ""}`;
