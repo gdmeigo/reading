@@ -89,6 +89,7 @@ const DEFAULT_STORY_LEVELS = [1, 2, 3, 4, 5, 6];
 const TARGET_READING_LEVELS = [3, 7, 8];
 const MAX_VISIBLE_CHOICES = 3;
 const INDEX_SELECTION_STORAGE_KEY = "reading.indexSelection.v1";
+const CUSTOM_GRADES_STORAGE_KEY = "reading.customGrades.v1";
 const FEEDBACK_ISSUE_URL = "https://github.com/gdmeigo/reading/issues/new";
 const FEEDBACK_THANKS_TEXT = "Thank you for the feedback. If you submitted the GitHub issue, we will review it.";
 const CEFR_A1_WORDS = new Set((window.CEFR_A1_WORDS || []).map((word) => word.toLowerCase()));
@@ -253,7 +254,7 @@ const GLOSSARY_NOTES = [
   { headword: "wind", terms: ["wind"], note: "air that moves outside" },
 ];
 
-const PROGRESS_ITEMS = [
+let PROGRESS_ITEMS = [
   { id: "GDM-1", series: "GDM", label: "You / He / She / It" },
   { id: "GDM-10", series: "GDM", label: "This book is" },
   { id: "GDM-22", series: "GDM", label: "water / These pens are" },
@@ -277,7 +278,7 @@ const PROGRESS_ITEMS = [
   { id: "NH2-2-7-2-VOICE", series: "NH2", label: "passive voice" },
 ];
 
-const CONTENT_ITEMS = [
+let CONTENT_ITEMS = [
   { id: "GDM-41-10", variant: "short", level: 3, slug: "red-pin" },
   { id: "NH1-1-1-V", variant: "short", level: 3, slug: "book-under-hat" },
   { id: "NH1-1-7-V", variant: "short", level: 3, slug: "water-pen-trick" },
@@ -359,6 +360,9 @@ const CONTENT_ITEMS = [
   { id: "NH1-1-7-V", variant: "short", level: 3, slug: "paper-star-plan" },
   { id: "NH2-2-3-1-SHOULD", variant: "short", level: 3, slug: "quiet-question" },
 ];
+
+const DEFAULT_PROGRESS_ITEMS = PROGRESS_ITEMS.map((item) => ({ ...item }));
+const DEFAULT_CONTENT_ITEMS = CONTENT_ITEMS.map((item) => ({ ...item }));
 
 const LEVELS = [
   {
@@ -472,9 +476,251 @@ function variantByLevel(level) {
   return READING_VARIANTS.find((variant) => variant.level === Number(level));
 }
 
+function levelForVariant(key) {
+  return variantByKey(key)?.level || 3;
+}
+
 function levelLabel(level) {
   const variant = variantByLevel(level);
   return variant ? variant.label : "Archive";
+}
+
+function normalizeHeaderValue(value) {
+  return String(value || "").trim();
+}
+
+function normalizeGradeId(value) {
+  return normalizeHeaderValue(value);
+}
+
+function normalizeVariant(value) {
+  const normalized = normalizeHeaderValue(value).toLowerCase().replace(/_/g, "-");
+  if (normalized.includes("very") && normalized.includes("long")) return "very-long";
+  if (normalized === "8") return "very-long";
+  if (normalized.includes("long") || normalized === "7") return "long";
+  if (normalized.includes("short") || normalized === "3") return "short";
+  return normalized;
+}
+
+function sheetRows(workbook, sheetName) {
+  const sheet = workbook.Sheets[sheetName];
+  if (!sheet || !window.XLSX) return [];
+  return window.XLSX.utils.sheet_to_json(sheet, { defval: "" });
+}
+
+function cell(row, names) {
+  const wanted = names.map((name) => name.toLowerCase());
+  const key = Object.keys(row).find((item) => wanted.includes(item.toLowerCase().trim()));
+  return key ? row[key] : "";
+}
+
+function rebuildGradeData(progressItems, contentItems) {
+  const seenGrades = new Set();
+  const grades = progressItems
+    .map((item) => ({
+      id: normalizeGradeId(item.id),
+      series: normalizeHeaderValue(item.series) || "Custom",
+      label: normalizeHeaderValue(item.label) || normalizeGradeId(item.id),
+    }))
+    .filter((item) => item.id && !seenGrades.has(item.id) && seenGrades.add(item.id));
+
+  if (!grades.length) throw new Error("Grades sheet needs at least one Grade.");
+
+  const gradeIds = new Set(grades.map((item) => item.id));
+  const seenContent = new Set();
+  const content = contentItems
+    .map((item) => {
+      const id = normalizeGradeId(item.id);
+      const slug = normalizeHeaderValue(item.slug);
+      const variant = normalizeVariant(item.variant);
+      const level = Number(item.level) || levelForVariant(variant);
+      return { id, variant, level, slug };
+    })
+    .filter((item) => {
+      const story = storyBySlug(item.slug);
+      const key = `${item.id}:${item.variant}:${item.slug}:${item.level}`;
+      return (
+        item.id &&
+        gradeIds.has(item.id) &&
+        variantByKey(item.variant) &&
+        story &&
+        storySupportsLevel(story, item.level) &&
+        !seenContent.has(key) &&
+        seenContent.add(key)
+      );
+    });
+
+  if (!content.length) throw new Error("Content_Map sheet did not contain any usable story rows.");
+
+  PROGRESS_ITEMS = grades;
+  CONTENT_ITEMS = content;
+}
+
+function saveCustomGradePayload(payload) {
+  localStorage.setItem(CUSTOM_GRADES_STORAGE_KEY, JSON.stringify({
+    ...payload,
+    savedAt: new Date().toISOString(),
+  }));
+}
+
+function loadCustomGradePayload() {
+  try {
+    const payload = JSON.parse(localStorage.getItem(CUSTOM_GRADES_STORAGE_KEY) || "null");
+    if (!payload?.progressItems || !payload?.contentItems) return null;
+    rebuildGradeData(payload.progressItems, payload.contentItems);
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
+function resetCustomGrades() {
+  localStorage.removeItem(CUSTOM_GRADES_STORAGE_KEY);
+  rebuildGradeData(DEFAULT_PROGRESS_ITEMS, DEFAULT_CONTENT_ITEMS);
+}
+
+function gradeExportRows() {
+  return PROGRESS_ITEMS.map((item, index) => ({
+    Order: index + 1,
+    Grade: item.id,
+    Series: item.series,
+    Label: item.label,
+  }));
+}
+
+function contentExportRows() {
+  return CONTENT_ITEMS.map((item) => {
+    const story = storyBySlug(item.slug);
+    return {
+      Grade: item.id,
+      Length: variantByKey(item.variant)?.label || item.variant,
+      Level: item.level,
+      Genre: story ? storyGenreLabel(story) : "",
+      Title: story ? storyDisplayTitle(story, item.level) : "",
+      Slug: item.slug,
+    };
+  });
+}
+
+function csvCell(value) {
+  const text = String(value ?? "");
+  return /[",\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
+function csvLine(values) {
+  return values.map(csvCell).join(",");
+}
+
+function splitCsvLine(line) {
+  const cells = [];
+  let cell = "";
+  let quoted = false;
+  for (let index = 0; index < line.length; index += 1) {
+    const char = line[index];
+    if (char === '"' && quoted && line[index + 1] === '"') {
+      cell += '"';
+      index += 1;
+    } else if (char === '"') {
+      quoted = !quoted;
+    } else if (char === "," && !quoted) {
+      cells.push(cell);
+      cell = "";
+    } else {
+      cell += char;
+    }
+  }
+  cells.push(cell);
+  return cells;
+}
+
+function downloadBlob(filename, blob) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function exportGradeCsv() {
+  const headers = ["Section", "Order", "Grade", "Series", "Label", "Length", "Level", "Genre", "Title", "Slug"];
+  const rows = [
+    headers,
+    ...gradeExportRows().map((row) => ["Grades", row.Order, row.Grade, row.Series, row.Label, "", "", "", "", ""]),
+    ...contentExportRows().map((row) => ["Content_Map", "", row.Grade, "", "", row.Length, row.Level, row.Genre, row.Title, row.Slug]),
+  ];
+  const csv = rows.map(csvLine).join("\r\n");
+  downloadBlob("gdm-reading-grade-table.csv", new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  return "CSV";
+}
+
+function exportGradeWorkbook() {
+  if (!window.XLSX) return exportGradeCsv();
+  const workbook = window.XLSX.utils.book_new();
+  window.XLSX.utils.book_append_sheet(
+    workbook,
+    window.XLSX.utils.aoa_to_sheet([
+      ["How to use"],
+      ["Edit Grades to change the grade order and labels."],
+      ["Edit Content_Map Grade values to attach readings to different grades."],
+      ["Keep Slug and Length values unchanged unless you know the matching story file exists."],
+      ["Import this workbook on the top page. The imported table is saved in this browser."],
+    ]),
+    "How_To_Use",
+  );
+  window.XLSX.utils.book_append_sheet(workbook, window.XLSX.utils.json_to_sheet(gradeExportRows()), "Grades");
+  window.XLSX.utils.book_append_sheet(workbook, window.XLSX.utils.json_to_sheet(contentExportRows()), "Content_Map");
+  window.XLSX.writeFile(workbook, "gdm-reading-grade-table.xlsx");
+  return "Excel";
+}
+
+function parseGradeWorkbook(workbook) {
+  const gradeRows = sheetRows(workbook, "Grades").map((row) => ({
+    id: cell(row, ["Grade", "ID"]),
+    series: cell(row, ["Series"]),
+    label: cell(row, ["Label", "導入項目"]),
+  }));
+  const contentSheetName = workbook.SheetNames.includes("Content_Map") ? "Content_Map" : "Content Map";
+  const contentRows = sheetRows(workbook, contentSheetName).map((row) => ({
+    id: cell(row, ["Grade", "ID"]),
+    variant: cell(row, ["Length", "Variant"]),
+    level: cell(row, ["Level"]),
+    slug: cell(row, ["Slug"]),
+  }));
+  return { progressItems: gradeRows, contentItems: contentRows };
+}
+
+function parseGradeCsv(text) {
+  const lines = text.replace(/^\uFEFF/, "").split(/\r?\n/).filter((line) => line.trim());
+  if (lines.length < 2) throw new Error("CSV file is empty.");
+  const headers = splitCsvLine(lines[0]).map((header) => header.trim());
+  const rows = lines.slice(1).map((line) => {
+    const cells = splitCsvLine(line);
+    return Object.fromEntries(headers.map((header, index) => [header, cells[index] || ""]));
+  });
+  return {
+    progressItems: rows
+      .filter((row) => normalizeHeaderValue(row.Section) === "Grades")
+      .map((row) => ({ id: row.Grade || row.ID, series: row.Series, label: row.Label })),
+    contentItems: rows
+      .filter((row) => normalizeHeaderValue(row.Section) === "Content_Map")
+      .map((row) => ({ id: row.Grade || row.ID, variant: row.Length, level: row.Level, slug: row.Slug })),
+  };
+}
+
+async function importGradeWorkbook(file) {
+  const isCsv = file.name.toLowerCase().endsWith(".csv");
+  if (!window.XLSX && !isCsv) throw new Error("Excel library is not available yet. Import CSV instead.");
+  const payload = isCsv
+    ? parseGradeCsv(await file.text())
+    : parseGradeWorkbook(window.XLSX.read(await file.arrayBuffer(), { type: "array" }));
+  rebuildGradeData(payload.progressItems, payload.contentItems);
+  saveCustomGradePayload({
+    progressItems: PROGRESS_ITEMS.map((item) => ({ ...item })),
+    contentItems: CONTENT_ITEMS.map((item) => ({ ...item })),
+  });
 }
 
 function storyContentItem(story, id) {
@@ -951,6 +1197,90 @@ function restoreIndexSelection(root) {
   });
 }
 
+function setGradeStatus(root, text, className = "note") {
+  const status = root.querySelector("[data-grade-status]");
+  if (!status) return;
+  status.className = className;
+  status.textContent = text;
+}
+
+function customGradeIsActive() {
+  try {
+    return Boolean(localStorage.getItem(CUSTOM_GRADES_STORAGE_KEY));
+  } catch {
+    return false;
+  }
+}
+
+function renderGradeOptions(root) {
+  const input = root.querySelector("[data-id]");
+  if (!input) return;
+  const previous = input.value;
+  input.textContent = "";
+
+  const allOption = document.createElement("option");
+  allOption.value = "all";
+  allOption.textContent = "All";
+  input.appendChild(allOption);
+
+  PROGRESS_ITEMS.forEach((item) => {
+    const option = document.createElement("option");
+    option.value = item.id;
+    option.textContent = `${item.id} / ${item.label}`;
+    input.appendChild(option);
+  });
+
+  input.value = [...input.options].some((option) => option.value === previous) ? previous : "all";
+}
+
+function updateGradeStatus(root) {
+  setGradeStatus(
+    root,
+    customGradeIsActive()
+      ? `Custom Grade table is active. ${PROGRESS_ITEMS.length} grades and ${CONTENT_ITEMS.length} content links are saved in this browser.`
+      : "Default Grade table is active.",
+  );
+}
+
+function setupGradeTools(root) {
+  const exportButton = root.querySelector("[data-export-grades]");
+  const importInput = root.querySelector("[data-import-grades]");
+  const resetButton = root.querySelector("[data-reset-grades]");
+
+  exportButton?.addEventListener("click", () => {
+    try {
+      const format = exportGradeWorkbook();
+      setGradeStatus(root, `Grade ${format} exported. Edit it in Excel, then import it here.`, "note");
+    } catch (error) {
+      setGradeStatus(root, `Could not export Grade Excel: ${error.message}`, "error");
+    }
+  });
+
+  importInput?.addEventListener("change", async () => {
+    const file = importInput.files?.[0];
+    if (!file) return;
+    try {
+      await importGradeWorkbook(file);
+      renderGradeOptions(root);
+      saveIndexSelection(root);
+      renderIndexResults(root);
+      updateGradeStatus(root);
+    } catch (error) {
+      setGradeStatus(root, `Could not import Grade Excel: ${error.message}`, "error");
+    } finally {
+      importInput.value = "";
+    }
+  });
+
+  resetButton?.addEventListener("click", () => {
+    resetCustomGrades();
+    renderGradeOptions(root);
+    saveIndexSelection(root);
+    renderIndexResults(root);
+    updateGradeStatus(root);
+  });
+}
+
 function bootIndexPage(root) {
   const currentInput = root.querySelector("[data-id]");
   const variantInput = root.querySelector("[data-reading-variant]");
@@ -959,12 +1289,15 @@ function bootIndexPage(root) {
     saveIndexSelection(root);
     renderIndexResults(root);
   };
+  renderGradeOptions(root);
   restoreIndexSelection(root);
   currentInput.addEventListener("change", handleChange);
   variantInput.addEventListener("change", handleChange);
   genreInput.addEventListener("change", handleChange);
   renderIndexResults(root);
   renderStoryPicker(root);
+  setupGradeTools(root);
+  updateGradeStatus(root);
   setupSiteFeedbackThanks(root);
 }
 
@@ -977,6 +1310,7 @@ function setupSiteFeedbackThanks(root) {
 async function boot() {
   const root = document.querySelector("[data-reader]");
   if (!root) return;
+  loadCustomGradePayload();
 
   try {
     if (root.dataset.reader === "index") {

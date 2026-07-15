@@ -79,12 +79,21 @@
       margin-bottom: 18px;
     }
 
+    .grade-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin: 0 0 18px;
+    }
+
     label {
       display: grid;
       gap: 6px;
       font-weight: 700;
     }
 
+    button,
     input,
     select {
       width: 100%;
@@ -95,6 +104,12 @@
       color: #111;
       font: inherit;
       padding: 8px 10px;
+    }
+
+    button {
+      width: auto;
+      cursor: pointer;
+      font-weight: 700;
     }
 
     .choice-grid {
@@ -134,6 +149,11 @@
       .choice-grid {
         grid-template-columns: 1fr;
       }
+
+      .grade-tools button,
+      .grade-tools input {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -149,33 +169,19 @@
   <section class="id-picker">
     <h2 class="group">Find Readings</h2>
     <p>Filter by Grade, length, and genre. After the GDM bridge point, the sequence follows NH1 and then NH2.</p>
+    <div class="grade-tools">
+      <button type="button" data-export-grades>Export Grade Excel/CSV</button>
+      <label>
+        Import Grade Excel/CSV
+        <input type="file" data-import-grades accept=".xlsx,.xls,.csv">
+      </label>
+      <button type="button" data-reset-grades>Reset Grades</button>
+    </div>
+    <p class="note" data-grade-status>Default Grade table is active.</p>
     <div class="id-form">
       <label>
         Grade
-        <select data-id>
-          <option value="all" selected>All</option>
-          <option value="GDM-1">GDM-1 / You He She It</option>
-          <option value="GDM-10">GDM-10 / This book is</option>
-          <option value="GDM-22">GDM-22 / water, pens</option>
-          <option value="GDM-37-4">GDM-37-4 / Where</option>
-          <option value="GDM-41-10">GDM-41-10 / GDM bridge</option>
-          <option value="NH1-0-FAMILY">NH1-0-FAMILY / family</option>
-          <option value="NH1-1-1-V">NH1-1-1-V / daily verbs</option>
-          <option value="NH1-1-3-CAN-Q">NH1-1-3-CAN-Q / can question</option>
-          <option value="NH1-1-5-2-DONTBE">NH1-1-5-2-DONTBE / Don't be</option>
-          <option value="NH1-1-6-V">NH1-1-6-V / write</option>
-          <option value="NH1-1-7-V">NH1-1-7-V / know, make, buy</option>
-          <option value="NH1-1-8-3-WHY">NH1-1-8-3-WHY / Why</option>
-          <option value="NH1-1-10-V">NH1-1-10-V / travel, visit</option>
-          <option value="NH1-1-11-1-MAYBE">NH1-1-11-1-MAYBE / maybe</option>
-          <option value="NH2-2-1-3-SVOO">NH2-2-1-3-SVOO / show, teach, give</option>
-          <option value="NH2-2-2-4-BECAUSE">NH2-2-2-4-BECAUSE / because</option>
-          <option value="NH2-2-3-1-SHOULD">NH2-2-3-1-SHOULD / should</option>
-          <option value="NH2-2-4-1-HAVE-TO">NH2-2-4-1-HAVE-TO / have to</option>
-          <option value="NH2-2-5-1-HOW-TO">NH2-2-5-1-HOW-TO / how to do</option>
-          <option value="NH2-2-6-MORE-THAN">NH2-2-6-MORE-THAN / more than</option>
-          <option value="NH2-2-7-2-VOICE">NH2-2-7-2-VOICE / passive voice</option>
-        </select>
+        <select data-id></select>
       </label>
       <label>
         Length
@@ -215,6 +221,7 @@
 
 </main>
 <script src="assets/cefr-a1-words.js?v=20260713a"></script>
-<script src="assets/reader.js?v=20260714m"></script>
+<script async src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="assets/reader.js?v=20260714n"></script>
 </body>
 </html>
