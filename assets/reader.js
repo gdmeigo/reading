@@ -947,10 +947,14 @@ function appendFeedbackAction(section, meta) {
   if (!actions) return;
   const feedbackLink = document.createElement("a");
   feedbackLink.className = "button-link";
-  feedbackLink.href = feedbackIssueUrl(meta);
+  feedbackLink.href = "#";
   feedbackLink.target = "_blank";
   feedbackLink.rel = "noopener";
   feedbackLink.textContent = "Send feedback";
+  feedbackLink.addEventListener("click", (event) => {
+    event.preventDefault();
+    window.open(feedbackIssueUrl(meta), "_blank", "noopener");
+  });
   actions.appendChild(feedbackLink);
   attachFeedbackThanks(feedbackLink, actions);
 }
