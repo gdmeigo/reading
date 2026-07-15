@@ -369,7 +369,7 @@ const LEVELS = [
   {
     level: 3,
     id: "NH1-1-5-2-DONTBE",
-    stage: "Assumed grading: Short. Compact reading of about 120-180 words, simple paragraphs, clear four-part story movement, basic past forms, simple dialogue, and one visible target expression from the selected ID.",
+    stage: "Assumed grading: Short. Compact reading of about 120-180 words, simple paragraphs, clear four-part story movement, basic past forms, simple dialogue, and one visible target expression from the selected Grade.",
   },
   {
     level: 4,
@@ -389,12 +389,12 @@ const LEVELS = [
   {
     level: 7,
     id: "NH2-2-7-2-VOICE",
-    stage: "Assumed grading: Long. Fuller reading of about 300-450 words, multiple paragraphs, richer setting and motive, clearer suspense or emotional turn, and natural use of the selected ID target item while avoiding structures not yet introduced.",
+    stage: "Assumed grading: Long. Fuller reading of about 300-450 words, multiple paragraphs, richer setting and motive, clearer suspense or emotional turn, and natural use of the selected Grade target item while avoiding structures not yet introduced.",
   },
   {
     level: 8,
     id: "NH2-2-7-2-VOICE",
-    stage: "Assumed grading: Very Long. Extended reading of about 650-900 words, multiple scenes, stronger character arcs, clear comedy or mystery turns, and natural review of the selected ID target item.",
+    stage: "Assumed grading: Very Long. Extended reading of about 650-900 words, multiple scenes, stronger character arcs, clear comedy or mystery turns, and natural review of the selected Grade target item.",
   },
 ];
 
@@ -496,12 +496,12 @@ function readingInfo(baseInfo, requestedId) {
   return {
     ...baseInfo,
     id: item.id,
-    stage: `${baseInfo.stage} Selected ID: ${item.id} (${item.label}).`,
+    stage: `${baseInfo.stage} Selected Grade: ${item.id} (${item.label}).`,
   };
 }
 
 function levelStageText(info) {
-  return `${info.stage} ID: ${info.id}.`;
+  return `${info.stage} Grade: ${info.id}.`;
 }
 
 function textToBlocks(text) {
@@ -630,7 +630,7 @@ function feedbackIssueUrl(meta) {
     `- Genre: ${meta.genre}`,
     `- Length: ${meta.length}`,
     `- Level: ${meta.level}`,
-    `- ID: ${meta.id}`,
+    `- Grade: ${meta.id}`,
     `- Page: ${pageUrl}${meta.anchor || ""}`,
     "",
     "## Name (optional)",
@@ -832,14 +832,14 @@ function renderIndexResults(root) {
   container.textContent = "";
 
   if (!recentItems.length || !variant) {
-    appendParagraph(container, "Choose a valid ID and reading length.", "error");
+    appendParagraph(container, "Choose a valid Grade and reading length.", "error");
     return;
   }
 
   const summary = document.createElement("p");
   summary.className = "note";
-  const idText = selectedId === "all" ? "All IDs" : `ID: ${selectedId}`;
-  const scopeText = selectedId === "all" ? "all content IDs" : "content attached to this ID and nearby previous IDs";
+  const idText = selectedId === "all" ? "All Grades" : `Grade: ${selectedId}`;
+  const scopeText = selectedId === "all" ? "all content Grades" : "content attached to this Grade and nearby previous Grades";
   const limitText = selectedId === "all" ? "Showing all matching choices" : `Showing up to ${MAX_VISIBLE_CHOICES} choices`;
   summary.textContent = `${idText}. ${limitText} from ${scopeText}. Length: ${variant.label} (${variant.note}).`;
   container.appendChild(summary);
@@ -858,7 +858,7 @@ function renderIndexResults(root) {
     const emptyText =
       selectedId === "all"
         ? "No stories match this genre and length yet."
-        : "No stories match this genre and length near this ID yet. Choose ID: All to search every story.";
+        : "No stories match this genre and length near this Grade yet. Choose Grade: All to search every story.";
     appendParagraph(container, emptyText, "note");
     return;
   }
@@ -872,7 +872,7 @@ function renderIndexResults(root) {
     heading.textContent = storyDisplayTitle(story, item.level);
     const genreText = document.createElement("p");
     genreText.className = "note";
-    genreText.textContent = `${storyGenreLabel(story)} / ${item.id}${progress ? ` / ${progress.label}` : ""}`;
+    genreText.textContent = `${storyGenreLabel(story)} / Grade ${item.id}${progress ? ` / ${progress.label}` : ""}`;
     const link = document.createElement("a");
     link.href = `lessons/${story.slug}/index.html?level=${item.level}&id=${encodeURIComponent(item.id)}`;
     link.textContent = `Open ${itemVariant ? itemVariant.label : variant.label}`;

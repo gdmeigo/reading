@@ -156,22 +156,22 @@ function style(sheet, usedRange, headerRange, widths) {
 const workbook = Workbook.create();
 
 const howTo = workbook.worksheets.add("How_To_Use");
-title(howTo, "Unified ID 方針", "GDMは41-10までを橋渡しとして使い、その後はNH1、NH2のIDを一本で指定する。本文量はShort / Long / Very Longから選ぶ。", 2);
+title(howTo, "Unified Grade 方針", "GDMは41-10までを橋渡しとして使い、その後はNH1、NH2のGradeを一本で指定する。本文量はShort / Long / Very Longから選ぶ。", 2);
 write(howTo, 3, 0, [
   ["項目", "内容"],
-  ["ID", "GDMとNHを別々に指定しない。ひとつのIDだけを指定する。"],
+  ["Grade", "GDMとNHを別々に指定しない。ひとつのGradeだけを指定する。"],
   ["進行順", "GDM-41-10まではGDM中心。その後はNH1、NH2へ進む。"],
-  ["候補表示", "サイトでは選択したID以下の近いIDに紐づくコンテンツを最大3件まで表示する。"],
+  ["候補表示", "サイトでは選択したGrade以下の近いGradeに紐づくコンテンツを最大3件まで表示する。"],
   ["本文量", "Shortは120〜180語程度。Longは300〜450語程度。Very Longは650〜900語程度。UIでは旧段階表記を使わない。"],
-  ["注意", "各Lengthは別IDへ紐づける。個別IDの必須語・文法を完全反映する新作本文は今後追加する。"],
+  ["注意", "各Lengthは別Gradeへ紐づける。個別Gradeの必須語・文法を完全反映する新作本文は今後追加する。"],
 ]);
 style(howTo, "A4:B9", "A4:B4", [24, 110]);
 
 const request = workbook.worksheets.add("Story_Request");
-title(request, "Story Request", "本文生成時に使う入力欄。IDは1つだけ指定し、Lengthで本文量を選ぶ。", 4);
+title(request, "Story Request", "本文生成時に使う入力欄。Gradeは1つだけ指定し、Lengthで本文量を選ぶ。", 4);
 write(request, 3, 0, [
   ["項目", "入力例", "選択肢・説明", "生成時の扱い"],
-  ["ID", "NH1-1-8-3-WHY", "Unified_ProgressのIDから選ぶ", "このIDまでのGDM/NH項目を使用可"],
+  ["Grade", "NH1-1-8-3-WHY", "Unified_ProgressのGradeから選ぶ", "このGradeまでのGDM/NH項目を使用可"],
   ["Length", "Short", "Short / Long / Very Long", "Short=120〜180語程度、Long=300〜450語程度、Very Long=650〜900語程度"],
   ["Genre", "Mystery", "Mystery / Human Drama / SF / Fantasy / Comedy", "ジャンルの声と展開を変える"],
   ["Target Reader", "中学生", "英語塾向け", "名詞は必要ならリスト外も可"],
@@ -181,30 +181,30 @@ style(request, "A4:D10", "A4:D4", [22, 28, 48, 64]);
 request.getRange("B5:B10").format.fill.color = "#FFF7D6";
 
 const progress = workbook.worksheets.add("Unified_Progress");
-title(progress, "Unified Progress Map", "GDM合流点以降はNHを中心にNH2まで進める、単一IDの進行表。", 8);
+title(progress, "Unified Progress Map", "GDM合流点以降はNHを中心にNH2まで進める、単一Gradeの進行表。", 8);
 write(progress, 3, 0, [
-  ["ID", "Series", "Order", "Source ID", "導入項目", "分類", "物語での使い方", "確認状態"],
+  ["Grade", "Series", "Order", "Source ID", "導入項目", "分類", "物語での使い方", "確認状態"],
   ...progressRows,
 ]);
 style(progress, `A4:H${4 + progressRows.length}`, "A4:H4", [24, 12, 10, 14, 42, 18, 68, 18]);
 
 const content = workbook.worksheets.add("Content_Map");
-title(content, "Content Map", "既存本文をIDへ紐づけ、Length別に選べるようにした表。LengthごとにIDで管理する。", 6);
+title(content, "Content Map", "既存本文をGradeへ紐づけ、Length別に選べるようにした表。LengthごとにGradeで管理する。", 6);
 write(content, 3, 0, [
-  ["ID", "Length", "Genre", "Title", "Slug", "Text"],
+  ["Grade", "Length", "Genre", "Title", "Slug", "Text"],
   ...contentRows,
 ]);
 style(content, `A4:F${4 + contentRows.length}`, "A4:F4", [24, 14, 18, 30, 20, 44]);
 
 const prompt = workbook.worksheets.add("Prompt_Template");
-title(prompt, "Prompt Template", "生成時はIDを1つだけ使い、本文量をLengthで指定する。", 2);
+title(prompt, "Prompt Template", "生成時はGradeを1つだけ使い、本文量をLengthで指定する。", 2);
 write(prompt, 3, 0, [
   ["項目", "テンプレート"],
-  ["生成指示", "IDは {ID}。GDM-41-10まではGDMを使い、以降はNH1/NH2の進行順に沿って、このIDまでの語彙・文法を使用する。"],
+  ["生成指示", "Gradeは {Grade}。GDM-41-10まではGDMを使い、以降はNH1/NH2の進行順に沿って、このGradeまでの語彙・文法を使用する。"],
   ["本文量", "{Length} で生成する。Shortは120〜180語程度、Longは300〜450語程度、Very Longは650〜900語程度。"],
-  ["必須項目", "指定されたIDそのものの導入語・文法は本文に必ず自然に入れる。"],
+  ["必須項目", "指定されたGradeそのものの導入語・文法は本文に必ず自然に入れる。"],
   ["物語品質", "4コマ的な起承転結を持たせ、最後は明るく、次の展開が気になる本文にする。"],
-  ["出力", "Title / ID / Length / Genre / English text / used target items memo"],
+  ["出力", "Title / Grade / Length / Genre / English text / used target items memo"],
 ]);
 style(prompt, "A4:B9", "A4:B4", [24, 120]);
 
