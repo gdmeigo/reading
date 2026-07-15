@@ -111,6 +111,7 @@ const GLOSSARY_NOTES = [
   { headword: "bench", terms: ["bench", "benches"], note: "a long thing for people to sit on" },
   { headword: "board", terms: ["board", "boards"], note: "a flat place for writing or showing things" },
   { headword: "bookmark", terms: ["bookmark", "bookmarks"], note: "a small thing that shows a place in a book" },
+  { headword: "bow", terms: ["bow", "bows", "bowed"], note: "move your head down to say thank you" },
   { headword: "bottom", terms: ["bottom"], note: "the part under other parts" },
   { headword: "bottle", terms: ["bottle", "bottles"], note: "a small thing that can have water in it" },
   { headword: "brass", terms: ["brass"], note: "a yellow hard thing" },
@@ -251,6 +252,7 @@ const GLOSSARY_NOTES = [
   { headword: "wet", terms: ["wet"], note: "with water on it" },
   { headword: "wheel", terms: ["wheel", "wheels"], note: "a thing on a car or bus" },
   { headword: "whistle", terms: ["whistle", "whistles"], note: "a small thing that makes a big sound" },
+  { headword: "whisper", terms: ["whisper", "whispers", "whispered"], note: "say words with a very small voice" },
   { headword: "wind", terms: ["wind"], note: "air that moves outside" },
 ];
 
