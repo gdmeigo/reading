@@ -79,6 +79,13 @@
       margin-bottom: 18px;
     }
 
+    .settings-panel {
+      border: 2px solid #111;
+      padding: 18px;
+      margin: 24px 0 0;
+      min-width: 0;
+    }
+
     .grade-tools {
       display: flex;
       flex-wrap: wrap;
@@ -135,6 +142,17 @@
       margin: 0 0 24px;
     }
 
+    .top-links {
+      justify-content: space-between;
+    }
+
+    .primary-links,
+    .settings-link {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
     .error {
       border: 2px solid #111;
       padding: 12px;
@@ -161,23 +179,19 @@
 <main data-reader="index">
   <h1>GDM Reading Materials</h1>
   <p>Printable English reading lessons for staged GDM vocabulary introduction.</p>
-  <p class="note site-links">
-    <a href="copyright.html">Copyright and Use</a>
-    <a data-site-feedback href="https://github.com/gdmeigo/reading/issues/new?title=%5BSite+Feedback%5D+GDM+Reading+Materials&labels=feedback&body=%23%23+Site+Feedback%0A%0A%23%23+Name+%28optional%29%0A%0A%23%23+Page%0Ahttps%3A%2F%2Fgdmeigo.github.io%2Freading%2F%0A%0A%23%23+Feedback+Type%0A-+%5B+%5D+Navigation+or+search%0A-+%5B+%5D+Grade+or+grading+system%0A-+%5B+%5D+Story+selection%0A-+%5B+%5D+Copy+or+download%0A-+%5B+%5D+Display+or+layout%0A-+%5B+%5D+Other%0A%0A%23%23+Comment%0A" target="_blank" rel="noopener">Site feedback</a>
-  </p>
+  <div class="note site-links top-links">
+    <div class="primary-links">
+      <a href="copyright.html">Copyright and Use</a>
+      <a data-site-feedback href="https://github.com/gdmeigo/reading/issues/new?title=%5BSite+Feedback%5D+GDM+Reading+Materials&labels=feedback&body=%23%23+Site+Feedback%0A%0A%23%23+Name+%28optional%29%0A%0A%23%23+Page%0Ahttps%3A%2F%2Fgdmeigo.github.io%2Freading%2F%0A%0A%23%23+Feedback+Type%0A-+%5B+%5D+Navigation+or+search%0A-+%5B+%5D+Grade+or+grading+system%0A-+%5B+%5D+Story+selection%0A-+%5B+%5D+Copy+or+download%0A-+%5B+%5D+Display+or+layout%0A-+%5B+%5D+Other%0A%0A%23%23+Comment%0A" target="_blank" rel="noopener">Site feedback</a>
+    </div>
+    <div class="settings-link">
+      <a href="#settings">Settings</a>
+    </div>
+  </div>
 
   <section class="id-picker">
     <h2 class="group">Find Readings</h2>
     <p>Filter by Grade, length, and genre. After the GDM bridge point, the sequence follows NH1 and then NH2.</p>
-    <div class="grade-tools">
-      <button type="button" data-export-grades>Export Grade Excel/CSV</button>
-      <label>
-        Import Grade Excel/CSV
-        <input type="file" data-import-grades accept=".xlsx,.xls,.csv">
-      </label>
-      <button type="button" data-reset-grades>Reset Grades</button>
-    </div>
-    <p class="note" data-grade-status>Default Grade table is active.</p>
     <div class="id-form">
       <label>
         Grade
@@ -219,9 +233,23 @@
     <p data-story-link class="note"></p>
   </section>
 
+  <section id="settings" class="settings-panel">
+    <h2 class="group">Settings</h2>
+    <p>Customize the Grade table for this browser.</p>
+    <div class="grade-tools">
+      <button type="button" data-export-grades>Export Grade Excel/CSV</button>
+      <label>
+        Import Grade Excel/CSV
+        <input type="file" data-import-grades accept=".xlsx,.xls,.csv">
+      </label>
+      <button type="button" data-reset-grades>Reset Grades</button>
+    </div>
+    <p class="note" data-grade-status>Default Grade table is active.</p>
+  </section>
+
 </main>
 <script src="assets/cefr-a1-words.js?v=20260713a"></script>
 <script async src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="assets/reader.js?v=20260714n"></script>
+<script src="assets/reader.js?v=20260714o"></script>
 </body>
 </html>
