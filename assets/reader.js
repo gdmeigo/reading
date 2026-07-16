@@ -91,7 +91,7 @@ const MAX_VISIBLE_CHOICES = 3;
 const INDEX_SELECTION_STORAGE_KEY = "reading.indexSelection.v1";
 const CUSTOM_GRADES_STORAGE_KEY = "reading.customGrades.v1";
 const FEEDBACK_ISSUE_URL = "https://github.com/gdmeigo/reading/issues/new";
-const FEEDBACK_THANKS_TEXT = "Thank you for the feedback. If you submitted the GitHub issue, we will review it.";
+const FEEDBACK_THANKS_TEXT = "Thank you for the feedback. We will review it.";
 const CEFR_A1_WORDS = new Set((window.CEFR_A1_WORDS || []).map((word) => word.toLowerCase()));
 
 const READING_VARIANTS = [
