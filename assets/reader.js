@@ -497,6 +497,47 @@ function normalizeGradeId(value) {
   return normalizeHeaderValue(value);
 }
 
+function normalizeListText(value) {
+  return String(value || "")
+    .split(/[\n\r,、;；]+/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function defaultDetectionTerms(item) {
+  const explicitTerms = normalizeListText([item.words, item.grammar, item.targets].filter(Boolean).join("\n"));
+  if (explicitTerms.length) return explicitTerms;
+  return String(item.label || "")
+    .split(/[\n\r,、;；/]+/)
+    .map((term) => term.trim())
+    .filter(Boolean);
+}
+
+function gradeDetectionTerms(item) {
+  const targets = normalizeListText(item.targets);
+  return targets.length ? targets : defaultDetectionTerms(item);
+}
+
+function termMatchesText(term, text) {
+  const trimmed = normalizeHeaderValue(term);
+  if (!trimmed) return false;
+  if (trimmed.startsWith("/") && trimmed.endsWith("/") && trimmed.length > 2) {
+    try {
+      return new RegExp(trimmed.slice(1, -1), "i").test(text);
+    } catch {
+      return false;
+    }
+  }
+  const pattern = /^[a-z][a-z\s'-]*$/i.test(trimmed)
+    ? `\\b${escapeRegExp(trimmed).replace(/\\ /g, "\\s+")}\\b`
+    : escapeRegExp(trimmed);
+  return new RegExp(pattern, "i").test(text);
+}
+
 function normalizeVariant(value) {
   const normalized = normalizeHeaderValue(value).toLowerCase().replace(/_/g, "-");
   if (normalized.includes("very") && normalized.includes("long")) return "very-long";
@@ -518,15 +559,22 @@ function cell(row, names) {
   return key ? row[key] : "";
 }
 
-function rebuildGradeData(progressItems, contentItems) {
+function normalizeProgressItems(progressItems) {
   const seenGrades = new Set();
-  const grades = progressItems
+  return progressItems
     .map((item) => ({
       id: normalizeGradeId(item.id),
       series: normalizeHeaderValue(item.series) || "Custom",
       label: normalizeHeaderValue(item.label) || normalizeGradeId(item.id),
+      words: normalizeListText(item.words).join(", "),
+      grammar: normalizeListText(item.grammar).join(", "),
+      targets: normalizeListText(item.targets).join(", "),
     }))
     .filter((item) => item.id && !seenGrades.has(item.id) && seenGrades.add(item.id));
+}
+
+function rebuildGradeData(progressItems, contentItems = DEFAULT_CONTENT_ITEMS) {
+  const grades = normalizeProgressItems(progressItems);
 
   if (!grades.length) throw new Error("Grades sheet needs at least one Grade.");
 
@@ -554,10 +602,47 @@ function rebuildGradeData(progressItems, contentItems) {
       );
     });
 
-  if (!content.length) throw new Error("Content_Map sheet did not contain any usable story rows.");
+  if (!content.length) throw new Error("Could not auto-build Content_Map from lesson text.");
 
   PROGRESS_ITEMS = grades;
   CONTENT_ITEMS = content;
+}
+
+async function textForContentCandidate(story, level) {
+  try {
+    return await loadText(`lessons/${story.slug}/level-${level}.txt`);
+  } catch {
+    return "";
+  }
+}
+
+function requiredGradeForText(text, progressItems) {
+  const matches = progressItems
+    .map((item, index) => ({ item, index, terms: gradeDetectionTerms(item) }))
+    .filter(({ terms }) => terms.length)
+    .filter(({ terms }) => terms.some((term) => termMatchesText(term, text)));
+  const maxIndex = matches.reduce((max, match) => Math.max(max, match.index), 0);
+  return progressItems[maxIndex]?.id || progressItems[0]?.id;
+}
+
+async function autoBuildContentItems(progressItems) {
+  const content = [];
+  for (const story of STORIES) {
+    for (const level of storyLevels(story).filter((item) => TARGET_READING_LEVELS.includes(item))) {
+      const text = await textForContentCandidate(story, level);
+      if (!text) continue;
+      const variant = variantByLevel(level)?.key;
+      if (!variant) continue;
+      content.push({
+        id: requiredGradeForText(text, progressItems),
+        variant,
+        level,
+        slug: story.slug,
+      });
+    }
+  }
+  if (!content.length) throw new Error("Could not auto-build Content_Map from lesson text.");
+  return content;
 }
 
 function saveCustomGradePayload(payload) {
@@ -589,6 +674,9 @@ function gradeExportRows() {
     Grade: item.id,
     Series: item.series,
     Label: item.label,
+    "Words / \u5c0e\u5165\u5358\u8a9e": item.words || "",
+    "Grammar / \u5c0e\u5165\u6587\u6cd5": item.grammar || "",
+    "Detection Terms / \u691c\u51fa\u8a9e\u53e5": item.targets || defaultDetectionTerms(item).join(", "),
   }));
 }
 
@@ -596,16 +684,15 @@ function contentExportRows() {
   return CONTENT_ITEMS.map((item) => {
     const story = storyBySlug(item.slug);
     return {
-      Grade: item.id,
-      Length: variantByKey(item.variant)?.label || item.variant,
+      "Auto Grade / \u81ea\u52d5\u5224\u5b9aGrade": item.id,
+      "Length / \u672c\u6587\u91cf": variantByKey(item.variant)?.label || item.variant,
       Level: item.level,
-      Genre: story ? storyGenreLabel(story) : "",
-      Title: story ? storyDisplayTitle(story, item.level) : "",
+      "Genre / \u30b8\u30e3\u30f3\u30eb": story ? storyGenreLabel(story) : "",
+      "Title / \u30bf\u30a4\u30c8\u30eb": story ? storyDisplayTitle(story, item.level) : "",
       Slug: item.slug,
     };
   });
 }
-
 function csvCell(value) {
   const text = String(value ?? "");
   return /[",\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
@@ -649,11 +736,53 @@ function downloadBlob(filename, blob) {
 }
 
 function exportGradeCsv() {
-  const headers = ["Section", "Order", "Grade", "Series", "Label", "Length", "Level", "Genre", "Title", "Slug"];
+  const headers = [
+    "Sheet",
+    "Order",
+    "Grade",
+    "Series",
+    "Label",
+    "Words / \u5c0e\u5165\u5358\u8a9e",
+    "Grammar / \u5c0e\u5165\u6587\u6cd5",
+    "Detection Terms / \u691c\u51fa\u8a9e\u53e5",
+    "Length / \u672c\u6587\u91cf",
+    "Level",
+    "Genre / \u30b8\u30e3\u30f3\u30eb",
+    "Title / \u30bf\u30a4\u30c8\u30eb",
+    "Slug",
+  ];
   const rows = [
     headers,
-    ...gradeExportRows().map((row) => ["Grades", row.Order, row.Grade, row.Series, row.Label, "", "", "", "", ""]),
-    ...contentExportRows().map((row) => ["Content_Map", "", row.Grade, "", "", row.Length, row.Level, row.Genre, row.Title, row.Slug]),
+    ...gradeExportRows().map((row) => [
+      "Grades",
+      row.Order,
+      row.Grade,
+      row.Series,
+      row.Label,
+      row["Words / \u5c0e\u5165\u5358\u8a9e"],
+      row["Grammar / \u5c0e\u5165\u6587\u6cd5"],
+      row["Detection Terms / \u691c\u51fa\u8a9e\u53e5"],
+      "",
+      "",
+      "",
+      "",
+      "",
+    ]),
+    ...contentExportRows().map((row) => [
+      "Content_Map",
+      "",
+      row["Auto Grade / \u81ea\u52d5\u5224\u5b9aGrade"],
+      "",
+      "",
+      "",
+      "",
+      "",
+      row["Length / \u672c\u6587\u91cf"],
+      row.Level,
+      row["Genre / \u30b8\u30e3\u30f3\u30eb"],
+      row["Title / \u30bf\u30a4\u30c8\u30eb"],
+      row.Slug,
+    ]),
   ];
   const csv = rows.map(csvLine).join("\r\n");
   downloadBlob("gdm-reading-grade-table.csv", new Blob([csv], { type: "text/csv;charset=utf-8" }));
@@ -666,11 +795,12 @@ function exportGradeWorkbook() {
   window.XLSX.utils.book_append_sheet(
     workbook,
     window.XLSX.utils.aoa_to_sheet([
-      ["How to use"],
-      ["Edit Grades to change the grade order and labels."],
-      ["Edit Content_Map Grade values to attach readings to different grades."],
-      ["Keep Slug and Length values unchanged unless you know the matching story file exists."],
-      ["Import this workbook on the top page. The imported table is saved in this browser."],
+      ["\u4f7f\u3044\u65b9"],
+      ["Grades\u30b7\u30fc\u30c8\u306eOrder\u3001Grade\u3001Series\u3001Label\u3001\u5c0e\u5165\u5358\u8a9e\u3001\u5c0e\u5165\u6587\u6cd5\u3001\u691c\u51fa\u8a9e\u53e5\u3092\u81ea\u7531\u306b\u7de8\u96c6\u3067\u304d\u307e\u3059\u3002"],
+      ["\u5c0e\u5165\u5358\u8a9e\u30fb\u5c0e\u5165\u6587\u6cd5\u30fb\u691c\u51fa\u8a9e\u53e5\u306f\u3001\u30ab\u30f3\u30de\u3001\u8aad\u70b9\u3001\u30bb\u30df\u30b3\u30ed\u30f3\u3001\u6539\u884c\u3067\u8907\u6570\u6307\u5b9a\u3067\u304d\u307e\u3059\u3002"],
+      ["\u691c\u51fa\u8a9e\u53e5\u306f\u672c\u6587\u306eGrade\u81ea\u52d5\u5224\u5b9a\u306b\u4f7f\u3044\u307e\u3059\u3002\u7a7a\u6b04\u306e\u5834\u5408\u306f\u5c0e\u5165\u5358\u8a9e\u30fb\u5c0e\u5165\u6587\u6cd5\u30fbLabel\u3092\u4f7f\u3044\u307e\u3059\u3002\u6b63\u898f\u8868\u73fe\u306f /pattern/ \u306e\u5f62\u3067\u6307\u5b9a\u3067\u304d\u307e\u3059\u3002"],
+      ["Content_Map\u30b7\u30fc\u30c8\u306f\u78ba\u8a8d\u7528\u3067\u3059\u3002\u30a4\u30f3\u30dd\u30fc\u30c8\u6642\u306b\u7de8\u96c6\u5024\u306f\u4f7f\u308f\u305a\u3001\u672c\u6587\u3092\u8aad\u307f\u76f4\u3057\u3066\u81ea\u52d5\u69cb\u7bc9\u3057\u307e\u3059\u3002"],
+      ["\u30a4\u30f3\u30dd\u30fc\u30c8\u3057\u305fGrade\u8868\u306f\u3001\u3053\u306e\u30d6\u30e9\u30a6\u30b6\u306b\u4fdd\u5b58\u3055\u308c\u307e\u3059\u3002\u30ea\u30bb\u30c3\u30c8\u3059\u308b\u3068\u6a19\u6e96\u8868\u306b\u623b\u308a\u307e\u3059\u3002"],
     ]),
     "How_To_Use",
   );
@@ -682,18 +812,14 @@ function exportGradeWorkbook() {
 
 function parseGradeWorkbook(workbook) {
   const gradeRows = sheetRows(workbook, "Grades").map((row) => ({
-    id: cell(row, ["Grade", "ID"]),
-    series: cell(row, ["Series"]),
-    label: cell(row, ["Label", "導入項目"]),
+    id: cell(row, ["Grade", "ID", "\u30b0\u30ec\u30fc\u30c9"]),
+    series: cell(row, ["Series", "\u7cfb\u5217"]),
+    label: cell(row, ["Label", "\u8868\u793a\u540d", "\u540d\u524d"]),
+    words: cell(row, ["Words", "Introduced Words", "Words / \u5c0e\u5165\u5358\u8a9e", "\u5c0e\u5165\u5358\u8a9e", "\u5358\u8a9e"]),
+    grammar: cell(row, ["Grammar", "Introduced Grammar", "Grammar / \u5c0e\u5165\u6587\u6cd5", "\u5c0e\u5165\u6587\u6cd5", "\u6587\u6cd5"]),
+    targets: cell(row, ["Detection Terms", "Targets", "Detection Terms / \u691c\u51fa\u8a9e\u53e5", "\u691c\u51fa\u8a9e\u53e5", "\u5224\u5b9a\u8a9e\u53e5"]),
   }));
-  const contentSheetName = workbook.SheetNames.includes("Content_Map") ? "Content_Map" : "Content Map";
-  const contentRows = sheetRows(workbook, contentSheetName).map((row) => ({
-    id: cell(row, ["Grade", "ID"]),
-    variant: cell(row, ["Length", "Variant"]),
-    level: cell(row, ["Level"]),
-    slug: cell(row, ["Slug"]),
-  }));
-  return { progressItems: gradeRows, contentItems: contentRows };
+  return { progressItems: gradeRows };
 }
 
 function parseGradeCsv(text) {
@@ -706,11 +832,15 @@ function parseGradeCsv(text) {
   });
   return {
     progressItems: rows
-      .filter((row) => normalizeHeaderValue(row.Section) === "Grades")
-      .map((row) => ({ id: row.Grade || row.ID, series: row.Series, label: row.Label })),
-    contentItems: rows
-      .filter((row) => normalizeHeaderValue(row.Section) === "Content_Map")
-      .map((row) => ({ id: row.Grade || row.ID, variant: row.Length, level: row.Level, slug: row.Slug })),
+      .filter((row) => normalizeHeaderValue(row.Section || row.Sheet) === "Grades")
+      .map((row) => ({
+        id: row.Grade || row.ID,
+        series: row.Series,
+        label: row.Label,
+        words: row.Words || row["Words / \u5c0e\u5165\u5358\u8a9e"] || row["Introduced Words"],
+        grammar: row.Grammar || row["Grammar / \u5c0e\u5165\u6587\u6cd5"] || row["Introduced Grammar"],
+        targets: row.Targets || row["Detection Terms"] || row["Detection Terms / \u691c\u51fa\u8a9e\u53e5"],
+      })),
   };
 }
 
@@ -720,7 +850,9 @@ async function importGradeWorkbook(file) {
   const payload = isCsv
     ? parseGradeCsv(await file.text())
     : parseGradeWorkbook(window.XLSX.read(await file.arrayBuffer(), { type: "array" }));
-  rebuildGradeData(payload.progressItems, payload.contentItems);
+  const progressItems = normalizeProgressItems(payload.progressItems);
+  const contentItems = await autoBuildContentItems(progressItems);
+  rebuildGradeData(progressItems, contentItems);
   saveCustomGradePayload({
     progressItems: PROGRESS_ITEMS.map((item) => ({ ...item })),
     contentItems: CONTENT_ITEMS.map((item) => ({ ...item })),
@@ -1245,7 +1377,7 @@ function updateGradeStatus(root) {
   setGradeStatus(
     root,
     customGradeIsActive()
-      ? `Custom Grade table is active. ${PROGRESS_ITEMS.length} grades and ${CONTENT_ITEMS.length} content links are saved in this browser.`
+      ? `Custom Grade table is active. ${PROGRESS_ITEMS.length} grades are saved, and ${CONTENT_ITEMS.length} story links were rebuilt automatically in this browser.`
       : "Default Grade table is active.",
   );
 }
@@ -1258,7 +1390,7 @@ function setupGradeTools(root) {
   exportButton?.addEventListener("click", () => {
     try {
       const format = exportGradeWorkbook();
-      setGradeStatus(root, `Grade ${format} exported. Edit it in Excel, then import it here.`, "note");
+      setGradeStatus(root, `Grade ${format} exported. Edit introduced words, grammar, and detection terms in Excel, then import it here.`, "note");
     } catch (error) {
       setGradeStatus(root, `Could not export Grade Excel: ${error.message}`, "error");
     }
