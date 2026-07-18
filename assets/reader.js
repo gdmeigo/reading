@@ -90,10 +90,35 @@ const TARGET_READING_LEVELS = [3, 7, 8];
 const MAX_VISIBLE_CHOICES = 3;
 const INDEX_SELECTION_STORAGE_KEY = "reading.indexSelection.v1";
 const CUSTOM_GRADES_STORAGE_KEY = "reading.customGrades.v1";
-const CUSTOM_GRADES_SCHEMA_VERSION = 3;
+const CUSTOM_GRADES_SCHEMA_VERSION = 4;
 const FEEDBACK_ISSUE_URL = "https://github.com/gdmeigo/reading/issues/new";
 const FEEDBACK_THANKS_TEXT = "Thank you for the feedback. We will review it.";
 const CEFR_A1_WORDS = new Set((window.CEFR_A1_WORDS || []).map((word) => word.toLowerCase()));
+
+const BUILT_IN_AUDIT_PATTERNS = {
+  "GDM-1": ["/\\b(?:you|he|she|it)\\b/"],
+  "GDM-10": ["/\\bthis\\s+book\\s+is\\b/"],
+  "GDM-22": ["/\\bwater\\b/", "/\\bthese\\s+\\w+s\\s+(?:are|were)\\b/", "/\\bthose\\s+\\w+s\\s+(?:are|were)\\b/", "/\\bthem\\b/"],
+  "GDM-37-4": ["/\\bwhere\\b/"],
+  "GDM-41-10": ["/\\bsee(?:s|ing)?\\b/", "/\\bsaw\\b/", "/\\bdo(?:es|ne)?\\b/", "/\\bdid\\b/", "/\\bwill\\s+see\\b/"],
+  "NH1-0-FAMILY": ["/\\b(?:brother|sister|mother|father|grandfather|grandmother|family)\\b/", "/\\b[A-Z][a-z]+['\\u2019]s\\b/"],
+  "NH1-1-1-V": ["/\\b(?:drink|drinks|drank|play|plays|played|watch|watches|watched|speak|speaks|spoke|study|studies|studied|read|reads|reading)\\b/"],
+  "NH1-1-2-V": ["/\\b(?:walk|walks|walked|walking|have|has|eat|eats|ate|eating)\\b/"],
+  "NH1-1-3-CAN-Q": ["/\\bcan\\b[^.?!]*\\?/"],
+  "NH1-1-5-2-DONTBE": ["/\\bdon['\\u2019]t\\s+be\\b/"],
+  "NH1-1-6-V": ["/\\b(?:write|writes|wrote|written|writing)\\b/"],
+  "NH1-1-7-V": ["/\\b(?:know|knows|knew|make|makes|made|buy|buys|bought|making|buying)\\b/"],
+  "NH1-1-8-3-WHY": ["/\\bwhy\\b/"],
+  "NH1-1-10-V": ["/\\b(?:travel|travels|traveled|traveling|visit|visits|visited|listen|listens|listened|spend|spends|spent|stand|stands|stood|feel|feels|felt)\\b/", "/\\bget\\s+up\\b/", "/\\bgot\\s+up\\b/"],
+  "NH1-1-11-1-MAYBE": ["/\\bmaybe\\b/"],
+  "NH2-2-1-3-SVOO": ["/\\b(?:show|shows|showed|teach|teaches|taught|give|gives|gave|given|giving)\\b/"],
+  "NH2-2-2-4-BECAUSE": ["/\\bbecause\\b/"],
+  "NH2-2-3-1-SHOULD": ["/\\bshould\\b/"],
+  "NH2-2-4-1-HAVE-TO": ["/\\b(?:have|has|had)\\s+to\\b/"],
+  "NH2-2-5-1-HOW-TO": ["/\\bhow\\s+to\\b/"],
+  "NH2-2-6-MORE-THAN": ["/\\bmore\\s+than\\b/", "/\\bhalf\\b/"],
+  "NH2-2-7-2-VOICE": ["/\\b(?:am|are|is|was|were|be|been)\\s+(?:moved|washed|cut|made|written|opened|closed|locked|found|seen|given|shown|sent|called|built|left|taken)\\b/", "/\\b(?:was|were)\\s+\\w+(?:ed|en)\\s+by\\b/"],
+};
 
 const READING_VARIANTS = [
   { key: "short", level: 3, label: "Short", note: "compact classroom reading" },
@@ -761,13 +786,21 @@ function gradeDetectionTerms(item) {
   return targets.length ? targets : defaultDetectionTerms(item);
 }
 
+function builtInAuditPatterns(item) {
+  return BUILT_IN_AUDIT_PATTERNS[item.id] || [];
+}
+
+function gradeAuditPatterns(item) {
+  return normalizeListText(item.auditPatterns);
+}
+
 function termCanAuditText(term) {
   const trimmed = normalizeHeaderValue(term);
   return (trimmed.startsWith("/") && trimmed.endsWith("/") && trimmed.length > 2) || /[A-Za-z]/.test(trimmed);
 }
 
 function auditableDetectionTerms(item) {
-  return gradeDetectionTerms(item).filter(termCanAuditText);
+  return [...gradeDetectionTerms(item), ...builtInAuditPatterns(item), ...gradeAuditPatterns(item)].filter(termCanAuditText);
 }
 
 function validateGradeAuditability(progressItems) {
@@ -777,7 +810,7 @@ function validateGradeAuditability(progressItems) {
     .slice(0, 8);
   if (failures.length) {
     throw new Error(
-      `These Grades need English Detection Terms or /regex/ patterns for audit: ${failures.join(", ")}. Grammar names are notes; they are not enough for automatic checking.`,
+      `These Grades need English Detection Terms or Audit Patterns for audit: ${failures.join(", ")}. Grammar names are notes; they are not enough for automatic checking.`,
     );
   }
 }
@@ -829,6 +862,7 @@ function normalizeProgressItems(progressItems) {
       words: normalizeListText(item.words).join(", "),
       grammar: normalizeListText(item.grammar).join(", "),
       targets: normalizeListText(item.targets).join(", "),
+      auditPatterns: normalizeListText(item.auditPatterns).join(", "),
     }))
     .filter((item) => item.id && !seenGrades.has(item.id) && seenGrades.add(item.id));
 }
@@ -852,6 +886,7 @@ function mergeWithDefaultProgressItems(progressItems) {
       words: customItem.words || defaultItem.words || "",
       grammar: customItem.grammar || defaultItem.grammar || "",
       targets: customItem.targets || defaultItem.targets || "",
+      auditPatterns: customItem.auditPatterns || defaultItem.auditPatterns || "",
     };
   });
   const customOnlyItems = customItems.filter((item) => !defaultIds.has(item.id) && !REMOVED_DEFAULT_PROGRESS_IDS.has(item.id));
@@ -975,6 +1010,7 @@ function gradeExportRows() {
     "Words / \u5c0e\u5165\u5358\u8a9e": item.words || "",
     "Grammar / \u5c0e\u5165\u6587\u6cd5": item.grammar || "",
     "Detection Terms / \u691c\u51fa\u8a9e\u53e5": item.targets || defaultDetectionTerms(item).join(", "),
+    "Audit Pattern / \u76e3\u67fb\u30d1\u30bf\u30fc\u30f3": gradeAuditPatterns(item).length ? gradeAuditPatterns(item).join(", ") : builtInAuditPatterns(item).join(", "),
   }));
 }
 
@@ -1043,6 +1079,7 @@ function exportGradeCsv() {
     "Words / \u5c0e\u5165\u5358\u8a9e",
     "Grammar / \u5c0e\u5165\u6587\u6cd5",
     "Detection Terms / \u691c\u51fa\u8a9e\u53e5",
+    "Audit Pattern / \u76e3\u67fb\u30d1\u30bf\u30fc\u30f3",
     "Length / \u672c\u6587\u91cf",
     "Level",
     "Genre / \u30b8\u30e3\u30f3\u30eb",
@@ -1060,6 +1097,7 @@ function exportGradeCsv() {
       row["Words / \u5c0e\u5165\u5358\u8a9e"],
       row["Grammar / \u5c0e\u5165\u6587\u6cd5"],
       row["Detection Terms / \u691c\u51fa\u8a9e\u53e5"],
+      row["Audit Pattern / \u76e3\u67fb\u30d1\u30bf\u30fc\u30f3"],
       "",
       "",
       "",
@@ -1070,6 +1108,7 @@ function exportGradeCsv() {
       "Content_Map",
       "",
       row["Auto Grade / \u81ea\u52d5\u5224\u5b9aGrade"],
+      "",
       "",
       "",
       "",
@@ -1097,7 +1136,8 @@ function exportGradeWorkbook() {
       ["Grades\u30b7\u30fc\u30c8\u306eOrder\u3001Grade\u3001Series\u3001Label\u3001\u5c0e\u5165\u5358\u8a9e\u3001\u5c0e\u5165\u6587\u6cd5\u3001\u691c\u51fa\u8a9e\u53e5\u3092\u81ea\u7531\u306b\u7de8\u96c6\u3067\u304d\u307e\u3059\u3002"],
       ["\u5c0e\u5165\u5358\u8a9e\u30fb\u5c0e\u5165\u6587\u6cd5\u30fb\u691c\u51fa\u8a9e\u53e5\u306f\u3001\u30ab\u30f3\u30de\u3001\u8aad\u70b9\u3001\u30bb\u30df\u30b3\u30ed\u30f3\u3001\u6539\u884c\u3067\u8907\u6570\u6307\u5b9a\u3067\u304d\u307e\u3059\u3002"],
       ["\u691c\u51fa\u8a9e\u53e5\u306f\u672c\u6587\u306eGrade\u81ea\u52d5\u5224\u5b9a\u306b\u4f7f\u3044\u307e\u3059\u3002\u7a7a\u6b04\u306e\u5834\u5408\u306f\u5c0e\u5165\u5358\u8a9e\u30fb\u5c0e\u5165\u6587\u6cd5\u30fbLabel\u3092\u4f7f\u3044\u307e\u3059\u3002\u6b63\u898f\u8868\u73fe\u306f /pattern/ \u306e\u5f62\u3067\u6307\u5b9a\u3067\u304d\u307e\u3059\u3002"],
-      ["\u6587\u6cd5\u6b04\u306f\u8aac\u660e\u7528\u3067\u3059\u3002\u73fe\u5728\u5b8c\u4e86\u306a\u3069\u306e\u6587\u6cd5\u3092\u76e3\u67fb\u3059\u308b\u306b\u306f\u3001\u691c\u51fa\u8a9e\u53e5\u306b have been, has gone, /\\b(?:have|has)\\s+\\w+(?:ed|en)\\b/ \u306e\u3088\u3046\u306a\u82f1\u8a9e\u8868\u73fe\u307e\u305f\u306f\u6b63\u898f\u8868\u73fe\u3092\u5165\u308c\u3066\u304f\u3060\u3055\u3044\u3002"],
+      ["\u76e3\u67fb\u30d1\u30bf\u30fc\u30f3\u306b\u306f\u3001\u30b5\u30a4\u30c8\u306b\u7d44\u307f\u8fbc\u307e\u308c\u3066\u3044\u308b\u6587\u6cd5\u30c1\u30a7\u30c3\u30af\u306e\u6b63\u898f\u8868\u73fe\u3082\u30a8\u30af\u30b9\u30dd\u30fc\u30c8\u3055\u308c\u307e\u3059\u3002\u81ea\u7531\u306b\u8ffd\u52a0\u30fb\u5909\u66f4\u3067\u304d\u3001\u30a4\u30f3\u30dd\u30fc\u30c8\u5f8c\u306e\u81ea\u52d5\u5224\u5b9a\u306b\u4f7f\u3044\u307e\u3059\u3002"],
+      ["\u6587\u6cd5\u6b04\u306f\u8aac\u660e\u7528\u3067\u3059\u3002\u73fe\u5728\u5b8c\u4e86\u306a\u3069\u306e\u6587\u6cd5\u3092\u76e3\u67fb\u3059\u308b\u306b\u306f\u3001\u691c\u51fa\u8a9e\u53e5\u307e\u305f\u306f\u76e3\u67fb\u30d1\u30bf\u30fc\u30f3\u306b have been, has gone, /\\b(?:have|has)\\s+\\w+(?:ed|en)\\b/ \u306e\u3088\u3046\u306a\u82f1\u8a9e\u8868\u73fe\u307e\u305f\u306f\u6b63\u898f\u8868\u73fe\u3092\u5165\u308c\u3066\u304f\u3060\u3055\u3044\u3002"],
       ["Content_Map\u30b7\u30fc\u30c8\u306f\u78ba\u8a8d\u7528\u3067\u3059\u3002\u30a4\u30f3\u30dd\u30fc\u30c8\u6642\u306b\u7de8\u96c6\u5024\u306f\u4f7f\u308f\u305a\u3001\u672c\u6587\u3092\u8aad\u307f\u76f4\u3057\u3066\u81ea\u52d5\u69cb\u7bc9\u3057\u307e\u3059\u3002"],
       ["\u30a4\u30f3\u30dd\u30fc\u30c8\u3057\u305fGrade\u8868\u306f\u3001\u3053\u306e\u30d6\u30e9\u30a6\u30b6\u306b\u4fdd\u5b58\u3055\u308c\u307e\u3059\u3002\u30ea\u30bb\u30c3\u30c8\u3059\u308b\u3068\u6a19\u6e96\u8868\u306b\u623b\u308a\u307e\u3059\u3002"],
     ]),
@@ -1117,6 +1157,7 @@ function parseGradeWorkbook(workbook) {
     words: cell(row, ["Words", "Introduced Words", "Words / \u5c0e\u5165\u5358\u8a9e", "\u5c0e\u5165\u5358\u8a9e", "\u5358\u8a9e"]),
     grammar: cell(row, ["Grammar", "Introduced Grammar", "Grammar / \u5c0e\u5165\u6587\u6cd5", "\u5c0e\u5165\u6587\u6cd5", "\u6587\u6cd5"]),
     targets: cell(row, ["Detection Terms", "Targets", "Detection Terms / \u691c\u51fa\u8a9e\u53e5", "\u691c\u51fa\u8a9e\u53e5", "\u5224\u5b9a\u8a9e\u53e5"]),
+    auditPatterns: cell(row, ["Audit Pattern", "Audit Patterns", "Audit Pattern / \u76e3\u67fb\u30d1\u30bf\u30fc\u30f3", "\u76e3\u67fb\u30d1\u30bf\u30fc\u30f3"]),
   }));
   return { progressItems: gradeRows };
 }
@@ -1139,6 +1180,7 @@ function parseGradeCsv(text) {
         words: row.Words || row["Words / \u5c0e\u5165\u5358\u8a9e"] || row["Introduced Words"],
         grammar: row.Grammar || row["Grammar / \u5c0e\u5165\u6587\u6cd5"] || row["Introduced Grammar"],
         targets: row.Targets || row["Detection Terms"] || row["Detection Terms / \u691c\u51fa\u8a9e\u53e5"],
+        auditPatterns: row["Audit Pattern"] || row["Audit Patterns"] || row["Audit Pattern / \u76e3\u67fb\u30d1\u30bf\u30fc\u30f3"],
       })),
   };
 }
