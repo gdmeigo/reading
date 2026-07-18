@@ -49,6 +49,11 @@ export const GRADING_SIGNALS = [
     ],
   },
   {
+    id: "NH1-1-2-V",
+    name: "walk / have / has / eat",
+    patterns: [/\b(?:walk|walks|walked|walking|have|has|eat|eats|ate|eating)\b/gi],
+  },
+  {
     id: "NH1-1-3-CAN-Q",
     name: "can question",
     patterns: [/\bcan\b[^.?!]*\?/gi],
@@ -127,15 +132,87 @@ export const GRADING_SIGNALS = [
   },
 ];
 
+const GRAMMAR_CATEGORY_KEYWORDS = [
+  "代名詞",
+  "be動詞",
+  "所有",
+  "冠詞",
+  "前置詞",
+  "指示語",
+  "未来",
+  "過去",
+  "疑問",
+  "否定",
+  "接続詞",
+  "接続副詞",
+  "助動詞",
+  "命令",
+  "不定詞",
+  "数量",
+  "比較",
+  "受け身",
+  "関係",
+  "SVOC",
+  "進行",
+  "文型",
+  "存在文",
+  "目的語",
+  "部分",
+  "提案",
+  "許可",
+];
+
+const TERM_BLOCKLIST = new Set([
+  "q",
+  "v",
+  "sv",
+  "unit",
+  "question",
+  "book",
+  "thing",
+  "person",
+  "concert",
+  "period",
+]);
+
+const QUESTION_TERMS = new Set([
+  "do",
+  "does",
+  "did",
+  "will",
+  "can",
+  "may",
+  "is",
+  "are",
+  "was",
+  "were",
+  "has",
+  "have",
+  "what",
+  "where",
+  "when",
+  "which",
+  "who",
+  "whose",
+  "how",
+]);
+
 export function readReaderSource(rootDir = process.cwd()) {
   return fs.readFileSync(path.join(rootDir, READER_PATH), "utf8");
 }
 
 export function parseProgressItems(readerSource) {
-  return [...readerSource.matchAll(/\{\s*id:\s*"([^"]+)",\s*series:\s*"([^"]+)",\s*label:\s*"([^"]+)"/g)].map((match) => ({
+  return [
+    ...readerSource.matchAll(
+      /\{\s*id:\s*"([^"]+)",\s*series:\s*"([^"]+)",\s*label:\s*"([^"]+)"(?:,\s*words:\s*"([^"]*)",\s*grammar:\s*"([^"]*)",\s*targets:\s*"([^"]*)")?/g,
+    ),
+  ].map((match) => ({
     id: match[1],
     series: match[2],
     label: match[3],
+    words: match[4] || "",
+    grammar: match[5] || "",
+    targets: match[6] || "",
   }));
 }
 
@@ -157,10 +234,132 @@ export function resetPattern(pattern) {
   return pattern;
 }
 
+export function gradingSignalsForProgressItems(progressItems) {
+  const manualIds = new Set(GRADING_SIGNALS.map((signal) => signal.id));
+  const firstTermIndex = new Map();
+  const signals = [];
+
+  for (const signal of GRADING_SIGNALS) {
+    for (const term of candidateTermsFromText(signal.name)) {
+      firstTermIndex.set(term.toLowerCase(), -1);
+    }
+  }
+
+  for (const [index, item] of progressItems.entries()) {
+    if (manualIds.has(item.id)) continue;
+    if (!isGrammarLikeProgressItem(item)) continue;
+
+    const terms = candidateTermsForProgressItem(item).filter((term) => {
+      const key = term.toLowerCase();
+      if (firstTermIndex.has(key)) return false;
+      firstTermIndex.set(key, index);
+      return true;
+    });
+    const patterns = [...specialPatternsForProgressItem(item), ...terms.flatMap((term) => patternsForTerm(term, item))];
+    if (!patterns.length) continue;
+
+    signals.push({
+      id: item.id,
+      name: `auto grammar: ${item.label}`,
+      patterns,
+    });
+  }
+
+  return [...GRADING_SIGNALS, ...signals];
+}
+
+export function isGrammarLikeProgressItem(item) {
+  const source = [item.grammar, item.label].filter(Boolean).join(" ");
+  return GRAMMAR_CATEGORY_KEYWORDS.some((keyword) => source.includes(keyword));
+}
+
+export function candidateTermsForProgressItem(item) {
+  const source = [item.targets, item.words, item.label].filter(Boolean).join(" / ");
+  const questionLike = /\b(?:question|q)\b|疑問/i.test([item.label, item.grammar].join(" "));
+  const quantityLike = /数量/.test(item.grammar);
+  const relationLike = /関係/.test(item.grammar);
+  const terms = [];
+  for (const rawPart of source.split(/[\/,\u3001\u30fb]|(?:\s+-\s+)/)) {
+    const normalized = rawPart
+      .replace(/\([^A-Za-z?']*?\)/g, " ")
+      .replace(/\brel\b/gi, " ")
+      .replace(/\bUnit\s*\d+\b/gi, " ")
+      .replace(/[^A-Za-z?'\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (!normalized) continue;
+    const words = normalized.split(/\s+/).filter((word) => !TERM_BLOCKLIST.has(word.toLowerCase()));
+    if (!words.length) continue;
+    const term = words.join(" ").trim();
+    if (term) terms.push(term);
+  }
+  return [...new Set(terms)].filter((term) => {
+    const lower = term.toLowerCase();
+    if (questionLike) return QUESTION_TERMS.has(lower);
+    if (quantityLike) return /^(?:some|any|many|much|all|half|more than|one|two|three|four|five|six|seven|eight|nine|ten)$/.test(lower);
+    if (relationLike) return /^(?:who|which|when|what|that)$/.test(lower);
+    return true;
+  });
+}
+
+function candidateTermsFromText(text) {
+  return text
+    .split(/[\/,]|(?:\s+-\s+)/)
+    .map((part) =>
+      part
+        .replace(/\([^A-Za-z?']*?\)/g, " ")
+        .replace(/\b(?:question|nouns?|review|bridge|point|basic|voice|forms?)\b/gi, " ")
+        .replace(/[^A-Za-z?'\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim(),
+    )
+    .filter(Boolean);
+}
+
+function specialPatternsForProgressItem(item) {
+  if (item.id === "GDM-30-5") {
+    return [/\b(?:my|your|his|her|our|their|[A-Z][a-z]+['\u2019]s)\b[^.?!]*\?/g];
+  }
+  return [];
+}
+
+function patternsForTerm(term, item) {
+  const lower = term.toLowerCase();
+  const source = `${item.label} ${item.grammar}`;
+  const questionLike = /\b(?:question|q)\b|疑問/i.test(source);
+  const patterns = [];
+
+  if (questionLike && !QUESTION_TERMS.has(lower)) return [];
+
+  if (questionLike && QUESTION_TERMS.has(lower)) {
+    patterns.push(new RegExp(`\\b${escapeRegex(lower)}\\b[^.?!]*\\?`, "gi"));
+  }
+
+  if (lower === "don't") {
+    patterns.push(/\bdon['\u2019]t\b/gi);
+  } else if (lower === "let's") {
+    patterns.push(/\blet['\u2019]s\b/gi);
+  } else if (/命令/.test(source) && lower === "be") {
+    patterns.push(/^Be\b/gim);
+  } else if (lower === "be") {
+    patterns.push(/\b(?:am|are|is|was|were|be|been|being)\b/gi);
+  } else if (lower === "present") {
+    return [];
+  } else {
+    patterns.push(new RegExp(`\\b${escapeRegex(lower).replace(/\\ /g, "\\s+")}\\b`, "gi"));
+  }
+
+  return patterns;
+}
+
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 export function collectMatches(text, progressItems) {
   const byId = progressIndexMap(progressItems);
 
-  return GRADING_SIGNALS.flatMap((signal) =>
+  return gradingSignalsForProgressItems(progressItems).flatMap((signal) =>
     signal.patterns.flatMap((pattern) => {
       const matches = [...text.matchAll(resetPattern(pattern))].slice(0, 5);
       return matches.map((match) => ({

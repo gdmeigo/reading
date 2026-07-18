@@ -14,6 +14,8 @@
 - `node tools/audit_grading.mjs` は `assets/reader.js` の `PROGRESS_ITEMS` と `CONTENT_ITEMS` を読み、本文中にIDより後の導入項目が含まれていないか検査する。
 - 導入順序を更新した後は、`node tools/audit_grading.mjs --write` を実行して、全コンテンツの必要最小IDを再特定し、`assets/reader.js` と `tools/build_unified_current_id_workbook.mjs` の本文IDを更新する。
 - `tools/grading_rules.mjs` を、本文ターゲットチェックとグレーディング監査の共通ルールとして扱う。IDごとの語彙・文法シグナルを変更する場合は、このファイルを更新する。
+- 文法チェックは、手書きの重要シグナルに加え、Grade表の `label` / `grammar` / `targets` から文法らしい項目を自動シグナル化して監査する。
+- `node tools/check_grammar_signal_coverage.mjs` は、文法らしいGradeに検出シグナルが作られているかを確認する。
 - `node tools/check_story_targets.mjs` は、各本文が割り当てIDそのもののターゲット表現を含むかを確認する。
 - `node tools/check_do_questions.mjs` は、Do/Does/Did question が導入IDより前に混入していないかを確認する。
 

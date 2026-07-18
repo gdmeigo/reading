@@ -1,15 +1,17 @@
 import fs from "node:fs";
 import {
-  GRADING_SIGNALS,
   contentTextPath,
+  gradingSignalsForProgressItems,
   parseContentItems,
+  parseProgressItems,
   readReaderSource,
   resetPattern,
 } from "./grading_rules.mjs";
 
 const reader = readReaderSource();
+const progressItems = parseProgressItems(reader);
 const contentItems = parseContentItems(reader);
-const requirements = new Map(GRADING_SIGNALS.map((signal) => [signal.id, signal]));
+const requirements = new Map(gradingSignalsForProgressItems(progressItems).map((signal) => [signal.id, signal]));
 
 const failures = [];
 
