@@ -16,6 +16,16 @@ export const GRADING_SIGNALS = [
     patterns: [/\bthis\s+book\s+is\b/gi],
   },
   {
+    id: "GDM-11-1",
+    name: "in / on",
+    patterns: [/\b(?:in|on)\b/gi],
+  },
+  {
+    id: "GDM-11-3",
+    name: "the",
+    patterns: [/\bthe\b/gi],
+  },
+  {
     id: "GDM-22",
     name: "water / plural demonstratives / them",
     patterns: [/\bwater\b/gi, /\bthese\s+\w+s\s+(?:are|were)\b/gi, /\bthose\s+\w+s\s+(?:are|were)\b/gi, /\bthem\b/gi],

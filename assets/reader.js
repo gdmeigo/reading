@@ -98,6 +98,8 @@ const CEFR_A1_WORDS = new Set((window.CEFR_A1_WORDS || []).map((word) => word.to
 const BUILT_IN_AUDIT_PATTERNS = {
   "GDM-1": ["/\\b(?:you|he|she|it)\\b/"],
   "GDM-10": ["/\\bthis\\s+book\\s+is\\b/"],
+  "GDM-11-1": ["/\\b(?:in|on)\\b/"],
+  "GDM-11-3": ["/\\bthe\\b/"],
   "GDM-22": ["/\\bwater\\b/", "/\\bthese\\s+\\w+s\\s+(?:are|were)\\b/", "/\\bthose\\s+\\w+s\\s+(?:are|were)\\b/", "/\\bthem\\b/"],
   "GDM-30-2": ["/\\b(?:is|are|am|was|were)\\b[^.?!]*\\?/"],
   "GDM-30-3": ["/\\bare\\s+these\\b[^.?!]*\\?/"],
@@ -1075,16 +1077,21 @@ function resetCustomGrades() {
 }
 
 function gradeExportRows() {
-  return PROGRESS_ITEMS.map((item, index) => ({
-    Order: index + 1,
-    Grade: item.id,
-    Series: item.series,
-    Label: item.label,
-    "Words / \u5c0e\u5165\u5358\u8a9e": item.words || "",
-    "Grammar / \u5c0e\u5165\u6587\u6cd5": item.grammar || "",
-    "Detection Terms / \u691c\u51fa\u8a9e\u53e5": gradeDetectionTerms(item).join(", "),
-    "Audit Pattern / \u76e3\u67fb\u30d1\u30bf\u30fc\u30f3": gradeAuditPatterns(item).length ? gradeAuditPatterns(item).join(", ") : builtInAuditPatterns(item).join(", "),
-  }));
+  return PROGRESS_ITEMS.map((item, index) => {
+    const auditPatterns = gradeAuditPatterns(item).length ? gradeAuditPatterns(item) : builtInAuditPatterns(item);
+    return {
+      Order: index + 1,
+      Grade: item.id,
+      Series: item.series,
+      Label: item.label,
+      "Words / \u5c0e\u5165\u5358\u8a9e": item.words || "",
+      "Grammar / \u5c0e\u5165\u6587\u6cd5": item.grammar || "",
+      "Detection Terms / \u691c\u51fa\u8a9e\u53e5": firstOccurrenceAuditableTerms(PROGRESS_ITEMS, item)
+        .filter((term) => !auditPatterns.includes(term))
+        .join(", "),
+      "Audit Pattern / \u76e3\u67fb\u30d1\u30bf\u30fc\u30f3": auditPatterns.join(", "),
+    };
+  });
 }
 
 function contentExportRows() {
