@@ -1,14 +1,10 @@
 import fs from "node:fs";
+import { parseContentItems, parseProgressItems, readReaderSource } from "./grading_rules.mjs";
 
-const reader = fs.readFileSync("assets/reader.js", "utf8");
+const reader = readReaderSource();
 
-const progressItems = [...reader.matchAll(/\{ id: "([^"]+)", series: "[^"]+", label: "[^"]+" \}/g)].map((match) => match[1]);
-const contentItems = [...reader.matchAll(/\{ id: "([^"]+)", variant: "([^"]+)", level: (\d+), slug: "([^"]+)" \}/g)].map((match) => ({
-  id: match[1],
-  variant: match[2],
-  level: match[3],
-  slug: match[4],
-}));
+const progressItems = parseProgressItems(reader).map((item) => item.id);
+const contentItems = parseContentItems(reader);
 
 const doQuestionIntroId = "GDM-41-10";
 const introIndex = progressItems.indexOf(doQuestionIntroId);

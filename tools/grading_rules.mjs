@@ -132,7 +132,7 @@ export function readReaderSource(rootDir = process.cwd()) {
 }
 
 export function parseProgressItems(readerSource) {
-  return [...readerSource.matchAll(/\{ id: "([^"]+)", series: "([^"]+)", label: "([^"]+)" \}/g)].map((match) => ({
+  return [...readerSource.matchAll(/\{\s*id:\s*"([^"]+)",\s*series:\s*"([^"]+)",\s*label:\s*"([^"]+)"/g)].map((match) => ({
     id: match[1],
     series: match[2],
     label: match[3],
