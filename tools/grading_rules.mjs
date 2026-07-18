@@ -21,13 +21,28 @@ export const GRADING_SIGNALS = [
     patterns: [/\bwater\b/gi, /\bthese\s+\w+s\s+(?:are|were)\b/gi, /\bthose\s+\w+s\s+(?:are|were)\b/gi, /\bthem\b/gi],
   },
   {
+    id: "GDM-30-2",
+    name: "is / are / am / was / were question",
+    patterns: [/\b(?:is|are|am|was|were)\b[^.?!]*\?/gi],
+  },
+  {
+    id: "GDM-30-3",
+    name: "are these question",
+    patterns: [/\bare\s+these\b[^.?!]*\?/gi],
+  },
+  {
+    id: "GDM-30-5",
+    name: "possessive question",
+    patterns: [/\b(?:my|your|his|her|our|their|[A-Z][a-z]+['\u2019]s)\b[^.?!]*\?/g],
+  },
+  {
     id: "GDM-37-4",
     name: "where question",
     patterns: [/\bwhere\b/gi],
   },
   {
     id: "GDM-41-10",
-    name: "see review / do question bridge",
+    name: "see / do / did / will see",
     patterns: [
       /\bsee(?:s|ing)?\b/gi,
       /\bsaw\b/gi,
@@ -35,6 +50,16 @@ export const GRADING_SIGNALS = [
       /\bdid\b/gi,
       /\bwill\s+see\b/gi,
     ],
+  },
+  {
+    id: "GDM-77-1",
+    name: "progressive question",
+    patterns: [/\b(?:is|are|am|was|were)\s+\w+ing\b[^.?!]*\?/gi],
+  },
+  {
+    id: "GDM-77-2",
+    name: "what is doing question",
+    patterns: [/\bwhat\s+(?:is|are|am|was|were)\s+\w+\s+doing\b[^.?!]*\?/gi],
   },
   {
     id: "NH1-0-FAMILY",
@@ -57,6 +82,26 @@ export const GRADING_SIGNALS = [
     id: "NH1-1-3-CAN-Q",
     name: "can question",
     patterns: [/\bcan\b[^.?!]*\?/gi],
+  },
+  {
+    id: "NH1-1-3-2-HOW-MANY",
+    name: "how many",
+    patterns: [/\bhow\s+many\b/gi],
+  },
+  {
+    id: "NH1-1-4-1-DONT",
+    name: "Don't",
+    patterns: [/\bdon['\u2019]t\b/gi],
+  },
+  {
+    id: "NH1-1-4-1-BE",
+    name: "Be",
+    patterns: [/^Be\b/gim],
+  },
+  {
+    id: "NH1-1-8-3-EXCLAMATION",
+    name: "what a exclamation",
+    patterns: [/\bWhat\s+a\s+\w+/g],
   },
   {
     id: "NH1-1-5-2-DONTBE",

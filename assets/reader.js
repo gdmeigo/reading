@@ -99,12 +99,21 @@ const BUILT_IN_AUDIT_PATTERNS = {
   "GDM-1": ["/\\b(?:you|he|she|it)\\b/"],
   "GDM-10": ["/\\bthis\\s+book\\s+is\\b/"],
   "GDM-22": ["/\\bwater\\b/", "/\\bthese\\s+\\w+s\\s+(?:are|were)\\b/", "/\\bthose\\s+\\w+s\\s+(?:are|were)\\b/", "/\\bthem\\b/"],
+  "GDM-30-2": ["/\\b(?:is|are|am|was|were)\\b[^.?!]*\\?/"],
+  "GDM-30-3": ["/\\bare\\s+these\\b[^.?!]*\\?/"],
+  "GDM-30-5": ["/\\b(?:my|your|his|her|our|their|[A-Z][a-z]+['\\u2019]s)\\b[^.?!]*\\?/"],
   "GDM-37-4": ["/\\bwhere\\b/"],
   "GDM-41-10": ["/\\bsee(?:s|ing)?\\b/", "/\\bsaw\\b/", "/\\bdo(?:es|ne)?\\b/", "/\\bdid\\b/", "/\\bwill\\s+see\\b/"],
+  "GDM-77-1": ["/\\b(?:is|are|am|was|were)\\s+\\w+ing\\b[^.?!]*\\?/"],
+  "GDM-77-2": ["/\\bwhat\\s+(?:is|are|am|was|were)\\s+\\w+\\s+doing\\b[^.?!]*\\?/"],
   "NH1-0-FAMILY": ["/\\b(?:brother|sister|mother|father|grandfather|grandmother|family)\\b/", "/\\b[A-Z][a-z]+['\\u2019]s\\b/"],
   "NH1-1-1-V": ["/\\b(?:drink|drinks|drank|play|plays|played|watch|watches|watched|speak|speaks|spoke|study|studies|studied|read|reads|reading)\\b/"],
   "NH1-1-2-V": ["/\\b(?:walk|walks|walked|walking|have|has|eat|eats|ate|eating)\\b/"],
   "NH1-1-3-CAN-Q": ["/\\bcan\\b[^.?!]*\\?/"],
+  "NH1-1-3-2-HOW-MANY": ["/\\bhow\\s+many\\b/"],
+  "NH1-1-4-1-DONT": ["/\\bdon['\\u2019]t\\b/"],
+  "NH1-1-4-1-BE": ["/^Be\\b/m"],
+  "NH1-1-8-3-EXCLAMATION": ["/\\bWhat\\s+a\\s+\\w+/"],
   "NH1-1-5-2-DONTBE": ["/\\bdon['\\u2019]t\\s+be\\b/"],
   "NH1-1-6-V": ["/\\b(?:write|writes|wrote|written|writing)\\b/"],
   "NH1-1-7-V": ["/\\b(?:know|knows|knew|make|makes|made|buy|buys|bought|making|buying)\\b/"],
@@ -880,6 +889,21 @@ function termMatchesText(term, text) {
   return new RegExp(pattern, "i").test(text);
 }
 
+function auditTermKey(term) {
+  return normalizeHeaderValue(term).toLowerCase();
+}
+
+function firstOccurrenceAuditableTerms(progressItems, item) {
+  const currentIndex = progressItems.indexOf(item);
+  const earlierTerms = new Set(
+    progressItems
+      .slice(0, currentIndex)
+      .flatMap(auditableDetectionTerms)
+      .map(auditTermKey),
+  );
+  return auditableDetectionTerms(item).filter((term) => !earlierTerms.has(auditTermKey(term)));
+}
+
 function normalizeVariant(value) {
   const normalized = normalizeHeaderValue(value).toLowerCase().replace(/_/g, "-");
   if (normalized.includes("very") && normalized.includes("long")) return "very-long";
@@ -987,7 +1011,7 @@ async function textForContentCandidate(story, level) {
 
 function requiredGradeForText(text, progressItems) {
   const matches = progressItems
-    .map((item, index) => ({ item, index, terms: auditableDetectionTerms(item) }))
+    .map((item, index) => ({ item, index, terms: firstOccurrenceAuditableTerms(progressItems, item) }))
     .filter(({ terms }) => terms.length)
     .filter(({ terms }) => terms.some((term) => termMatchesText(term, text)));
   const maxIndex = matches.reduce((max, match) => Math.max(max, match.index), 0);
