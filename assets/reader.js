@@ -773,17 +773,66 @@ function escapeRegExp(value) {
 }
 
 function defaultDetectionTerms(item) {
-  const explicitTerms = normalizeListText([item.words, item.grammar, item.targets].filter(Boolean).join("\n"));
+  const explicitTerms = detectionTermsFromText([item.words, item.targets].filter(Boolean).join("\n"));
   if (explicitTerms.length) return explicitTerms;
-  return String(item.label || "")
-    .split(/[\n\r,、;；/]+/)
-    .map((term) => term.trim())
-    .filter(Boolean);
+  return detectionTermsFromText(item.label);
 }
 
 function gradeDetectionTerms(item) {
-  const targets = normalizeListText(item.targets);
+  const targets = detectionTermsFromText(item.targets);
   return targets.length ? targets : defaultDetectionTerms(item);
+}
+
+function detectionTermsFromText(value) {
+  return splitDetectionParts(value)
+    .map(cleanDetectionTerm)
+    .filter(Boolean);
+}
+
+function splitDetectionParts(value) {
+  const parts = [];
+  let current = "";
+  let inRegex = false;
+  let escaped = false;
+  for (const char of String(value || "")) {
+    if (inRegex) {
+      current += char;
+      if (char === "\\" && !escaped) {
+        escaped = true;
+      } else if (char === "/" && !escaped) {
+        parts.push(current);
+        current = "";
+        inRegex = false;
+      } else {
+        escaped = false;
+      }
+      continue;
+    }
+    if (char === "/" && !current.trim()) {
+      current += char;
+      inRegex = true;
+      continue;
+    }
+    if (/[\n\r,、;；/]/.test(char)) {
+      parts.push(current);
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+  if (current) parts.push(current);
+  return parts;
+}
+
+function cleanDetectionTerm(value) {
+  const text = String(value || "").trim();
+  if (text.startsWith("/") && text.endsWith("/") && text.length > 2) return text;
+  return text
+    .replace(/\([^A-Za-z]*?\)/g, " ")
+    .replace(/\b(?:Unit|Question|Q|V|SV|SVO|SVOO)\b/gi, " ")
+    .replace(/[^A-Za-z?'\s-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function builtInAuditPatterns(item) {
@@ -1009,7 +1058,7 @@ function gradeExportRows() {
     Label: item.label,
     "Words / \u5c0e\u5165\u5358\u8a9e": item.words || "",
     "Grammar / \u5c0e\u5165\u6587\u6cd5": item.grammar || "",
-    "Detection Terms / \u691c\u51fa\u8a9e\u53e5": item.targets || defaultDetectionTerms(item).join(", "),
+    "Detection Terms / \u691c\u51fa\u8a9e\u53e5": gradeDetectionTerms(item).join(", "),
     "Audit Pattern / \u76e3\u67fb\u30d1\u30bf\u30fc\u30f3": gradeAuditPatterns(item).length ? gradeAuditPatterns(item).join(", ") : builtInAuditPatterns(item).join(", "),
   }));
 }
@@ -1135,7 +1184,7 @@ function exportGradeWorkbook() {
       ["\u4f7f\u3044\u65b9"],
       ["Grades\u30b7\u30fc\u30c8\u306eOrder\u3001Grade\u3001Series\u3001Label\u3001\u5c0e\u5165\u5358\u8a9e\u3001\u5c0e\u5165\u6587\u6cd5\u3001\u691c\u51fa\u8a9e\u53e5\u3092\u81ea\u7531\u306b\u7de8\u96c6\u3067\u304d\u307e\u3059\u3002"],
       ["\u5c0e\u5165\u5358\u8a9e\u30fb\u5c0e\u5165\u6587\u6cd5\u30fb\u691c\u51fa\u8a9e\u53e5\u306f\u3001\u30ab\u30f3\u30de\u3001\u8aad\u70b9\u3001\u30bb\u30df\u30b3\u30ed\u30f3\u3001\u6539\u884c\u3067\u8907\u6570\u6307\u5b9a\u3067\u304d\u307e\u3059\u3002"],
-      ["\u691c\u51fa\u8a9e\u53e5\u306f\u672c\u6587\u306eGrade\u81ea\u52d5\u5224\u5b9a\u306b\u4f7f\u3044\u307e\u3059\u3002\u7a7a\u6b04\u306e\u5834\u5408\u306f\u5c0e\u5165\u5358\u8a9e\u30fb\u5c0e\u5165\u6587\u6cd5\u30fbLabel\u3092\u4f7f\u3044\u307e\u3059\u3002\u6b63\u898f\u8868\u73fe\u306f /pattern/ \u306e\u5f62\u3067\u6307\u5b9a\u3067\u304d\u307e\u3059\u3002"],
+      ["\u691c\u51fa\u8a9e\u53e5\u306f\u672c\u6587\u306eGrade\u81ea\u52d5\u5224\u5b9a\u306b\u4f7f\u3044\u307e\u3059\u3002\u65e5\u672c\u8a9e\u306f\u76e3\u67fb\u3067\u304d\u306a\u3044\u305f\u3081\u3001\u30a8\u30af\u30b9\u30dd\u30fc\u30c8\u6642\u306f\u82f1\u8a9e\u306e\u8a9e\u53e5\u306b\u6574\u7406\u3055\u308c\u307e\u3059\u3002\u6b63\u898f\u8868\u73fe\u306f\u76e3\u67fb\u30d1\u30bf\u30fc\u30f3\u5217\u306b /pattern/ \u306e\u5f62\u3067\u6307\u5b9a\u3057\u307e\u3059\u3002"],
       ["\u76e3\u67fb\u30d1\u30bf\u30fc\u30f3\u306b\u306f\u3001\u30b5\u30a4\u30c8\u306b\u7d44\u307f\u8fbc\u307e\u308c\u3066\u3044\u308b\u6587\u6cd5\u30c1\u30a7\u30c3\u30af\u306e\u6b63\u898f\u8868\u73fe\u3082\u30a8\u30af\u30b9\u30dd\u30fc\u30c8\u3055\u308c\u307e\u3059\u3002\u81ea\u7531\u306b\u8ffd\u52a0\u30fb\u5909\u66f4\u3067\u304d\u3001\u30a4\u30f3\u30dd\u30fc\u30c8\u5f8c\u306e\u81ea\u52d5\u5224\u5b9a\u306b\u4f7f\u3044\u307e\u3059\u3002"],
       ["\u6587\u6cd5\u6b04\u306f\u8aac\u660e\u7528\u3067\u3059\u3002\u73fe\u5728\u5b8c\u4e86\u306a\u3069\u306e\u6587\u6cd5\u3092\u76e3\u67fb\u3059\u308b\u306b\u306f\u3001\u691c\u51fa\u8a9e\u53e5\u307e\u305f\u306f\u76e3\u67fb\u30d1\u30bf\u30fc\u30f3\u306b have been, has gone, /\\b(?:have|has)\\s+\\w+(?:ed|en)\\b/ \u306e\u3088\u3046\u306a\u82f1\u8a9e\u8868\u73fe\u307e\u305f\u306f\u6b63\u898f\u8868\u73fe\u3092\u5165\u308c\u3066\u304f\u3060\u3055\u3044\u3002"],
       ["Content_Map\u30b7\u30fc\u30c8\u306f\u78ba\u8a8d\u7528\u3067\u3059\u3002\u30a4\u30f3\u30dd\u30fc\u30c8\u6642\u306b\u7de8\u96c6\u5024\u306f\u4f7f\u308f\u305a\u3001\u672c\u6587\u3092\u8aad\u307f\u76f4\u3057\u3066\u81ea\u52d5\u69cb\u7bc9\u3057\u307e\u3059\u3002"],

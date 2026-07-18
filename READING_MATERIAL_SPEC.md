@@ -20,6 +20,7 @@
 - `node tools/check_do_questions.mjs` は、Do/Does/Did question が導入IDより前に混入していないかを確認する。
 - ユーザーがExcelでGradeをカスタムする場合、`Grammar / 導入文法` は説明用、`Detection Terms / 検出語句` と `Audit Pattern / 監査パターン` は監査用として扱う。文法名だけでは本文中の構造を自動判定できないため、現在完了なら `have been`、`has gone`、`/\b(?:have|has)\s+\w+(?:ed|en)\b/` のように、本文から検出できる英語表現または正規表現を必ず入れる。
 - 既定で組み込まれている重要文法チェックは、Excelエクスポート時に `Audit Pattern / 監査パターン` 列へ出力し、再インポート後も監査に使う。
+- `Detection Terms / 検出語句` は英語本文と照合できる語句だけにする。日本語の説明や分類は `Label` / `Grammar` に残し、エクスポート時には検出語句から日本語部分を除く。
 
 # GDM リーディング教材仕様
 
