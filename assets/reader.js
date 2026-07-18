@@ -761,6 +761,27 @@ function gradeDetectionTerms(item) {
   return targets.length ? targets : defaultDetectionTerms(item);
 }
 
+function termCanAuditText(term) {
+  const trimmed = normalizeHeaderValue(term);
+  return (trimmed.startsWith("/") && trimmed.endsWith("/") && trimmed.length > 2) || /[A-Za-z]/.test(trimmed);
+}
+
+function auditableDetectionTerms(item) {
+  return gradeDetectionTerms(item).filter(termCanAuditText);
+}
+
+function validateGradeAuditability(progressItems) {
+  const failures = progressItems
+    .filter((item) => !auditableDetectionTerms(item).length)
+    .map((item) => item.id)
+    .slice(0, 8);
+  if (failures.length) {
+    throw new Error(
+      `These Grades need English Detection Terms or /regex/ patterns for audit: ${failures.join(", ")}. Grammar names are notes; they are not enough for automatic checking.`,
+    );
+  }
+}
+
 function termMatchesText(term, text) {
   const trimmed = normalizeHeaderValue(term);
   if (!trimmed) return false;
@@ -882,7 +903,7 @@ async function textForContentCandidate(story, level) {
 
 function requiredGradeForText(text, progressItems) {
   const matches = progressItems
-    .map((item, index) => ({ item, index, terms: gradeDetectionTerms(item) }))
+    .map((item, index) => ({ item, index, terms: auditableDetectionTerms(item) }))
     .filter(({ terms }) => terms.length)
     .filter(({ terms }) => terms.some((term) => termMatchesText(term, text)));
   const maxIndex = matches.reduce((max, match) => Math.max(max, match.index), 0);
@@ -1076,6 +1097,7 @@ function exportGradeWorkbook() {
       ["Grades\u30b7\u30fc\u30c8\u306eOrder\u3001Grade\u3001Series\u3001Label\u3001\u5c0e\u5165\u5358\u8a9e\u3001\u5c0e\u5165\u6587\u6cd5\u3001\u691c\u51fa\u8a9e\u53e5\u3092\u81ea\u7531\u306b\u7de8\u96c6\u3067\u304d\u307e\u3059\u3002"],
       ["\u5c0e\u5165\u5358\u8a9e\u30fb\u5c0e\u5165\u6587\u6cd5\u30fb\u691c\u51fa\u8a9e\u53e5\u306f\u3001\u30ab\u30f3\u30de\u3001\u8aad\u70b9\u3001\u30bb\u30df\u30b3\u30ed\u30f3\u3001\u6539\u884c\u3067\u8907\u6570\u6307\u5b9a\u3067\u304d\u307e\u3059\u3002"],
       ["\u691c\u51fa\u8a9e\u53e5\u306f\u672c\u6587\u306eGrade\u81ea\u52d5\u5224\u5b9a\u306b\u4f7f\u3044\u307e\u3059\u3002\u7a7a\u6b04\u306e\u5834\u5408\u306f\u5c0e\u5165\u5358\u8a9e\u30fb\u5c0e\u5165\u6587\u6cd5\u30fbLabel\u3092\u4f7f\u3044\u307e\u3059\u3002\u6b63\u898f\u8868\u73fe\u306f /pattern/ \u306e\u5f62\u3067\u6307\u5b9a\u3067\u304d\u307e\u3059\u3002"],
+      ["\u6587\u6cd5\u6b04\u306f\u8aac\u660e\u7528\u3067\u3059\u3002\u73fe\u5728\u5b8c\u4e86\u306a\u3069\u306e\u6587\u6cd5\u3092\u76e3\u67fb\u3059\u308b\u306b\u306f\u3001\u691c\u51fa\u8a9e\u53e5\u306b have been, has gone, /\\b(?:have|has)\\s+\\w+(?:ed|en)\\b/ \u306e\u3088\u3046\u306a\u82f1\u8a9e\u8868\u73fe\u307e\u305f\u306f\u6b63\u898f\u8868\u73fe\u3092\u5165\u308c\u3066\u304f\u3060\u3055\u3044\u3002"],
       ["Content_Map\u30b7\u30fc\u30c8\u306f\u78ba\u8a8d\u7528\u3067\u3059\u3002\u30a4\u30f3\u30dd\u30fc\u30c8\u6642\u306b\u7de8\u96c6\u5024\u306f\u4f7f\u308f\u305a\u3001\u672c\u6587\u3092\u8aad\u307f\u76f4\u3057\u3066\u81ea\u52d5\u69cb\u7bc9\u3057\u307e\u3059\u3002"],
       ["\u30a4\u30f3\u30dd\u30fc\u30c8\u3057\u305fGrade\u8868\u306f\u3001\u3053\u306e\u30d6\u30e9\u30a6\u30b6\u306b\u4fdd\u5b58\u3055\u308c\u307e\u3059\u3002\u30ea\u30bb\u30c3\u30c8\u3059\u308b\u3068\u6a19\u6e96\u8868\u306b\u623b\u308a\u307e\u3059\u3002"],
     ]),
@@ -1128,6 +1150,7 @@ async function importGradeWorkbook(file) {
     ? parseGradeCsv(await file.text())
     : parseGradeWorkbook(window.XLSX.read(await file.arrayBuffer(), { type: "array" }));
   const progressItems = normalizeProgressItems(payload.progressItems);
+  validateGradeAuditability(progressItems);
   const contentItems = await autoBuildContentItems(progressItems);
   rebuildGradeData(progressItems, contentItems);
   saveCustomGradePayload({

@@ -18,6 +18,7 @@
 - `node tools/check_grammar_signal_coverage.mjs` は、文法らしいGradeに検出シグナルが作られているかを確認する。
 - `node tools/check_story_targets.mjs` は、各本文が割り当てIDそのもののターゲット表現を含むかを確認する。
 - `node tools/check_do_questions.mjs` は、Do/Does/Did question が導入IDより前に混入していないかを確認する。
+- ユーザーがExcelでGradeをカスタムする場合、`Grammar / 導入文法` は説明用、`Detection Terms / 検出語句` は監査用として扱う。文法名だけでは本文中の構造を自動判定できないため、現在完了なら `have been`、`has gone`、`/\b(?:have|has)\s+\w+(?:ed|en)\b/` のように、本文から検出できる英語表現または正規表現を必ず入れる。
 
 # GDM リーディング教材仕様
 
