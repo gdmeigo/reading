@@ -336,6 +336,7 @@ export function candidateTermsForProgressItem(item) {
   const terms = [];
   for (const rawPart of source.split(/[\/,\u3001\u30fb]|(?:\s+-\s+)/)) {
     const normalized = rawPart
+      .replace(/\([^)]*[^\x00-\x7F][^)]*\)/g, " ")
       .replace(/\([^A-Za-z?']*?\)/g, " ")
       .replace(/\brel\b/gi, " ")
       .replace(/\bUnit\s*\d+\b/gi, " ")
@@ -345,7 +346,7 @@ export function candidateTermsForProgressItem(item) {
     if (!normalized) continue;
     const words = normalized.split(/\s+/).filter((word) => !TERM_BLOCKLIST.has(word.toLowerCase()));
     if (!words.length) continue;
-    const term = words.join(" ").trim();
+    const term = collapseRepeatedWords(words.join(" ").trim());
     if (term) terms.push(term);
   }
   return [...new Set(terms)].filter((term) => {
@@ -409,6 +410,10 @@ function patternsForTerm(term, item) {
 
 function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function collapseRepeatedWords(value) {
+  return value.replace(/\b([A-Za-z?']+)(?:\s+\1\b)+/gi, "$1");
 }
 
 export function collectMatches(text, progressItems) {
