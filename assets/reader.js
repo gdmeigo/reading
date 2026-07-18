@@ -90,6 +90,7 @@ const TARGET_READING_LEVELS = [3, 7, 8];
 const MAX_VISIBLE_CHOICES = 3;
 const INDEX_SELECTION_STORAGE_KEY = "reading.indexSelection.v1";
 const CUSTOM_GRADES_STORAGE_KEY = "reading.customGrades.v1";
+const CUSTOM_GRADES_SCHEMA_VERSION = 2;
 const FEEDBACK_ISSUE_URL = "https://github.com/gdmeigo/reading/issues/new";
 const FEEDBACK_THANKS_TEXT = "Thank you for the feedback. We will review it.";
 const CEFR_A1_WORDS = new Set((window.CEFR_A1_WORDS || []).map((word) => word.toLowerCase()));
@@ -809,6 +810,31 @@ function normalizeProgressItems(progressItems) {
     .filter((item) => item.id && !seenGrades.has(item.id) && seenGrades.add(item.id));
 }
 
+function hasAllDefaultProgressItems(progressItems) {
+  const gradeIds = new Set(normalizeProgressItems(progressItems).map((item) => item.id));
+  return DEFAULT_PROGRESS_ITEMS.every((item) => gradeIds.has(item.id));
+}
+
+function mergeWithDefaultProgressItems(progressItems) {
+  const customItems = normalizeProgressItems(progressItems);
+  const customById = new Map(customItems.map((item) => [item.id, item]));
+  const defaultIds = new Set(DEFAULT_PROGRESS_ITEMS.map((item) => item.id));
+  const mergedDefaults = DEFAULT_PROGRESS_ITEMS.map((defaultItem) => {
+    const customItem = customById.get(defaultItem.id);
+    if (!customItem) return { ...defaultItem };
+    return {
+      ...defaultItem,
+      series: customItem.series || defaultItem.series,
+      label: customItem.label || defaultItem.label,
+      words: customItem.words || defaultItem.words || "",
+      grammar: customItem.grammar || defaultItem.grammar || "",
+      targets: customItem.targets || defaultItem.targets || "",
+    };
+  });
+  const customOnlyItems = customItems.filter((item) => !defaultIds.has(item.id));
+  return [...mergedDefaults, ...customOnlyItems];
+}
+
 function rebuildGradeData(progressItems, contentItems = DEFAULT_CONTENT_ITEMS) {
   const grades = normalizeProgressItems(progressItems);
 
@@ -884,6 +910,7 @@ async function autoBuildContentItems(progressItems) {
 function saveCustomGradePayload(payload) {
   localStorage.setItem(CUSTOM_GRADES_STORAGE_KEY, JSON.stringify({
     ...payload,
+    schemaVersion: CUSTOM_GRADES_SCHEMA_VERSION,
     savedAt: new Date().toISOString(),
   }));
 }
@@ -892,8 +919,20 @@ function loadCustomGradePayload() {
   try {
     const payload = JSON.parse(localStorage.getItem(CUSTOM_GRADES_STORAGE_KEY) || "null");
     if (!payload?.progressItems || !payload?.contentItems) return null;
-    rebuildGradeData(payload.progressItems, payload.contentItems);
-    return payload;
+    const shouldMergeDefaults =
+      payload.schemaVersion !== CUSTOM_GRADES_SCHEMA_VERSION || !hasAllDefaultProgressItems(payload.progressItems);
+    const progressItems = shouldMergeDefaults
+      ? mergeWithDefaultProgressItems(payload.progressItems)
+      : payload.progressItems;
+    rebuildGradeData(progressItems, payload.contentItems);
+    const loadedPayload = {
+      ...payload,
+      progressItems: PROGRESS_ITEMS.map((item) => ({ ...item })),
+      contentItems: CONTENT_ITEMS.map((item) => ({ ...item })),
+      schemaVersion: CUSTOM_GRADES_SCHEMA_VERSION,
+    };
+    if (shouldMergeDefaults) saveCustomGradePayload(loadedPayload);
+    return loadedPayload;
   } catch {
     return null;
   }
