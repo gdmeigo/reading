@@ -26,6 +26,16 @@ export const GRADING_SIGNALS = [
     patterns: [/\bthe\b/gi],
   },
   {
+    id: "GDM-18A",
+    name: "proper noun possessive",
+    patterns: [/\b[A-Z][a-z]+['\u2019]s\b/g],
+  },
+  {
+    id: "GDM-18B",
+    name: "the man's",
+    patterns: [/\bthe\s+man['\u2019]s\b/gi],
+  },
+  {
     id: "GDM-22",
     name: "water / plural demonstratives / them",
     patterns: [/\bwater\b/gi, /\bthese\s+\w+s\s+(?:are|were)\b/gi, /\bthose\s+\w+s\s+(?:are|were)\b/gi, /\bthem\b/gi],
@@ -74,7 +84,7 @@ export const GRADING_SIGNALS = [
   {
     id: "NH1-0-FAMILY",
     name: "family nouns / possessive 's",
-    patterns: [/\b(?:brother|sister|mother|father|grandfather|grandmother|family)\b/gi, /\b[A-Z][a-z]+['\u2019]s\b/g],
+    patterns: [/\b(?:brother|sister|mother|father|grandfather|grandmother|family)\b/gi],
   },
   {
     id: "NH1-1-1-V",
@@ -219,6 +229,7 @@ const GRAMMAR_CATEGORY_KEYWORDS = [
 
 const TERM_BLOCKLIST = new Set([
   "q",
+  "'s",
   "v",
   "sv",
   "unit",

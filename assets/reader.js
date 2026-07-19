@@ -100,6 +100,8 @@ const BUILT_IN_AUDIT_PATTERNS = {
   "GDM-10": ["/\\bthis\\s+book\\s+is\\b/"],
   "GDM-11-1": ["/\\b(?:in|on)\\b/"],
   "GDM-11-3": ["/\\bthe\\b/"],
+  "GDM-18A": ["/\\b[A-Z][a-z]+['\\u2019]s\\b/"],
+  "GDM-18B": ["/\\bthe\\s+man['\\u2019]s\\b/"],
   "GDM-22": ["/\\bwater\\b/", "/\\bthese\\s+\\w+s\\s+(?:are|were)\\b/", "/\\bthose\\s+\\w+s\\s+(?:are|were)\\b/", "/\\bthem\\b/"],
   "GDM-30-2": ["/\\b(?:is|are|am|was|were)\\b[^.?!]*\\?/"],
   "GDM-30-3": ["/\\bare\\s+these\\b[^.?!]*\\?/"],
@@ -108,7 +110,7 @@ const BUILT_IN_AUDIT_PATTERNS = {
   "GDM-41-10": ["/\\bsee(?:s|ing)?\\b/", "/\\bsaw\\b/", "/\\bdo(?:es|ne)?\\b/", "/\\bdid\\b/", "/\\bwill\\s+see\\b/"],
   "GDM-77-1": ["/\\b(?:is|are|am|was|were)\\s+\\w+ing\\b[^.?!]*\\?/"],
   "GDM-77-2": ["/\\bwhat\\s+(?:is|are|am|was|were)\\s+\\w+\\s+doing\\b[^.?!]*\\?/"],
-  "NH1-0-FAMILY": ["/\\b(?:brother|sister|mother|father|grandfather|grandmother|family)\\b/", "/\\b[A-Z][a-z]+['\\u2019]s\\b/"],
+  "NH1-0-FAMILY": ["/\\b(?:brother|sister|mother|father|grandfather|grandmother|family)\\b/"],
   "NH1-1-1-V": ["/\\b(?:drink|drinks|drank|play|plays|played|watch|watches|watched|speak|speaks|spoke|study|studies|studied|read|reads|reading)\\b/"],
   "NH1-1-2-V": ["/\\b(?:walk|walks|walked|walking|have|has|eat|eats|ate|eating)\\b/"],
   "NH1-1-3-CAN-Q": ["/\\bcan\\b[^.?!]*\\?/"],
@@ -368,7 +370,7 @@ let PROGRESS_ITEMS = [
   { id: "GDM-41-8", series: "GDM", label: "did Question", words: "did Question", grammar: "過去疑問", targets: "did Question" },
   { id: "GDM-41-9", series: "GDM", label: "will see", words: "will see", grammar: "未来", targets: "will see" },
   { id: "GDM-41-10", series: "GDM", label: "see まとめ", words: "see まとめ", grammar: "NH1併用開始目安", targets: "see まとめ" },
-  { id: "NH1-0-FAMILY", series: "NH1", label: "中1 's / brother / sister / mother / father", words: "中1 's / brother / sister / mother / father", grammar: "所有・家族", targets: "中1 's / brother / sister / mother / father" },
+  { id: "NH1-0-FAMILY", series: "NH1", label: "中1 's / brother / sister / mother / father", words: "中1 's / brother / sister / mother / father", grammar: "所有・家族", targets: "brother / sister / mother / father / grandfather / grandmother / family" },
   { id: "NH1-1-MAY-I", series: "NH1", label: "May I", words: "May I", grammar: "許可", targets: "May I" },
   { id: "NH1-1-WILL-Q", series: "NH1", label: "Will question", words: "Will question", grammar: "未来疑問", targets: "Will question" },
   { id: "NH1-1-1-V", series: "NH1", label: "drink / play / watch / speak / study / read", words: "drink / play / watch / speak / study / read", grammar: "一般動詞", targets: "drink / play / watch / speak / study / read" },
@@ -845,7 +847,7 @@ function splitDetectionParts(value) {
 function cleanDetectionTerm(value) {
   const text = String(value || "").trim();
   if (text.startsWith("/") && text.endsWith("/") && text.length > 2) return text;
-  return text
+  const cleaned = text
     .replace(/\([^)]*[^\x00-\x7F][^)]*\)/g, " ")
     .replace(/\([^A-Za-z]*?\)/g, " ")
     .replace(/\b(?:Unit|Question|Q|V|SV|SVO|SVOO)\b/gi, " ")
@@ -853,6 +855,7 @@ function cleanDetectionTerm(value) {
     .replace(/\s+/g, " ")
     .replace(/\b([A-Za-z?']+)(?:\s+\1\b)+/gi, "$1")
     .trim();
+  return cleaned === "'s" ? "" : cleaned;
 }
 
 function builtInAuditPatterns(item) {
