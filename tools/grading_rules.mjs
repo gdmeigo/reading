@@ -6,6 +6,7 @@ export const WORKBOOK_BUILDER_PATH = "tools/build_unified_current_id_workbook.mj
 
 const SUBJECT_PATTERN = String.raw`(?:I|you|he|she|it|we|they|this|that|these|those|[A-Z][a-z]+|the\s+[A-Za-z']+|a\s+[A-Za-z']+)`;
 const OBJECT_PATTERN = String.raw`(?:me|you|him|her|it|us|them|this|that|these|those|[A-Z][a-z]+|the\s+[A-Za-z']+|a\s+[A-Za-z']+|[A-Za-z']+)`;
+const PERSON_PATTERN = String.raw`(?:the\s+(?:man|woman|boy|girl|person|student|teacher|child|children|people|friend|brother|sister|mother|father)|a\s+(?:man|woman|boy|girl|person|student|teacher|child|friend|brother|sister|mother|father))`;
 const COMPLEMENT_PATTERN = String.raw`(?:here|there|open|shut|happy|ready|good|bad|big|small|new|old|red|green|different|the\s+same|[A-Za-z']+)`;
 const BE_PATTERN = String.raw`(?:am|are|is|was|were|be|been|being)`;
 
@@ -254,6 +255,11 @@ export const GRADING_SIGNALS = [
       /\b(?:am|are|is|was|were|be|been)\s+(?:moved|washed|cut|made|written|opened|closed|locked|found|seen|given|shown|sent|called|built|left|taken)\b/gi,
       /\b(?:was|were)\s+\w+(?:ed|en)\s+by\b/gi,
     ],
+  },
+  {
+    id: "GDM-111",
+    name: "who relative clause",
+    patterns: [new RegExp(String.raw`\b${PERSON_PATTERN}\s+who\s+[A-Za-z']+\b`, "gi")],
   },
 ];
 

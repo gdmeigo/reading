@@ -14,7 +14,7 @@ The box has four pictures: a book, a cup, a clock, and a star. Under the picture
 
 Kaito finds another card in a book. It says, "Read first."
 
-Saki opens the book. There is a story about a boy who cannot open a door because he does not listen.
+Saki opens the book. There is a story about a boy. He cannot open a door because he does not listen.
 
 "Maybe we have to read the story," she says.
 
