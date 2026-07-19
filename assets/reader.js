@@ -95,6 +95,19 @@ const FEEDBACK_ISSUE_URL = "https://github.com/gdmeigo/reading/issues/new";
 const FEEDBACK_THANKS_TEXT = "Thank you for the feedback. We will review it.";
 const CEFR_A1_WORDS = new Set((window.CEFR_A1_WORDS || []).map((word) => word.toLowerCase()));
 
+const GRAMMAR_AUDIT_TOKENS = {
+  S: "(?:I|you|he|she|it|we|they|this|that|these|those|[A-Z][a-z]+|the\\s+[A-Za-z']+|a\\s+[A-Za-z']+)",
+  V: "(?:[A-Za-z']+)",
+  O: "(?:me|you|him|her|it|us|them|this|that|these|those|[A-Z][a-z]+|the\\s+[A-Za-z']+|a\\s+[A-Za-z']+|[A-Za-z']+)",
+  C: "(?:here|there|open|shut|happy|ready|good|bad|big|small|new|old|red|green|different|the\\s+same|[A-Za-z']+)",
+  BE: "(?:am|are|is|was|were|be|been|being)",
+  DO: "(?:do|does|did)",
+  SEE: "(?:see|sees|saw)",
+  VING: "(?:[A-Za-z']+ing)",
+};
+
+const SUPPRESSED_DETECTION_TERM_IDS = new Set(["GDM-41-6", "GDM-45-3B", "NH1-1-11-DID-Q"]);
+
 const BUILT_IN_AUDIT_PATTERNS = {
   "GDM-1": ["/\\b(?:you|he|she|it)\\b/"],
   "GDM-10": ["/\\bthis\\s+book\\s+is\\b/"],
@@ -107,10 +120,15 @@ const BUILT_IN_AUDIT_PATTERNS = {
   "GDM-30-3": ["/\\bare\\s+these\\b[^.?!]*\\?/"],
   "GDM-30-5": ["/\\b(?:my|your|his|her|our|their|[A-Z][a-z]+['\\u2019]s)\\b[^.?!]*\\?/"],
   "GDM-37-4": ["/\\bwhere\\b/"],
-  "GDM-41-10": ["/\\bsee(?:s|ing)?\\b/", "/\\bsaw\\b/", "/\\bdo(?:es|ne)?\\b/", "/\\bdid\\b/", "/\\bwill\\s+see\\b/"],
+  "GDM-41-4": ["/\\b(?:what|where|who|which)\\s+do\\s+{S}\\s+see\\b[^.?!]*\\?/", "/\\bdo\\s+{S}\\s+see\\b[^.?!]*\\?/"],
+  "GDM-41-5": ["/\\b(?:what|where|who|which)\\s+does\\s+{S}\\s+see\\b[^.?!]*\\?/", "/\\bdoes\\s+{S}\\s+see\\b[^.?!]*\\?/"],
+  "GDM-41-8": ["/\\bdid\\s+{S}\\s+see\\b[^.?!]*\\?/"],
+  "GDM-45-2": ["/\\b(?:is|are|am|was|were)\\b[^.?!]*\\?/"],
+  "GDM-64A": ["/\\bdid\\s+{S}\\s+(?:give|put|go)\\b[^.?!]*\\?/"],
   "GDM-77-1": ["/\\b(?:is|are|am|was|were)\\s+\\w+ing\\b[^.?!]*\\?/"],
   "GDM-77-2": ["/\\bwhat\\s+(?:is|are|am|was|were)\\s+\\w+\\s+doing\\b[^.?!]*\\?/"],
   "NH1-0-FAMILY": ["/\\b(?:brother|sister|mother|father|grandfather|grandmother|family)\\b/"],
+  "NH1-1-1-BEV-Q": ["/\\b(?:is|are|am|was|were)\\b[^.?!]*\\?/"],
   "NH1-1-1-V": ["/\\b(?:drink|drinks|drank|play|plays|played|watch|watches|watched|speak|speaks|spoke|study|studies|studied|read|reads|reading)\\b/"],
   "NH1-1-2-V": ["/\\b(?:walk|walks|walked|walking|have|has|eat|eats|ate|eating)\\b/"],
   "NH1-1-3-CAN-Q": ["/\\bcan\\b[^.?!]*\\?/"],
@@ -792,6 +810,7 @@ function defaultDetectionTerms(item) {
 }
 
 function gradeDetectionTerms(item) {
+  if (SUPPRESSED_DETECTION_TERM_IDS.has(item.id)) return [];
   const targets = detectionTermsFromText(item.targets);
   return targets.length ? targets : defaultDetectionTerms(item);
 }
@@ -892,7 +911,7 @@ function termMatchesText(term, text) {
   if (!trimmed) return false;
   if (trimmed.startsWith("/") && trimmed.endsWith("/") && trimmed.length > 2) {
     try {
-      return new RegExp(trimmed.slice(1, -1), "i").test(text);
+      return new RegExp(expandAuditPattern(trimmed.slice(1, -1)), "i").test(text);
     } catch {
       return false;
     }
@@ -901,6 +920,10 @@ function termMatchesText(term, text) {
     ? `\\b${escapeRegExp(trimmed).replace(/\\ /g, "\\s+")}\\b`
     : escapeRegExp(trimmed);
   return new RegExp(pattern, "i").test(text);
+}
+
+function expandAuditPattern(source) {
+  return source.replace(/\{(S|V|O|C|BE|DO|SEE|VING)\}/g, (_, token) => GRAMMAR_AUDIT_TOKENS[token]);
 }
 
 function auditTermKey(term) {
@@ -1230,6 +1253,7 @@ function exportGradeWorkbook() {
       ["\u691c\u51fa\u8a9e\u53e5\u306f\u672c\u6587\u306eGrade\u81ea\u52d5\u5224\u5b9a\u306b\u4f7f\u3044\u307e\u3059\u3002\u65e5\u672c\u8a9e\u3001Unit\u8868\u8a18\u3001Q/V/SV/SVOO\u306e\u3088\u3046\u306a\u5206\u985e\u8a18\u53f7\u306f\u9664\u304d\u3001\u540c\u3058\u8a9e\u53e5\u3084 on on \u306e\u3088\u3046\u306a\u9023\u7d9a\u91cd\u8907\u306f1\u3064\u306b\u6574\u7406\u3057\u307e\u3059\u3002"],
       ["\u691c\u51fa\u8a9e\u53e5\u306f\u82f1\u8a9e\u672c\u6587\u4e2d\u306e\u5358\u8a9e\u30fb\u8a9e\u53e5\u3068\u5927\u6587\u5b57\u5c0f\u6587\u5b57\u3092\u533a\u5225\u305b\u305a\u7167\u5408\u3057\u307e\u3059\u3002\u82f1\u5b57\u3060\u3051\u306e\u8a9e\u53e5\u306f\u5358\u8a9e\u5883\u754c\u3067\u691c\u51fa\u3057\u3001\u6587\u6cd5\u69cb\u9020\u306e\u5224\u5b9a\u306f\u76e3\u67fb\u30d1\u30bf\u30fc\u30f3\u5217\u306e /pattern/ \u3067\u6307\u5b9a\u3057\u307e\u3059\u3002"],
       ["\u76e3\u67fb\u30d1\u30bf\u30fc\u30f3\u306b\u306f\u3001\u30b5\u30a4\u30c8\u306b\u7d44\u307f\u8fbc\u307e\u308c\u3066\u3044\u308b\u6587\u6cd5\u30c1\u30a7\u30c3\u30af\u306e\u6b63\u898f\u8868\u73fe\u3082\u30a8\u30af\u30b9\u30dd\u30fc\u30c8\u3055\u308c\u307e\u3059\u3002\u81ea\u7531\u306b\u8ffd\u52a0\u30fb\u5909\u66f4\u3067\u304d\u3001\u30a4\u30f3\u30dd\u30fc\u30c8\u5f8c\u306e\u81ea\u52d5\u5224\u5b9a\u306b\u4f7f\u3044\u307e\u3059\u3002"],
+      ["\u76e3\u67fb\u30d1\u30bf\u30fc\u30f3\u306e /pattern/ \u5185\u3067\u306f {S}={\u4e3b\u8a9e}, {V}={\u52d5\u8a5e}, {O}={\u76ee\u7684\u8a9e}, {C}={\u88dc\u8a9e}, {BE}=be\u52d5\u8a5e, {DO}=do/does/did, {SEE}=see/sees/saw, {VING}=ing\u5f62 \u3092\u4f7f\u3048\u307e\u3059\u3002\u4f8b: /\\bdo\\s+{S}\\s+see\\b[^.?!]*\\?/"],
       ["\u6587\u6cd5\u6b04\u306f\u8aac\u660e\u7528\u3067\u3059\u3002\u73fe\u5728\u5b8c\u4e86\u306a\u3069\u306e\u6587\u6cd5\u3092\u76e3\u67fb\u3059\u308b\u306b\u306f\u3001\u691c\u51fa\u8a9e\u53e5\u307e\u305f\u306f\u76e3\u67fb\u30d1\u30bf\u30fc\u30f3\u306b have been, has gone, /\\b(?:have|has)\\s+\\w+(?:ed|en)\\b/ \u306e\u3088\u3046\u306a\u82f1\u8a9e\u8868\u73fe\u307e\u305f\u306f\u6b63\u898f\u8868\u73fe\u3092\u5165\u308c\u3066\u304f\u3060\u3055\u3044\u3002"],
       ["Content_Map\u30b7\u30fc\u30c8\u306f\u78ba\u8a8d\u7528\u3067\u3059\u3002\u30a4\u30f3\u30dd\u30fc\u30c8\u6642\u306b\u7de8\u96c6\u5024\u306f\u4f7f\u308f\u305a\u3001\u672c\u6587\u3092\u8aad\u307f\u76f4\u3057\u3066\u81ea\u52d5\u69cb\u7bc9\u3057\u307e\u3059\u3002"],
       ["\u30a4\u30f3\u30dd\u30fc\u30c8\u3057\u305fGrade\u8868\u306f\u3001\u3053\u306e\u30d6\u30e9\u30a6\u30b6\u306b\u4fdd\u5b58\u3055\u308c\u307e\u3059\u3002\u30ea\u30bb\u30c3\u30c8\u3059\u308b\u3068\u6a19\u6e96\u8868\u306b\u623b\u308a\u307e\u3059\u3002"],

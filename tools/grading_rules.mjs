@@ -4,6 +4,10 @@ import path from "node:path";
 export const READER_PATH = "assets/reader.js";
 export const WORKBOOK_BUILDER_PATH = "tools/build_unified_current_id_workbook.mjs";
 
+const SUBJECT_PATTERN = String.raw`(?:I|you|he|she|it|we|they|this|that|these|those|[A-Z][a-z]+|the\s+[A-Za-z']+|a\s+[A-Za-z']+)`;
+const COMPLEMENT_PATTERN = String.raw`(?:here|there|open|shut|happy|ready|good|bad|big|small|new|old|red|green|different|the\s+same|[A-Za-z']+)`;
+const BE_PATTERN = String.raw`(?:am|are|is|was|were|be|been|being)`;
+
 export const GRADING_SIGNALS = [
   {
     id: "GDM-1",
@@ -61,15 +65,45 @@ export const GRADING_SIGNALS = [
     patterns: [/\bwhere\b/gi],
   },
   {
-    id: "GDM-41-10",
-    name: "see / do / did / will see",
+    id: "GDM-41-4",
+    name: "see question",
     patterns: [
-      /\bsee(?:s|ing)?\b/gi,
-      /\bsaw\b/gi,
-      /\bdo(?:es|ne)?\b/gi,
-      /\bdid\b/gi,
-      /\bwill\s+see\b/gi,
+      new RegExp(String.raw`\b(?:what|where|who|which)\s+do\s+${SUBJECT_PATTERN}\s+see\b[^.?!]*\?`, "gi"),
+      new RegExp(String.raw`\bdo\s+${SUBJECT_PATTERN}\s+see\b[^.?!]*\?`, "gi"),
     ],
+  },
+  {
+    id: "GDM-41-5",
+    name: "sees question",
+    patterns: [
+      new RegExp(String.raw`\b(?:what|where|who|which)\s+does\s+${SUBJECT_PATTERN}\s+see\b[^.?!]*\?`, "gi"),
+      new RegExp(String.raw`\bdoes\s+${SUBJECT_PATTERN}\s+see\b[^.?!]*\?`, "gi"),
+    ],
+  },
+  {
+    id: "GDM-41-8",
+    name: "did see question",
+    patterns: [new RegExp(String.raw`\bdid\s+${SUBJECT_PATTERN}\s+see\b[^.?!]*\?`, "gi")],
+  },
+  {
+    id: "GDM-41-6",
+    name: "question answer review",
+    patterns: [],
+  },
+  {
+    id: "GDM-45-2",
+    name: "be question review",
+    patterns: [/\b(?:is|are|am|was|were)\b[^.?!]*\?/gi],
+  },
+  {
+    id: "GDM-64A",
+    name: "did give / put / go question",
+    patterns: [new RegExp(String.raw`\bdid\s+${SUBJECT_PATTERN}\s+(?:give|put|go)\b[^.?!]*\?`, "gi")],
+  },
+  {
+    id: "GDM-45-3B",
+    name: "do / does question review",
+    patterns: [],
   },
   {
     id: "GDM-77-1",
@@ -85,6 +119,11 @@ export const GRADING_SIGNALS = [
     id: "NH1-0-FAMILY",
     name: "family nouns / possessive 's",
     patterns: [/\b(?:brother|sister|mother|father|grandfather|grandmother|family)\b/gi],
+  },
+  {
+    id: "NH1-1-1-BEV-Q",
+    name: "be question",
+    patterns: [/\b(?:is|are|am|was|were)\b[^.?!]*\?/gi],
   },
   {
     id: "NH1-1-1-V",
@@ -156,6 +195,11 @@ export const GRADING_SIGNALS = [
     id: "NH1-1-11-1-MAYBE",
     name: "maybe",
     patterns: [/\bmaybe\b/gi],
+  },
+  {
+    id: "NH1-1-11-DID-Q",
+    name: "did question review",
+    patterns: [],
   },
   {
     id: "NH2-2-1-3-SVOO",
@@ -430,17 +474,29 @@ function collapseRepeatedWords(value) {
 export function collectMatches(text, progressItems) {
   const byId = progressIndexMap(progressItems);
 
-  return gradingSignalsForProgressItems(progressItems).flatMap((signal) =>
-    signal.patterns.flatMap((pattern) => {
-      const matches = [...text.matchAll(resetPattern(pattern))].slice(0, 5);
-      return matches.map((match) => ({
-        id: signal.id,
-        index: byId.get(signal.id),
-        name: signal.name,
-        match: compactMatch(match[0]),
-      }));
-    }),
-  ).filter((match) => Number.isInteger(match.index));
+  return uniqueSignalPatterns(gradingSignalsForProgressItems(progressItems)).flatMap(({ signal, pattern }) => {
+    const matches = [...text.matchAll(resetPattern(pattern))].slice(0, 5);
+    return matches.map((match) => ({
+      id: signal.id,
+      index: byId.get(signal.id),
+      name: signal.name,
+      match: compactMatch(match[0]),
+    }));
+  }).filter((match) => Number.isInteger(match.index));
+}
+
+function uniqueSignalPatterns(signals) {
+  const seen = new Set();
+  const signalPatterns = [];
+  for (const signal of signals) {
+    for (const pattern of signal.patterns) {
+      const key = `${pattern.source}/${pattern.flags}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      signalPatterns.push({ signal, pattern });
+    }
+  }
+  return signalPatterns;
 }
 
 export function requiredIdForText(text, progressItems) {
