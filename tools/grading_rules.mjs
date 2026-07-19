@@ -5,6 +5,7 @@ export const READER_PATH = "assets/reader.js";
 export const WORKBOOK_BUILDER_PATH = "tools/build_unified_current_id_workbook.mjs";
 
 const SUBJECT_PATTERN = String.raw`(?:I|you|he|she|it|we|they|this|that|these|those|[A-Z][a-z]+|the\s+[A-Za-z']+|a\s+[A-Za-z']+)`;
+const OBJECT_PATTERN = String.raw`(?:me|you|him|her|it|us|them|this|that|these|those|[A-Z][a-z]+|the\s+[A-Za-z']+|a\s+[A-Za-z']+|[A-Za-z']+)`;
 const COMPLEMENT_PATTERN = String.raw`(?:here|there|open|shut|happy|ready|good|bad|big|small|new|old|red|green|different|the\s+same|[A-Za-z']+)`;
 const BE_PATTERN = String.raw`(?:am|are|is|was|were|be|been|being)`;
 
@@ -94,6 +95,21 @@ export const GRADING_SIGNALS = [
     id: "GDM-45-2",
     name: "be question review",
     patterns: [/\b(?:is|are|am|was|were)\b[^.?!]*\?/gi],
+  },
+  {
+    id: "GDM-49-3",
+    name: "no A or B",
+    patterns: [new RegExp(String.raw`\bno\s+${OBJECT_PATTERN}\s+or\s+${OBJECT_PATTERN}\b`, "gi")],
+  },
+  {
+    id: "GDM-49-4",
+    name: "A or B question",
+    patterns: [
+      new RegExp(
+        String.raw`\b(?:is|are|am|was|were|do|does|did|can|will|would|should)\b[^.?!]*\b${OBJECT_PATTERN}\s+or\s+${OBJECT_PATTERN}\b[^.?!]*\?`,
+        "gi",
+      ),
+    ],
   },
   {
     id: "GDM-64A",

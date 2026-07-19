@@ -106,7 +106,7 @@ const GRAMMAR_AUDIT_TOKENS = {
   VING: "(?:[A-Za-z']+ing)",
 };
 
-const SUPPRESSED_DETECTION_TERM_IDS = new Set(["GDM-41-6", "GDM-45-3B", "NH1-1-11-DID-Q"]);
+const SUPPRESSED_DETECTION_TERM_IDS = new Set(["GDM-41-6", "GDM-45-3B", "GDM-49-3", "GDM-49-4", "NH1-1-11-DID-Q"]);
 
 const BUILT_IN_AUDIT_PATTERNS = {
   "GDM-1": ["/\\b(?:you|he|she|it)\\b/"],
@@ -124,6 +124,8 @@ const BUILT_IN_AUDIT_PATTERNS = {
   "GDM-41-5": ["/\\b(?:what|where|who|which)\\s+does\\s+{S}\\s+see\\b[^.?!]*\\?/", "/\\bdoes\\s+{S}\\s+see\\b[^.?!]*\\?/"],
   "GDM-41-8": ["/\\bdid\\s+{S}\\s+see\\b[^.?!]*\\?/"],
   "GDM-45-2": ["/\\b(?:is|are|am|was|were)\\b[^.?!]*\\?/"],
+  "GDM-49-3": ["/\\bno\\s+{O}\\s+or\\s+{O}\\b/"],
+  "GDM-49-4": ["/\\b(?:is|are|am|was|were|do|does|did|can|will|would|should)\\b[^.?!]*\\b{O}\\s+or\\s+{O}\\b[^.?!]*\\?/"],
   "GDM-64A": ["/\\bdid\\s+{S}\\s+(?:give|put|go)\\b[^.?!]*\\?/"],
   "GDM-77-1": ["/\\b(?:is|are|am|was|were)\\s+\\w+ing\\b[^.?!]*\\?/"],
   "GDM-77-2": ["/\\bwhat\\s+(?:is|are|am|was|were)\\s+\\w+\\s+doing\\b[^.?!]*\\?/"],

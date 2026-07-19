@@ -24,6 +24,7 @@
 - `Detection Terms / 検出語句` のエクスポートは `term, term, term` のカンマ+半角スペース区切りに統一する。日本語、`Unit` 表記、`Q` / `V` / `SV` / `SVOO` などの分類記号は除外し、同一語句や `on on` のような連続重複は1つにまとめる。
 - `Detection Terms / 検出語句` は大文字小文字を区別せず、英字だけの語句は単語境界で照合する。疑問文・命令文・受け身など構造を見たい場合は `Audit Pattern / 監査パターン` に `/regex/` として書く。
 - `Audit Pattern / 監査パターン` の `/regex/` 内では `{S}` `{V}` `{O}` `{C}` `{BE}` `{DO}` `{SEE}` `{VING}` を使える。例: `/\bdo\s+{S}\s+see\b[^.?!]*\?/` は `Do you see ...?` 型、`/\b{BE}\s+{S}(?:\s+{C})?\s*\?/` は be動詞疑問型を検出する。
+- `no A or B` や `A or B(Q)` のような構造項目は、`or` だけで検出しない。例: `/\bno\s+{O}\s+or\s+{O}\b/`、`/\b(?:is|are|am|was|were|do|does|did|can|will|would|should)\b[^.?!]*\b{O}\s+or\s+{O}\b[^.?!]*\?/` のように、対象構文全体を `Audit Pattern / 監査パターン` で指定する。
 
 # GDM リーディング教材仕様
 
