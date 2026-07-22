@@ -16,6 +16,7 @@ const STORIES = [
   { slug: "star-bus", title: "The Star Bus", genre: "SF", levels: [1, 2, 3, 4, 5, 6, 7] },
   { slug: "moon-cup", title: "The Moon Cup", genre: "Fantasy", levels: [1, 2, 3, 4, 5, 6, 7] },
   { slug: "wrong-robot", title: "The Wrong Robot", genre: "Comedy", levels: [1, 2, 3, 4, 5, 6, 7] },
+  { slug: "doll-foot", title: "The Doll's Foot", genre: "Mystery", levels: [3] },
   { slug: "banana-principal", title: "The Banana Principal", genre: "Comedy", levels: [3] },
   { slug: "red-pin", title: "The Red Pin", genre: "Mystery", levels: [3] },
   { slug: "book-under-hat", title: "The Book Under the Hat", genre: "Comedy", levels: [3] },
@@ -549,6 +550,7 @@ let PROGRESS_ITEMS = [
 ];
 
 let CONTENT_ITEMS = [
+  { id: "GDM-25", variant: "short", level: 3, slug: "doll-foot" },
   { id: "GDM-47-4", variant: "short", level: 3, slug: "red-pin" },
   { id: "GDM-64B", variant: "short", level: 3, slug: "book-under-hat" },
   { id: "GDM-106", variant: "short", level: 3, slug: "water-pen-trick" },

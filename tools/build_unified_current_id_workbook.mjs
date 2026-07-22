@@ -236,6 +236,7 @@ const progressRows = [
 ];
 
 const contentRows = [
+  ["GDM-25", "Short", "Mystery", "The Doll's Foot", "doll-foot", "lessons/doll-foot/level-3.txt"],
   ["GDM-47-4", "Short", "Mystery", "The Red Pin", "red-pin", "lessons/red-pin/level-3.txt"],
   ["GDM-64B", "Short", "Comedy", "The Book Under the Hat", "book-under-hat", "lessons/book-under-hat/level-3.txt"],
   ["GDM-106", "Short", "Mystery", "The Water Pen Trick", "water-pen-trick", "lessons/water-pen-trick/level-3.txt"],
